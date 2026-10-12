@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "apps.accounts",
     "apps.geography",
     "apps.territory",
+    "apps.network",
 ]
 
 MIDDLEWARE = [

@@ -58,7 +58,15 @@ class GeoCell(BaseModel):
         max_digits=12, decimal_places=2, null=True, blank=True, editable=False
     )
     notes = models.TextField(blank=True)
-    # The link to a Biomass Grid is added with the Grid model in the next build step.
+    # The only stored link between a cell and a Grid. The Grid's cell list, its
+    # catchment and (later) its Mitra's cells are all derived from this.
+    grid = models.ForeignKey(
+        "network.Grid",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="geocells",
+    )
 
     class Meta:
         ordering = ["code"]
@@ -94,6 +102,8 @@ class GeoCell(BaseModel):
         errors = {}
         if self.origin == self.Origin.PANCHAYAT and not self.panchayat_id:
             errors["panchayat"] = "A panchayat cell must be linked to a panchayat."
+        if self.grid_id and self.region_id and self.grid.region_id != self.region_id:
+            errors["grid"] = "This Grid belongs to a different Region."
         if self.boundary and self.status == Status.ACTIVE:
             # Cells may share an edge but not an area. The database trigger is the
             # final guard; this gives a readable message in forms.
