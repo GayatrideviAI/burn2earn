@@ -72,6 +72,13 @@ def write_audit_log(sender, instance, created, raw=False, **kwargs):
         }
         if not changes:
             return
+    # Personal data (a farmer's name or mobile) must never be copied into the log,
+    # so the log only shows that such a field was set or changed.
+    for name in getattr(instance, "audit_redacted_fields", ()):
+        if name in changes:
+            changes[name] = [
+                None if value is None else "<redacted>" for value in changes[name]
+            ]
     AuditLog.objects.create(
         actor_id=get_current_user_id(),
         action=action,

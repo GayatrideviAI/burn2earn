@@ -75,6 +75,16 @@ class BaseModel(models.Model):
         self.save(update_fields=["status"])
 
 
+class Counter(models.Model):
+    """Running number behind a code series (see apps/core/codes.py)."""
+
+    name = models.CharField(max_length=50, unique=True)
+    value = models.PositiveBigIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.name}: {self.value}"
+
+
 class AuditLog(models.Model):
     """One row per create or change of a master record."""
 
