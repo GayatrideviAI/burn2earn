@@ -1,5 +1,6 @@
 {% extends "field/base.html" %}
 {% block title %}Add a plot{% endblock %}
+{% block hero %}<section class="hero banner field"></section>{% endblock %}
 {% block content %}
 <h1>Add a plot for {{ farmer.name }}</h1>
 <form method="post">{% csrf_token %}
