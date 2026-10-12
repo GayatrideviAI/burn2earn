@@ -1,0 +1,16 @@
+{% extends "field/base.html" %}
+{% block title %}Farmers{% endblock %}
+{% block content %}
+<h1>Farmers</h1>
+<form method="get" class="search">
+  <input type="search" name="q" value="{{ query }}" placeholder="Name, mobile or code">
+  <button>Search</button>
+</form>
+<p><a class="button primary" href="{% url 'field:farmer_new' %}">Register a farmer</a></p>
+<ul class="list">
+  {% for farmer in farmers %}
+  <li><a href="{% url 'field:farmer_detail' farmer.pk %}">{{ farmer.name }}
+    <small>{{ farmer.code }} · {{ farmer.village.name }} · {{ farmer.plots.count }} plot{{ farmer.plots.count|pluralize }}</small></a></li>
+  {% empty %}<li class="muted">No farmers found.</li>{% endfor %}
+</ul>
+{% endblock %}

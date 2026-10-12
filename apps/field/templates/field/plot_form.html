@@ -1,0 +1,23 @@
+{% extends "field/base.html" %}
+{% block title %}Add a plot{% endblock %}
+{% block content %}
+<h1>Add a plot for {{ farmer.name }}</h1>
+<form method="post">{% csrf_token %}
+  <p><button type="button" id="locate">Use my location</button> <small id="locate-status" class="muted"></small></p>
+  {% include "field/form_fields.html" %}
+  <button class="primary">Save plot</button>
+  <a class="button" href="{% url 'field:farmer_detail' farmer.pk %}">Cancel</a>
+</form>
+<script>
+document.getElementById("locate").addEventListener("click", function () {
+  var status = document.getElementById("locate-status");
+  if (!navigator.geolocation) { status.textContent = "Location is not available on this device."; return; }
+  status.textContent = "Finding location…";
+  navigator.geolocation.getCurrentPosition(function (pos) {
+    document.getElementById("id_latitude").value = pos.coords.latitude.toFixed(6);
+    document.getElementById("id_longitude").value = pos.coords.longitude.toFixed(6);
+    status.textContent = "Done. Stand at the plot for the best accuracy.";
+  }, function () { status.textContent = "Could not get location. Type it in instead."; });
+});
+</script>
+{% endblock %}

@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "apps.network",
     "apps.reference",
     "apps.farms",
+    "apps.field",
 ]
 
 MIDDLEWARE = [
@@ -97,3 +98,7 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOGIN_URL = "field:login"
+LOGIN_REDIRECT_URL = "field:dashboard"
+LOGOUT_REDIRECT_URL = "field:login"

@@ -19,6 +19,14 @@ step 1 (Foundation)** of the V1 data model and build plan.
 Not built yet: Buyer, Factory, the other reference masters (Biomass Type...), the REST API
 and the offline Mitra app.
 
+## The Mitra web page
+
+Log in at `/mitra/` with a Mitra's own account (Accounts > Users, role Biomass Mitra, linked
+to the Mitra record). A Mitra can register a farmer (consent tickbox required, duplicate mobile
+numbers are flagged), add plots (latitude and longitude, or "Use my location" on a phone, and the
+area in acres) and record crops per season. A Mitra sees only farmers they registered or who farm
+in their Grid's cells. It needs an internet connection; the offline version comes later.
+
 ## Registering farmers (admin)
 
 Farmers can be added under Farms > Farmers (a consent record is required) and plots under
