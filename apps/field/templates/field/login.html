@@ -1,10 +1,11 @@
 {% extends "field/base.html" %}
 {% block title %}Log in{% endblock %}
+{% block hero %}<section class="hero"><div><h1>Turning crop residue into value</h1><p>Biomass Mitra portal</p></div></section>{% endblock %}
 {% block content %}
-<h1>Log in</h1>
+<div class="panel"><h2>Log in</h2>
 <form method="post">{% csrf_token %}
   {% include "field/form_fields.html" %}
   <input type="hidden" name="next" value="{{ next }}">
   <button class="primary">Log in</button>
-</form>
+</form></div>
 {% endblock %}
