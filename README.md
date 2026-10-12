@@ -13,8 +13,18 @@ step 1 (Foundation)** of the V1 data model and build plan.
 | `apps/territory` | **Region** and **GeoCell**. In V1 each GeoCell is one panchayat. A database trigger stops two active GeoCells from overlapping (sharing an edge is fine). |
 | `apps/network` | **Hub** (run by Regenerix staff, fed by many Grids), **Biomass Grid**, **Biomass Mitra** and **Equipment**. A GeoCell is linked to its Grid from the GeoCell list in the admin. The Grid warns when it has fewer than 7 or more than 10 cells, and its catchment area is derived from its cells. A Mitra runs one Grid at a time through a dated assignment, and their cells and equipment come from that Grid. Equipment sits at exactly one Grid or Hub, and its types (Pelletizer, Baler...) are an editable list. |
 
-Not built yet: Farmer, Farm Plot, Buyer, Factory, the other reference masters (Crop,
-Season, Biomass Type...), the REST API and the Mitra field app (steps 3 to 5).
+| `apps/reference` | Editable lists: **Crop** (Paddy, Wheat, ...) and **Season** (Kharif, Rabi). The starting values are indicative; Admins can change them. |
+| `apps/farms` | **Farmer** (registered by a Mitra, with a consent record captured at the same time), **Farm Plot** (a point or boundary, area in acres, placed in a GeoCell automatically) and **Plot Season** (which crop was grown in which season and year). Withdrawing consent anonymises the farmer (name and mobile removed); plots and history stay. Names and mobile numbers are never written to the change log. |
+
+Not built yet: Buyer, Factory, the other reference masters (Biomass Type...), the REST API
+and the offline Mitra app.
+
+## Registering farmers (admin)
+
+Farmers can be added under Farms > Farmers (a consent record is required) and plots under
+Farms > Farm plots. A plot that falls outside every GeoCell is kept and can be found with
+the "Outside every GeoCell" filter. The notice wording (`draft-1`) is a placeholder and needs
+review before real use.
 
 ## Setting up a Mitra and their equipment (in the admin)
 
