@@ -11,11 +11,20 @@ step 1 (Foundation)** of the V1 data model and build plan.
 | `apps/core` | Shared base model (UUID id, status, created/updated by and at), a change log (audit log) for every master record, and acre-based area maths. Records are deactivated, never deleted. |
 | `apps/geography` | State > District > Block > Panchayat > Village from LGD codes, loaded with management commands. |
 | `apps/territory` | **Region** and **GeoCell**. In V1 each GeoCell is one panchayat. A database trigger stops two active GeoCells from overlapping (sharing an edge is fine). |
-| `apps/network` | **Hub** (run by Regenerix staff, fed by many Grids) and **Biomass Grid**. A GeoCell is linked to its Grid from the GeoCell list in the admin. The Grid warns when it has fewer than 7 or more than 10 cells, and its catchment area is derived from its cells. |
+| `apps/network` | **Hub** (run by Regenerix staff, fed by many Grids), **Biomass Grid**, **Biomass Mitra** and **Equipment**. A GeoCell is linked to its Grid from the GeoCell list in the admin. The Grid warns when it has fewer than 7 or more than 10 cells, and its catchment area is derived from its cells. A Mitra runs one Grid at a time through a dated assignment, and their cells and equipment come from that Grid. Equipment sits at exactly one Grid or Hub, and its types (Pelletizer, Baler...) are an editable list. |
 
-Not built yet: Mitra profile and its Grid assignment, Equipment (rest of step 2), Farmer,
-Farm Plot, Buyer, Factory, reference masters (Crop, Season, Biomass Type...), the REST API
-and the Mitra field app (steps 3 to 5).
+Not built yet: Farmer, Farm Plot, Buyer, Factory, the other reference masters (Crop,
+Season, Biomass Type...), the REST API and the Mitra field app (steps 3 to 5).
+
+## Setting up a Mitra and their equipment (in the admin)
+
+1. Create the Hub and the Grid (Network > Hubs, Grids). Add equipment on the Grid's own page.
+2. Assign GeoCells to the Grid from Territory > GeoCells (pick the Grid in the list).
+3. Create a login for the Mitra (Accounts > Users, role Biomass Mitra), then create the Mitra
+   (Network > Mitras) and link that login.
+4. On the Mitra's page, add a Grid assignment with a start date and no end date.
+5. To change a Grid's Mitra later: set an end date on the old assignment, then add a new one.
+   The old one stays as history.
 
 **Areas are in acres everywhere** (`area_acres`). They are calculated from the boundary
 on every save and cannot be edited by hand.
