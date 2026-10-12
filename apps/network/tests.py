@@ -23,6 +23,12 @@ class NetworkTestCase(TerritoryTestCase):
             **extra,
         )
 
+    def make_other_region(self):
+        district = District.objects.create(lgd_code="44", name="Karnal", state=self.state)
+        return Region.objects.create(
+            code="REG-HR-KAR-001", name="Karnal Pilot", state=self.state, district=district
+        )
+
     def make_grid(self, code="GRID-HR-AMB-001", **extra):
         return Grid.objects.create(
             code=code,
@@ -88,16 +94,10 @@ class GridTests(NetworkTestCase):
         self.assertIsNone(self.make_grid().catchment)
 
     def test_cell_cannot_join_a_grid_in_another_region(self):
-        other_district = District.objects.create(
-            lgd_code="44", name="Karnal", state=self.state
-        )
-        other_region = Region.objects.create(
-            code="REG-HR-KAR-001", name="Karnal Pilot", state=self.state, district=other_district
-        )
         foreign_grid = Grid.objects.create(
             code="GRID-HR-KAR-001",
             name="Karnal Grid",
-            region=other_region,
+            region=self.make_other_region(),
             location=Point(76.9, 29.7, srid=4326),
             processing_capacity_tpd=Decimal("30"),
         )
