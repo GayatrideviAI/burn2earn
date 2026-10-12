@@ -28,13 +28,16 @@ class RegionAdmin(NoDeleteAdminMixin, admin.ModelAdmin):
 
 @admin.register(GeoCell)
 class GeoCellAdmin(NoDeleteAdminMixin, GISModelAdmin):
-    list_display = ("code", "region", "panchayat", "origin", "area_acres", "status")
-    list_filter = ("status", "origin", "region")
+    list_display = ("code", "region", "panchayat", "area_acres", "grid", "status")
+    # Pick a Grid straight from the list to assign many cells quickly.
+    list_editable = ("grid",)
+    list_filter = ("status", "origin", "region", "grid")
     search_fields = ("code", "panchayat__name", "panchayat__lgd_code")
     fields = (
         "code",
         "region",
         "panchayat",
+        "grid",
         "origin",
         "boundary",
         "area_acres",

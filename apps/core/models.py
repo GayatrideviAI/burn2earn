@@ -15,6 +15,16 @@ class Status(models.TextChoices):
     INACTIVE = "inactive", "Inactive"
 
 
+class OperatingStatus(models.TextChoices):
+    """Life-cycle of a physical site such as a Grid or a Hub."""
+
+    PLANNED = "planned", "Planned"
+    COMMISSIONING = "commissioning", "Commissioning"
+    OPERATING = "operating", "Operating"
+    PAUSED = "paused", "Paused"
+    CLOSED = "closed", "Closed"
+
+
 class BaseModel(models.Model):
     """Housekeeping fields shared by every master record."""
 

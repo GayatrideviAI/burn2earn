@@ -11,10 +11,11 @@ step 1 (Foundation)** of the V1 data model and build plan.
 | `apps/core` | Shared base model (UUID id, status, created/updated by and at), a change log (audit log) for every master record, and acre-based area maths. Records are deactivated, never deleted. |
 | `apps/geography` | State > District > Block > Panchayat > Village from LGD codes, loaded with management commands. |
 | `apps/territory` | **Region** and **GeoCell**. In V1 each GeoCell is one panchayat. A database trigger stops two active GeoCells from overlapping (sharing an edge is fine). |
+| `apps/network` | **Hub** (run by Regenerix staff, fed by many Grids) and **Biomass Grid**. A GeoCell is linked to its Grid from the GeoCell list in the admin. The Grid warns when it has fewer than 7 or more than 10 cells, and its catchment area is derived from its cells. |
 
-Not in step 1 yet: Grid, Mitra profile, Equipment, Hub, Farmer, Farm Plot, Buyer,
-Factory, reference masters (Crop, Season, Biomass Type...), the REST API and the Mitra
-field app. These are build steps 2 to 5.
+Not built yet: Mitra profile and its Grid assignment, Equipment (rest of step 2), Farmer,
+Farm Plot, Buyer, Factory, reference masters (Crop, Season, Biomass Type...), the REST API
+and the Mitra field app (steps 3 to 5).
 
 **Areas are in acres everywhere** (`area_acres`). They are calculated from the boundary
 on every save and cannot be edited by hand.
@@ -70,9 +71,10 @@ PostGIS on every push (`.github/workflows/ci.yml`).
 
 ## Design notes
 
-- **One source of truth for links.** The GeoCell will store its Grid, and the Grid will
-  store its Hub; the Mitra link will be an effective-dated assignment record. Everything
-  else is derived. These arrive with the Grid model in step 2.
+- **One source of truth for links.** The GeoCell stores its Grid and the Grid stores its
+  Hub; the Mitra link will be a dated assignment record. Everything else (a Grid's cells,
+  its catchment, a Mitra's cells) is derived. When a cell moves to another Grid, the audit
+  log keeps who moved it, when, and from where.
 - **GeoCell boundary is a MultiPolygon**, not a Polygon as the spec says, because a
   panchayat boundary can have several parts.
 - **Who changed what.** `CurrentUserMiddleware` records the logged-in user on every web
