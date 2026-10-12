@@ -1,0 +1,15 @@
+{% extends "field/base.html" %}
+{% block content %}
+<h1>Hello, {{ mitra.name }}</h1>
+<p class="muted">{% if grid %}Grid {{ grid.code }}{% else %}No Grid assigned yet{% endif %}</p>
+<div class="stats">
+  <div><strong>{{ farmer_count }}</strong><span>Farmers</span></div>
+  <div><strong>{{ plot_count }}</strong><span>Plots</span></div>
+</div>
+<p><a class="button primary" href="{% url 'field:farmer_new' %}">Register a farmer</a></p>
+<h2>Recently added</h2>
+<ul class="list">
+  {% for farmer in recent %}<li><a href="{% url 'field:farmer_detail' farmer.pk %}">{{ farmer.name }} <small>{{ farmer.code }}</small></a></li>
+  {% empty %}<li class="muted">No farmers yet.</li>{% endfor %}
+</ul>
+{% endblock %}
