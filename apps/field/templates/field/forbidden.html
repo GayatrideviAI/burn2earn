@@ -1,0 +1,10 @@
+{% extends "field/base.html" %}
+{% block title %}No access{% endblock %}
+{% block content %}
+<h1>No access</h1>
+{% if reason == "no_mitra" %}
+<p>This login is not linked to a Biomass Mitra. Please ask Regenerix to link it.</p>
+{% else %}
+<p>Your Mitra account is not active right now. Please contact Regenerix.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "field/base.html" %}
+{% block title %}Add a crop{% endblock %}
+{% block content %}
+<h1>Add a crop</h1>
+<p class="muted">{{ farmer.name }} · {{ plot.area_acres }} acres</p>
+<form method="post">{% csrf_token %}
+  {% include "field/form_fields.html" %}
+  <button class="primary">Save crop</button>
+  <a class="button" href="{% url 'field:farmer_detail' farmer.pk %}">Cancel</a>
+</form>
+{% endblock %}

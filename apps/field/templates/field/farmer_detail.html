@@ -1,0 +1,23 @@
+{% extends "field/base.html" %}
+{% block title %}{{ farmer.name }}{% endblock %}
+{% block content %}
+<h1>{{ farmer.name }}</h1>
+<p class="muted">{{ farmer.code }} · {{ farmer.mobile }} · {{ farmer.village.name }}</p>
+<h2>Land</h2>
+{% for plot in plots %}
+<section class="card">
+  <h3>{{ plot.area_acres }} acres</h3>
+  <p class="muted">
+    {% if plot.geocell %}GeoCell {{ plot.geocell.code }}{% else %}Outside every GeoCell{% endif %}
+    {% if plot.ownership %} · {{ plot.get_ownership_display }}{% endif %}
+    {% if plot.irrigation %} · {{ plot.get_irrigation_display }}{% endif %}
+  </p>
+  <ul class="list">
+    {% for s in plot.seasons.all %}<li>{{ s.season }} {{ s.year }}: {{ s.crop }}{% if s.variety %} ({{ s.variety }}){% endif %}</li>
+    {% empty %}<li class="muted">No crops recorded.</li>{% endfor %}
+  </ul>
+  <a class="button" href="{% url 'field:season_new' farmer.pk plot.pk %}">Add crop</a>
+</section>
+{% empty %}<p class="muted">No land added yet.</p>{% endfor %}
+<p><a class="button primary" href="{% url 'field:plot_new' farmer.pk %}">Add a plot</a></p>
+{% endblock %}
