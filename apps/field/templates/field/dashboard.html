@@ -1,7 +1,6 @@
 {% extends "field/base.html" %}
+{% block hero %}<section class="hero small"><div><h1>Hello, {{ mitra.name }}</h1><p>{% if grid %}Grid {{ grid.code }}{% else %}No Grid assigned yet{% endif %}</p></div></section>{% endblock %}
 {% block content %}
-<h1>Hello, {{ mitra.name }}</h1>
-<p class="muted">{% if grid %}Grid {{ grid.code }}{% else %}No Grid assigned yet{% endif %}</p>
 <div class="stats">
   <div><strong>{{ farmer_count }}</strong><span>Farmers</span></div>
   <div><strong>{{ plot_count }}</strong><span>Plots</span></div>
