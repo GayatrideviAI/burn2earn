@@ -102,3 +102,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "field:login"
 LOGIN_REDIRECT_URL = "field:dashboard"
 LOGOUT_REDIRECT_URL = "field:login"
+
+# The admin map loads its background tiles from OpenStreetMap, which refuses requests
+# that carry no Referer. Django's default ("same-origin") strips it for other sites.
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
