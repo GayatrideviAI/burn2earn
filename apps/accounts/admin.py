@@ -1,15 +1,17 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.contrib.auth.forms import UserChangeForm as DjangoUserChangeForm
-from django.contrib.auth.forms import UserCreationForm as DjangoUserCreationForm
+from django.contrib.auth.forms import AdminUserCreationForm
 
 from .models import User
 
 
-class UserCreationForm(DjangoUserCreationForm):
-    class Meta(DjangoUserCreationForm.Meta):
+class UserCreationForm(AdminUserCreationForm):
+    """The admin's own add-user form (Django 5.1+), which has the "usable password" choice."""
+
+    class Meta(AdminUserCreationForm.Meta):
         model = User
-        fields = ("username", "role")
+        fields = ("username", "role", "mobile")
 
 
 class UserChangeForm(DjangoUserChangeForm):
