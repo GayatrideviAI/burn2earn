@@ -68,7 +68,12 @@ class Grid(BaseModel):
         max_length=14, choices=OperatingStatus.choices, default=OperatingStatus.PLANNED
     )
     commissioning_date = models.DateField(null=True, blank=True)
-    # Processing types are added with the Processing Type master in build step 4.
+    processing_types = models.ManyToManyField(
+        "reference.ProcessingType",
+        blank=True,
+        related_name="grids",
+        help_text="What this Grid can make. Pick at least one in the admin.",
+    )
 
     class Meta:
         ordering = ["code"]

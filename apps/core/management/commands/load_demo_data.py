@@ -26,6 +26,7 @@ from apps.network.models import (
     MitraOperatingStatus,
     OnboardingStatus,
 )
+from apps.reference.models import ProcessingType
 from apps.territory.models import GeoCell, Region
 from apps.territory.services import generate_panchayat_cells
 
@@ -151,6 +152,7 @@ class Command(BaseCommand):
                 "processing_capacity_tpd": 40,
             },
         )
+        grid.processing_types.add(*ProcessingType.objects.filter(name__in=["Baling", "Pelletising"]))
         for cell in GeoCell.objects.filter(region=region, grid__isnull=True):
             cell.grid = grid
             cell.save()
