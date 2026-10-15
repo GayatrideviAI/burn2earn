@@ -13,7 +13,7 @@ from .models import Dispatch, EventType, FeeModel, FeeSchedule, Sale
 from .services import create_dispatch, record_event, record_sale
 
 
-class MitraDispatchPageTests(FieldTestCase):
+class DispatchBase(FieldTestCase):
     def setUp(self):
         super().setUp()
         straw = BiomassType.objects.get(name="Paddy straw")
@@ -24,6 +24,8 @@ class MitraDispatchPageTests(FieldTestCase):
         self.site = make_factory(make_buyer())
         submit_output(mitra=self.mitra, product=self.product, quantity_tonnes=Decimal("6"))
 
+
+class MitraDispatchPageTests(DispatchBase):
     def test_mitra_creates_a_dispatch_and_sees_its_trail(self):
         response = self.client.post(
             reverse("field:dispatch_new"),
@@ -47,7 +49,7 @@ class MitraDispatchPageTests(FieldTestCase):
         record_event(d, EventType.RECEIVED_AT_HUB, quantity_tonnes=Decimal("3.9"))
         page = self.client.get(reverse("field:dispatch_list"))
         self.assertContains(page, "At the Hub")
-        self.assertContains(page, "lost 0.1 t")
+        self.assertContains(page, "lost 0.100 t")
 
     def test_other_grids_dispatches_are_not_shown(self):
         other_grid = self.make_grid("GRID-OTHER")
@@ -55,7 +57,7 @@ class MitraDispatchPageTests(FieldTestCase):
         self.assertNotContains(self.client.get(reverse("field:dispatch_list")), "DSP-")
 
 
-class TradeAdminTests(MitraDispatchPageTests):
+class TradeAdminTests(DispatchBase):
     def setUp(self):
         super().setUp()
         self.boss = User.objects.create_superuser(username="boss", password="pw-12345-x")
