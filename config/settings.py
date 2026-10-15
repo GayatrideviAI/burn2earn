@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "apps.field",
     "apps.demand",
     "apps.operations",
+    "apps.ledger",
 ]
 
 MIDDLEWARE = [
