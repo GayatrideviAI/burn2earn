@@ -18,7 +18,11 @@ from .access import farmers_visible_to, mitra_required
 from apps.operations.models import CollectionRecord, ProcessedOutput
 from apps.operations.services import NoGridAssigned, log_collection, submit_output, tally
 
-from .forms import CollectionForm, FarmerForm, OutputForm, PlotForm, SeasonForm
+from apps.ledger.chain import entries_for
+from apps.trade.models import Dispatch
+from apps.trade.services import create_dispatch
+
+from .forms import CollectionForm, DispatchForm, FarmerForm, OutputForm, PlotForm, SeasonForm
 
 
 def _villages_for(mitra):
@@ -216,3 +220,33 @@ def service_worker(request):
 
 def manifest(request):
     return render(request, "field/manifest.webmanifest", content_type="application/manifest+json")
+
+
+@mitra_required
+def dispatch_list(request):
+    grid = request.mitra.current_grid
+    dispatches = (
+        Dispatch.objects.filter(grid=grid).select_related("product", "factory", "factory__buyer").order_by("-created_at")[:30]
+        if grid
+        else []
+    )
+    rows = [(d, list(entries_for(d))) for d in dispatches]
+    return render(request, "field/dispatch_list.html", {"grid": grid, "rows": rows})
+
+
+@mitra_required
+def dispatch_new(request):
+    form = DispatchForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        grid = request.mitra.current_grid
+        if grid is None:
+            form.add_error(None, "You have no Grid assigned yet.")
+        else:
+            try:
+                dispatch = create_dispatch(grid=grid, mitra=request.mitra, **form.cleaned_data)
+            except ValidationError as error:
+                form.add_error(None, "; ".join(error.messages))
+            else:
+                messages.success(request, f"Dispatch {dispatch.code} created. The Hub will confirm each step.")
+                return redirect("field:dispatch_list")
+    return render(request, "field/dispatch_form.html", {"form": form})
