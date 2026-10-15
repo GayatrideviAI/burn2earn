@@ -17,11 +17,14 @@ class NoGridAssigned(Exception):
     """The Mitra has no current Grid, so there is no site to record against."""
 
 
-def log_collection(*, mitra, farmer, biomass_type, quantity_tonnes, price_paid, plot=None, collected_on=None, notes=""):
+def log_collection(
+    *, mitra, farmer, biomass_type, quantity_tonnes, price_paid, plot=None, collected_on=None, notes="", pk=None
+):
     grid = mitra.current_grid
     if grid is None:
         raise NoGridAssigned("This Mitra has no Grid assigned yet.")
     record = CollectionRecord(
+        **({"id": pk} if pk else {}),
         mitra=mitra,
         grid=grid,
         farmer=farmer,
@@ -37,11 +40,14 @@ def log_collection(*, mitra, farmer, biomass_type, quantity_tonnes, price_paid, 
     return record
 
 
-def submit_output(*, mitra, product, quantity_tonnes, biomass_used_tonnes=None, produced_on=None, notes=""):
+def submit_output(
+    *, mitra, product, quantity_tonnes, biomass_used_tonnes=None, produced_on=None, notes="", pk=None
+):
     grid = mitra.current_grid
     if grid is None:
         raise NoGridAssigned("This Mitra has no Grid assigned yet.")
     output = ProcessedOutput(
+        **({"id": pk} if pk else {}),
         mitra=mitra,
         grid=grid,
         product=product,
