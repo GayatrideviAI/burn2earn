@@ -1,0 +1,30 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1f6b3a">
+  <title>Mitra app · Regenerix</title>
+  <link rel="manifest" href="{% url 'field:manifest' %}">
+  <link rel="icon" href="{% static 'field/icon.svg' %}">
+  <link rel="stylesheet" href="{% static 'field/app.css' %}">
+</head>
+<body>
+<header class="bar">
+  <a class="brand" href="#/">Regenerix</a>
+  <span id="net" class="net">…</span>
+</header>
+<main id="view"></main>
+<nav class="tabs" id="tabs"></nav>
+<script>
+  window.MITRA = {
+    bootstrapUrl: "{% url 'field:api_bootstrap' %}",
+    syncUrl: "{% url 'field:api_sync' %}",
+    swUrl: "{% url 'field:service_worker' %}",
+    loginUrl: "{% url 'field:login' %}",
+    onlineUrl: "{% url 'field:dashboard' %}"
+  };
+</script>
+<script src="{% static 'field/app.js' %}"></script>
+</body>
+</html>

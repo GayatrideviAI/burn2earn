@@ -64,6 +64,23 @@ numbers are flagged), add plots (latitude and longitude, or "Use my location" on
 area in acres) and record crops per season. A Mitra sees only farmers they registered or who farm
 in their Grid's cells. It needs an internet connection; the offline version comes later.
 
+## Offline Mitra app
+
+Open `/mitra/app/` on the phone (once, with a signal) and add it to the home screen. After that it
+opens with no signal. It downloads the Mitra's farmers and the lists (villages, crops, residue
+types, products), and everything the Mitra enters is saved on the phone first: new farmers (with
+consent), plots, crops, pickups and output reports. When a signal is back it sends the changes
+in order. Each change carries an id made on the phone, which the server uses as the record's id, so
+a change sent twice is only saved once. A farmer whose mobile number matches another farmer is
+saved but flagged **Needs review** (Admin > Farmers, with an action to clear it); nothing is ever
+merged automatically. A change the server rejects stays on the "To send" screen with the reason,
+and can be retried or discarded. If the login has expired, the phone keeps the changes and asks for
+a new login. Not yet in the offline app: editing or deleting a saved record, drawing a plot boundary,
+and offline login.
+
+To check the app in a real browser with the network switched off (needs Node, Playwright and Chromium):
+`NODE_PATH=$(npm root -g) node apps/field/js_tests/offline_smoke.mjs`
+
 ## Registering farmers (admin)
 
 Farmers can be added under Farms > Farmers (a consent record is required) and plots under

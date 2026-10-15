@@ -1,0 +1,10 @@
+{% load static %}{
+  "name": "Regenerix Mitra",
+  "short_name": "Mitra",
+  "start_url": "{% url 'field:app' %}",
+  "scope": "{% url 'field:dashboard' %}",
+  "display": "standalone",
+  "background_color": "#f3f6f1",
+  "theme_color": "#1f6b3a",
+  "icons": [{"src": "{% static 'field/icon.svg' %}", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}]
+}

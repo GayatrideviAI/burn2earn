@@ -26,12 +26,20 @@ class FarmerAdmin(NoDeleteAdminMixin, admin.ModelAdmin):
         "village",
         "registered_by_mitra",
         "consent_given",
+        "needs_review",
         "status",
     )
-    list_filter = ("status", "registered_by_mitra", "preferred_language")
+    list_filter = ("needs_review", "status", "registered_by_mitra", "preferred_language")
     search_fields = ("code", "name", "mobile")
     readonly_fields = ("code", "anonymised_at")
     inlines = [ConsentInline]
+    actions = ["mark_reviewed"]
+
+    @admin.action(description="Mark selected farmers as reviewed (clear the duplicate flag)")
+    def mark_reviewed(self, request, queryset):
+        for farmer in queryset.filter(needs_review=True):
+            farmer.needs_review = False
+            farmer.save()
 
     @admin.display(boolean=True, description="Consent")
     def consent_given(self, obj):
