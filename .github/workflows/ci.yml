@@ -47,8 +47,8 @@ jobs:
           python manage.py test --noinput 2>&1 | tee test-output.txt || {
             python - <<'PY'
           text = open("test-output.txt").read()
-          start = text.find("=====")
-          body = text[start:][:6000] if start >= 0 else text[-6000:]
+          blocks = [b.strip().splitlines() for b in text.split("=" * 70) if b.strip().startswith(("ERROR:", "FAIL:"))]
+          body = "\n\n".join("\n".join(b[:1] + ["..."] + b[-8:]) for b in blocks)[:6000] or text[-3000:]
           print("::error title=Test failures::" + body.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))
           PY
             exit 1
