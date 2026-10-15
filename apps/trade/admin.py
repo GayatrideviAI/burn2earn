@@ -121,13 +121,16 @@ class DispatchAdmin(NoDeleteAdminMixin, admin.ModelAdmin):
     def save_formset(self, request, form, formset, change):
         if formset.model is not DispatchEvent:
             return super().save_formset(request, form, formset, change)
+        # Django's change log reads these three lists, so they must exist.
+        formset.new_objects, formset.changed_objects, formset.deleted_objects = [], [], []
         for event_form in formset.forms:
             if event_form.has_changed() and event_form.instance._state.adding:
                 data = event_form.cleaned_data
-                record_event(
+                event = record_event(
                     form.instance, data["event_type"], quantity_tonnes=data.get("quantity_tonnes"),
                     occurred_at=data.get("occurred_at"), vehicle_ref=data.get("vehicle_ref", ""), note=data.get("note", ""),
                 )
+                formset.new_objects.append(event)
 
 
 # ---- sales ------------------------------------------------------------------------------------
