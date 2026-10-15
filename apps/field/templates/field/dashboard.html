@@ -13,6 +13,13 @@
   {% if estimate.crops_without_figure %}<p class="muted">Not counted yet (no figure): {{ estimate.crops_without_figure|join:", " }}</p>{% endif %}
 </section>
 {% endif %}
+{% if stock %}
+<section class="card">
+  <h3>Stock at your site</h3>
+  <p><strong>{{ stock.on_hand_tonnes }} tonnes</strong> on hand · {{ stock.collected_tonnes }} t collected · {{ stock.processed_tonnes }} t made</p>
+  <a class="button" href="{% url 'field:stock' %}">See details</a>
+</section>
+{% endif %}
 <p><a class="button primary" href="{% url 'field:farmer_new' %}">Register a farmer</a></p>
 <h2>Recently added</h2>
 <ul class="list">

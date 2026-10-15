@@ -45,6 +45,17 @@ tonnes-per-acre and pilferage percent. Crops with no figure are left out and lis
 Admins see it at `/admin/reports/supply/` (by crop, Grid and GeoCell, for a chosen year, season
 and Region). A Mitra sees the total for their own Grid on the dashboard.
 
+## Collection, stock and output
+
+A Mitra logs each **pickup** from a farmer (residue type, tonnes, total rupees paid, date) from
+the farmer's page, and reports **output** (pellets, briquettes and so on, with a rough quantity
+and, if known, the residue used up) from the Stock page. Both are stored against the Mitra's Grid,
+and a Hub sees them through its Grids. The Stock page shows the running tally: collected, paid,
+average rupees per tonne, made, and **on hand** (collected minus residue reported as used), plus
+this year's collection against the supply estimate. Admins see every Hub and Grid at
+`/admin/reports/stock/`. Quantities are in tonnes and prices in rupees. Mitras cannot edit a
+record after saving; an Admin can correct or deactivate one in the admin.
+
 ## The Mitra web page
 
 Log in at `/mitra/` with a Mitra's own account (Accounts > Users, role Biomass Mitra, linked

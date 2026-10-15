@@ -1,0 +1,20 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<p><strong>Everything:</strong> {{ everything.collected_tonnes }} t collected from {{ everything.collections }} pickup{{ everything.collections|pluralize }},
+₹{{ everything.paid }} paid, {{ everything.processed_tonnes }} t made, {{ everything.on_hand_tonnes }} t on hand.</p>
+
+<table>
+<thead><tr><th>Site</th><th>Pickups</th><th>Collected (t)</th><th>Paid (₹)</th><th>Avg ₹/t</th><th>Made (t)</th><th>On hand (t)</th></tr></thead>
+<tbody>
+{% for entry in hubs %}
+<tr><th>Hub {{ entry.hub.code }}</th><td>{{ entry.total.collections }}</td><td>{{ entry.total.collected_tonnes }}</td><td>{{ entry.total.paid }}</td><td>{{ entry.total.average_rate|default_if_none:"-" }}</td><td>{{ entry.total.processed_tonnes }}</td><td>{{ entry.total.on_hand_tonnes }}</td></tr>
+{% for grid, t in entry.grids %}
+<tr><td>&nbsp;&nbsp;Grid {{ grid.code }}</td><td>{{ t.collections }}</td><td>{{ t.collected_tonnes }}</td><td>{{ t.paid }}</td><td>{{ t.average_rate|default_if_none:"-" }}</td><td>{{ t.processed_tonnes }}</td><td>{{ t.on_hand_tonnes }}</td></tr>
+{% endfor %}
+{% endfor %}
+{% for grid, t in loose %}
+<tr><td>Grid {{ grid.code }} (no Hub)</td><td>{{ t.collections }}</td><td>{{ t.collected_tonnes }}</td><td>{{ t.paid }}</td><td>{{ t.average_rate|default_if_none:"-" }}</td><td>{{ t.processed_tonnes }}</td><td>{{ t.on_hand_tonnes }}</td></tr>
+{% endfor %}
+</tbody></table>
+<p class="help">On hand = collected minus the residue reported as used when output was submitted.</p>
+{% endblock %}
