@@ -7,6 +7,7 @@ from django.contrib.gis.geos import Point
 from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from apps.farms.estimates import supply_estimate
 from apps.farms.models import Farmer, FarmPlot, PlotSeason
@@ -80,6 +81,7 @@ def farmer_new(request):
             mobile=data["mobile"],
             village=data["village"],
             preferred_language=data["preferred_language"],
+            needs_review=bool(duplicates),
         )
         messages.success(request, f"Registered {farmer.name} ({farmer.code}). Now add their land.")
         return redirect("field:farmer_detail", pk=farmer.pk)
@@ -196,3 +198,21 @@ def stock(request):
             "recent_outputs": ProcessedOutput.objects.filter(grid=grid).select_related("product")[:10],
         },
     )
+
+
+@mitra_required
+@ensure_csrf_cookie
+def offline_app(request):
+    """The page that installs the offline app. After the first visit it opens without a signal."""
+    return render(request, "field/app.html")
+
+
+def service_worker(request):
+    response = render(request, "field/sw.js", content_type="text/javascript")
+    response["Service-Worker-Allowed"] = "/mitra/"
+    response["Cache-Control"] = "no-cache"
+    return response
+
+
+def manifest(request):
+    return render(request, "field/manifest.webmanifest", content_type="application/manifest+json")
