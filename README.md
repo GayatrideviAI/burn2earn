@@ -171,3 +171,26 @@ PostGIS on every push (`.github/workflows/ci.yml`).
   request. Scripts and the future API must call `set_current_user(...)` themselves.
 - **Bulk loads write one audit row per record**, so a very large village import is slow.
   If that becomes a problem, the loaders can be changed to skip unchanged rows.
+
+## Dispatch, sales and the ledger
+
+**Fee schedules (Admin > Trade > Fee schedules).** Each Region has one schedule in force at a time, using one of three models:
+flat rupees per tonne, a percentage of the sale value, or a lease (fixed rupees per month per Grid, nothing on each sale).
+To change the model, set an end date on the current schedule and add the next one.
+
+**Dispatch.** A Mitra opens *Dispatch* in the Mitra app to send processed product (only what has been made and not yet sent) to a
+buyer's factory. Admin staff then record each step on the dispatch page: received at the Hub, left for the buyer, delivered
+(or cancelled). Each step records a weight, and weight can only go down along the way. The difference is shown as loss.
+
+**Sale.** Once a lot is delivered, Admin records the sale (Trade > Sales). The buyer pays Regenerix. The sale is split as:
+
+    sale value = farmer payment + Regenerix platform fee + Mitra margin
+
+The platform fee comes from the Region's fee schedule. The farmer payment is typed in, or left empty to use the Grid's average
+pickup price x the delivered weight (marked as an estimate). The Mitra margin is whatever remains. Use the actions on the
+Sales list to mark the buyer's payment received and then the Mitra settled. Lease charges are added under Trade > Lease charges.
+Sales cannot be edited afterwards.
+
+**Ledger.** Every dispatch step, sale, payment, settlement and lease charge is written to an append-only ledger. Each entry
+includes a fingerprint of the one before it, and the database refuses any edit or delete. This is a tamper-evident log inside our
+own database, not a public blockchain. Check it with `python manage.py verify_ledger` or on Admin > Ledger.
