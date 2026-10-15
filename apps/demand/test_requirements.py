@@ -49,8 +49,15 @@ class RequirementTests(TestCase):
         self.post(target_gcv=9000).full_clean()
 
     def test_volume_must_be_positive(self):
+        unsaved = Requirement(
+            factory=self.factory,
+            product=self.product,
+            volume_tonnes=Decimal("0"),
+            needed_from=date(2026, 11, 1),
+            needed_by=date(2026, 11, 30),
+        )
         with self.assertRaises(ValidationError):
-            self.post(volume_tonnes=Decimal("0")).full_clean()
+            unsaved.full_clean(exclude=["code"])
         with self.assertRaises(IntegrityError), transaction.atomic():
             self.post(volume_tonnes=Decimal("0"))
 
