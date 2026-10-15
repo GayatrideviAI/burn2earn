@@ -1,0 +1,37 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<form method="get" style="margin-bottom:16px">
+  Year <input type="number" name="year" value="{{ year }}" style="width:6em">
+  Season <select name="season"><option value="">All</option>{% for s in seasons %}<option value="{{ s.pk }}"{% if s == season %} selected{% endif %}>{{ s.name }}</option>{% endfor %}</select>
+  Region <select name="region"><option value="">All</option>{% for r in regions %}<option value="{{ r.pk }}"{% if r == region %} selected{% endif %}>{{ r.name }}</option>{% endfor %}</select>
+  <button type="submit">Show</button>
+</form>
+
+<p><strong>{{ estimate.total.tonnes }} tonnes</strong> from {{ estimate.total.plots }} plot{{ estimate.total.plots|pluralize }}
+({{ estimate.total.acres }} acres). Expected = area in acres x tonnes per acre for the crop and state, less the state's pilferage percentage.</p>
+
+{% if estimate.crops_without_figure %}
+<p class="warning" style="padding:8px;background:#fff2d4">No tonnes-per-acre figure yet for:
+  <strong>{{ estimate.crops_without_figure|join:", " }}</strong>. Those plots are left out.
+  Add the figure under Reference &gt; Biomass types.</p>
+{% endif %}
+
+<h2>By crop</h2>
+<table><thead><tr><th>Crop</th><th>Plots</th><th>Acres</th><th>Before losses (t)</th><th>Expected (t)</th></tr></thead><tbody>
+{% for row in estimate.crops %}<tr><td>{{ row.label }}</td><td>{{ row.plots }}</td><td>{{ row.acres }}</td><td>{{ row.gross }}</td><td>{{ row.tonnes }}</td></tr>
+{% empty %}<tr><td colspan="5">Nothing to show for this period.</td></tr>{% endfor %}
+</tbody></table>
+
+<h2>By Grid</h2>
+<table><thead><tr><th>Grid</th><th>Plots</th><th>Acres</th><th>Before losses (t)</th><th>Expected (t)</th></tr></thead><tbody>
+{% for row in estimate.grids %}<tr><td>{{ row.label }}</td><td>{{ row.plots }}</td><td>{{ row.acres }}</td><td>{{ row.gross }}</td><td>{{ row.tonnes }}</td></tr>
+{% empty %}<tr><td colspan="5">Nothing to show for this period.</td></tr>{% endfor %}
+</tbody></table>
+
+<h2>By GeoCell</h2>
+<table><thead><tr><th>GeoCell</th><th>Plots</th><th>Acres</th><th>Before losses (t)</th><th>Expected (t)</th></tr></thead><tbody>
+{% for row in estimate.cells %}<tr><td>{{ row.label }}</td><td>{{ row.plots }}</td><td>{{ row.acres }}</td><td>{{ row.gross }}</td><td>{{ row.tonnes }}</td></tr>
+{% empty %}<tr><td colspan="5">Nothing to show for this period.</td></tr>{% endfor %}
+{% if estimate.outside_cells.plots %}<tr><td><em>{{ estimate.outside_cells.label }}</em></td><td>{{ estimate.outside_cells.plots }}</td><td>{{ estimate.outside_cells.acres }}</td><td>{{ estimate.outside_cells.gross }}</td><td>{{ estimate.outside_cells.tonnes }}</td></tr>{% endif %}
+</tbody></table>
+{% endblock %}

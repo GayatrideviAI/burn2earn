@@ -5,6 +5,14 @@
   <div><strong>{{ farmer_count }}</strong><span>Farmers</span></div>
   <div><strong>{{ plot_count }}</strong><span>Plots</span></div>
 </div>
+{% if estimate %}
+<section class="card">
+  <h3>Expected biomass, {{ year }}</h3>
+  <p><strong>{{ estimate.total.tonnes }} tonnes</strong> from {{ estimate.total.plots }} plot{{ estimate.total.plots|pluralize }} in your Grid, after expected losses</p>
+  <ul class="list">{% for row in estimate.crops %}<li>{{ row.label }}: {{ row.tonnes }} tonnes <small>{{ row.acres }} acres</small></li>{% endfor %}</ul>
+  {% if estimate.crops_without_figure %}<p class="muted">Not counted yet (no figure): {{ estimate.crops_without_figure|join:", " }}</p>{% endif %}
+</section>
+{% endif %}
 <p><a class="button primary" href="{% url 'field:farmer_new' %}">Register a farmer</a></p>
 <h2>Recently added</h2>
 <ul class="list">
