@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import admin
 from django.contrib.gis.admin import GISModelAdmin
 
@@ -50,8 +51,22 @@ class HubAdmin(NoDeleteAdminMixin, GISModelAdmin):
     inlines = [HubEquipmentInline]
 
 
+class GridAdminForm(forms.ModelForm):
+    """A Grid must say what it can make, but only the admin form enforces it."""
+
+    class Meta:
+        model = Grid
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["processing_types"].required = True
+
+
 @admin.register(Grid)
 class GridAdmin(NoDeleteAdminMixin, GISModelAdmin):
+    form = GridAdminForm
+    filter_horizontal = ("processing_types",)
     list_display = (
         "code",
         "name",

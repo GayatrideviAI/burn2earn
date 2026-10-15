@@ -117,3 +117,18 @@ class GridTests(NetworkTestCase):
 
     def test_new_grid_is_active(self):
         self.assertEqual(self.make_grid().status, Status.ACTIVE)
+
+
+class GridProcessingTypeTests(NetworkTestCase):
+    def test_a_grid_can_have_several_processing_types(self):
+        from apps.reference.models import ProcessingType
+
+        grid = self.make_grid()
+        grid.processing_types.add(*ProcessingType.objects.filter(name__in=["Baling", "Pelletising"]))
+        self.assertEqual(grid.processing_types.count(), 2)
+
+    def test_admin_form_requires_at_least_one_processing_type(self):
+        from .admin import GridAdminForm
+
+        form = GridAdminForm(instance=self.make_grid())
+        self.assertTrue(form.fields["processing_types"].required)
