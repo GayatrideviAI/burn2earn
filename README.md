@@ -25,9 +25,13 @@ and the offline Mitra app.
 docker compose exec web python manage.py load_demo_data
 ```
 
-Creates a made-up Ambala network: 8 panchayats with square boundaries and 16 villages, a
-Region with 8 GeoCells, a Hub, a Grid, a pelletizer and a Mitra. Log in at `/mitra/` with
-username `mitra1`, password `mitra-demo-123` (change it for anything real). Safe to re-run.
+Creates three made-up networks: Ambala in Haryana (8 panchayats), Kanchipuram in Tamil Nadu
+(6) and Talwandi Sabo in Punjab (6). Each has square panchayat boundaries, villages, a Region with one GeoCell per
+panchayat, a Hub, a Grid, a pelletizer and a Mitra. Load one with `--site haryana`,
+`--site tamilnadu` or `--site punjab`. Log in at `/mitra/` as `mitra1` (Haryana), `mitra2`
+(Tamil Nadu) or `mitra3` (Punjab), password
+`mitra-demo-123` (change it for anything real). The state, district and block names are right but
+the panchayat names and shapes are samples, not official data. Safe to re-run.
 
 ## The Mitra web page
 
