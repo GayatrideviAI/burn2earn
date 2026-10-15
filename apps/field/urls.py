@@ -1,7 +1,7 @@
 from django.contrib.auth import views as auth_views
 from django.urls import path
 
-from . import views
+from . import api, views
 
 app_name = "field"
 
@@ -13,6 +13,11 @@ urlpatterns = [
         name="login",
     ),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
+    path("app/", views.offline_app, name="app"),
+    path("sw.js", views.service_worker, name="service_worker"),
+    path("manifest.webmanifest", views.manifest, name="manifest"),
+    path("api/bootstrap/", api.bootstrap, name="api_bootstrap"),
+    path("api/sync/", api.sync, name="api_sync"),
     path("farmers/", views.farmer_list, name="farmer_list"),
     path("farmers/new/", views.farmer_new, name="farmer_new"),
     path("farmers/<uuid:pk>/", views.farmer_detail, name="farmer_detail"),

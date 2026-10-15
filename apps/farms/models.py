@@ -40,6 +40,9 @@ class Farmer(BaseModel):
         Mitra, on_delete=models.PROTECT, related_name="registered_farmers"
     )
     anonymised_at = models.DateTimeField(null=True, blank=True, editable=False)
+    # Set when another active farmer has the same mobile number. Never merged automatically:
+    # an Admin looks at it and clears the flag.
+    needs_review = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["code"]
