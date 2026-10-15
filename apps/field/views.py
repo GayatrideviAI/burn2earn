@@ -1,9 +1,12 @@
+from datetime import date
+
 from django.contrib import messages
 from django.contrib.gis.geos import Point
 from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
+from apps.farms.estimates import supply_estimate
 from apps.farms.models import Farmer, FarmPlot, PlotSeason
 from apps.farms.services import register_farmer
 from apps.geography.models import Village
@@ -32,6 +35,10 @@ def dashboard(request):
             "farmer_count": farmers.count(),
             "plot_count": FarmPlot.objects.filter(farmer__in=farmers).count(),
             "recent": farmers.order_by("-created_at")[:5],
+            "year": date.today().year,
+            "estimate": supply_estimate(date.today().year, grid=mitra.current_grid)
+            if mitra.current_grid
+            else None,
         },
     )
 
