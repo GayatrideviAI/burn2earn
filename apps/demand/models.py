@@ -1,5 +1,8 @@
+from decimal import Decimal
+
 from django.conf import settings
 from django.contrib.gis.db import models as gis_models
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
 
@@ -7,7 +10,7 @@ from apps.accounts.models import Role
 from apps.core.codes import next_code
 from apps.core.models import BaseModel, OperatingStatus
 from apps.core.validators import mobile_validator
-from apps.reference.models import BiomassType
+from apps.reference.models import BiomassType, Product
 
 gst_validator = RegexValidator(
     regex=r"^\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$",
@@ -104,3 +107,76 @@ class Factory(BaseModel):
         if not self.code:
             self.code = next_code("factory", "FAC")
         super().save(*args, **kwargs)
+
+
+class Requirement(BaseModel):
+    """A buyer's factory asking for a volume of a product by a date.
+
+    The quality target is a rough figure typed in by a person. Nothing here checks it against
+    a product's grade or matches it to supply: people decide who can meet a requirement.
+    In V1 an Admin posts requirements on the buyer's behalf, because buyers do not log in yet.
+    """
+
+    class Fulfilment(models.TextChoices):
+        OPEN = "open", "Open"
+        PARTLY = "partly_met", "Partly met"
+        FULFILLED = "fulfilled", "Fulfilled"
+        CANCELLED = "cancelled", "Cancelled"
+
+    code = models.CharField(max_length=20, unique=True, editable=False)
+    factory = models.ForeignKey(Factory, on_delete=models.PROTECT, related_name="requirements")
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name="requirements")
+    volume_tonnes = models.DecimalField(
+        max_digits=12, decimal_places=2, validators=[MinValueValidator(Decimal("0.01"))]
+    )
+    needed_from = models.DateField(help_text="Earliest delivery date")
+    needed_by = models.DateField(help_text="Latest delivery date")
+    target_gcv = models.DecimalField(
+        max_digits=7,
+        decimal_places=0,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0)],
+        verbose_name="Target GCV (kcal/kg)",
+        help_text="Rough figure, entered by a person. Not checked against anything.",
+    )
+    quality_notes = models.TextField(blank=True, help_text="Moisture, size, anything else the buyer said")
+    fulfilment = models.CharField(max_length=12, choices=Fulfilment.choices, default=Fulfilment.OPEN)
+    volume_met_tonnes = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        validators=[MinValueValidator(0)],
+        help_text="Updated by hand as deliveries are agreed",
+    )
+
+    class Meta:
+        ordering = ["needed_by", "code"]
+        constraints = [
+            models.CheckConstraint(condition=models.Q(volume_tonnes__gt=0), name="requirement_volume_positive"),
+            models.CheckConstraint(
+                condition=models.Q(needed_by__gte=models.F("needed_from")), name="requirement_dates_in_order"
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.code} {self.volume_tonnes} t of {self.product}"
+
+    @property
+    def volume_remaining(self):
+        return max(self.volume_tonnes - self.volume_met_tonnes, Decimal("0"))
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            self.code = next_code("requirement", "REQ")
+        super().save(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+        errors = {}
+        if self.needed_from and self.needed_by and self.needed_by < self.needed_from:
+            errors["needed_by"] = "The latest date cannot be before the earliest date."
+        if self.volume_tonnes is not None and self.volume_met_tonnes is not None and self.volume_met_tonnes > self.volume_tonnes:
+            errors["volume_met_tonnes"] = "The volume met cannot be more than the volume needed."
+        if errors:
+            raise ValidationError(errors)
