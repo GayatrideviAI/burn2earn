@@ -14,6 +14,7 @@
   {% if user.is_authenticated %}
   <nav>
     <a href="{% url 'field:farmer_list' %}">Farmers</a>
+    <a href="{% url 'field:stock' %}">Stock</a>
     <form method="post" action="{% url 'field:logout' %}">{% csrf_token %}<button class="link">Log out</button></form>
   </nav>
   {% endif %}

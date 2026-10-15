@@ -1,0 +1,46 @@
+{% extends "field/base.html" %}
+{% block title %}Stock{% endblock %}
+{% block content %}
+<h1>Stock at your site</h1>
+{% if not grid %}
+<p class="muted">You have no Grid assigned yet.</p>
+{% else %}
+<p class="muted">Grid {{ grid.code }}</p>
+<div class="stats">
+  <div><strong>{{ all_time.on_hand_tonnes }}</strong><span>Tonnes on hand</span></div>
+  <div><strong>{{ all_time.collected_tonnes }}</strong><span>Collected</span></div>
+  <div><strong>{{ all_time.processed_tonnes }}</strong><span>Made</span></div>
+</div>
+<p class="muted">On hand = collected minus the residue you reported as used when reporting output.</p>
+
+<section class="card">
+  <h3>{{ year }} so far</h3>
+  <p>Collected {{ this_year.collected_tonnes }} t from {{ this_year.collections }} pickup{{ this_year.collections|pluralize }},
+     paid ₹{{ this_year.paid }}{% if this_year.average_rate %} (about ₹{{ this_year.average_rate }} per tonne){% endif %}.</p>
+  {% if expected %}<p>Expected for the year: {{ expected }} t{% if share is not None %} · {{ share }}% collected{% endif %}.</p>{% endif %}
+  <ul class="list">{% for name, tonnes in this_year.by_biomass %}<li>{{ name }}: {{ tonnes }} t</li>{% endfor %}</ul>
+</section>
+
+<p>
+  <a class="button primary" href="{% url 'field:output_new' %}">Report output</a>
+  <a class="button" href="{% url 'field:farmer_list' %}">Log a pickup (choose farmer)</a>
+</p>
+
+<h2>Made</h2>
+<ul class="list">
+  {% for name, tonnes in all_time.by_product %}<li>{{ name }}: {{ tonnes }} t</li>{% empty %}<li class="muted">Nothing reported yet.</li>{% endfor %}
+</ul>
+
+<h2>Recent pickups</h2>
+<ul class="list">
+  {% for c in recent_collections %}<li>{{ c.collected_on }} · {{ c.farmer.name }}<small>{{ c.quantity_tonnes }} t of {{ c.biomass_type }} · ₹{{ c.price_paid }} (₹{{ c.rate_per_tonne }}/t)</small></li>
+  {% empty %}<li class="muted">No pickups yet.</li>{% endfor %}
+</ul>
+
+<h2>Recent output</h2>
+<ul class="list">
+  {% for o in recent_outputs %}<li>{{ o.produced_on }} · {{ o.product }}<small>{{ o.quantity_tonnes }} t</small></li>
+  {% empty %}<li class="muted">No output reported yet.</li>{% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
