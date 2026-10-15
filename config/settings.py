@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "apps.reference",
     "apps.farms",
     "apps.field",
+    "apps.demand",
 ]
 
 MIDDLEWARE = [

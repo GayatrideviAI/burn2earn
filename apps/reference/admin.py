@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from apps.core.admin import NoDeleteAdminMixin
 
-from .models import BiomassType, Crop, Season, StateBiomassFactor
+from .models import BiomassType, Crop, ProcessingType, Product, Season, StateBiomassFactor
 
 
 @admin.register(Crop)
@@ -35,6 +35,21 @@ class StateBiomassFactorAdmin(NoDeleteAdminMixin, admin.ModelAdmin):
 @admin.register(BiomassType)
 class BiomassTypeAdmin(NoDeleteAdminMixin, admin.ModelAdmin):
     inlines = [StateBiomassFactorInline]
-    list_display = ("name", "crop", "estimated_tonnes_per_acre", "status")
+    list_display = ("name", "crop", "estimated_tonnes_per_acre", "gcv_min", "gcv_max", "status")
     list_filter = ("status", "crop")
     search_fields = ("name", "crop__name")
+
+
+@admin.register(ProcessingType)
+class ProcessingTypeAdmin(NoDeleteAdminMixin, admin.ModelAdmin):
+    list_display = ("name", "status")
+    list_filter = ("status",)
+    search_fields = ("name",)
+    filter_horizontal = ("input_biomass_types",)
+
+
+@admin.register(Product)
+class ProductAdmin(NoDeleteAdminMixin, admin.ModelAdmin):
+    list_display = ("name", "grade", "form", "biomass_type", "processing_type", "minimum_gcv", "status")
+    list_filter = ("status", "form", "biomass_type", "processing_type")
+    search_fields = ("name", "grade")
