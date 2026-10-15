@@ -1,0 +1,20 @@
+{% extends "field/base.html" %}
+{% block title %}Dispatch{% endblock %}
+{% block content %}
+<h1>Dispatch</h1>
+{% if not grid %}
+<p class="muted">You have no Grid assigned yet.</p>
+{% else %}
+<p><a class="button primary" href="{% url 'field:dispatch_new' %}">Send product to a buyer</a></p>
+{% for d, entries in rows %}
+<section class="card">
+  <h3>{{ d.code }} · {{ d.get_stage_display }}</h3>
+  <p class="muted">{{ d.product }} to {{ d.factory.name }} ({{ d.factory.buyer.company_name }})<br>
+    Loaded {{ d.quantity_tonnes }} t{% if d.current_quantity_tonnes != d.quantity_tonnes %} · last weighed {{ d.current_quantity_tonnes }} t (lost {{ d.loss_tonnes }} t){% endif %}</p>
+  <ul class="list">
+    {% for e in entries %}<li>{{ e.created_at|date:"d M H:i" }} · {{ e.entry_type }}<small>ledger #{{ e.seq }}</small></li>{% endfor %}
+  </ul>
+</section>
+{% empty %}<p class="muted">Nothing dispatched yet.</p>{% endfor %}
+{% endif %}
+{% endblock %}
