@@ -42,4 +42,14 @@ jobs:
       - name: Migrations are up to date
         run: python manage.py makemigrations --check --dry-run
       - name: Run tests
-        run: python manage.py test
+        run: |
+          set -o pipefail
+          python manage.py test --noinput 2>&1 | tee test-output.txt || {
+            python - <<'PY'
+          text = open("test-output.txt").read()
+          start = text.find("=====")
+          body = text[start:][:6000] if start >= 0 else text[-6000:]
+          print("::error title=Test failures::" + body.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))
+          PY
+            exit 1
+          }
