@@ -19,6 +19,16 @@ step 1 (Foundation)** of the V1 data model and build plan.
 Not built yet: Buyer, Factory, the other reference masters (Biomass Type...), the REST API
 and the offline Mitra app.
 
+## Try it with demo data
+
+```bash
+docker compose exec web python manage.py load_demo_data
+```
+
+Creates a made-up Ambala network: 8 panchayats with square boundaries and 16 villages, a
+Region with 8 GeoCells, a Hub, a Grid, a pelletizer and a Mitra. Log in at `/mitra/` with
+username `mitra1`, password `mitra-demo-123` (change it for anything real). Safe to re-run.
+
 ## The Mitra web page
 
 Log in at `/mitra/` with a Mitra's own account (Accounts > Users, role Biomass Mitra, linked
