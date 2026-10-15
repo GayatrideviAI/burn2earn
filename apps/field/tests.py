@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.urls import reverse
 
 from apps.accounts.models import Role, User
@@ -6,7 +8,8 @@ from apps.farms.services import register_farmer
 from apps.farms.tests import FarmsTestCase
 from apps.geography.models import Village
 from apps.network.models import MitraOperatingStatus
-from apps.reference.models import Crop, Season
+from apps.operations.models import CollectionRecord, ProcessedOutput
+from apps.reference.models import BiomassType, Crop, ProcessingType, Product, Season
 from apps.territory.testing import SIDE, square
 
 
@@ -185,3 +188,54 @@ class DashboardEstimateTests(FieldTestCase):
         response = self.client.get(reverse("field:dashboard"))
         self.assertContains(response, "Expected biomass")
         self.assertContains(response, "2.60 tonnes")
+
+
+class CollectionAndStockPageTests(FieldTestCase):
+    def setUp(self):
+        super().setUp()
+        self.farmer = self.register()
+        self.straw = BiomassType.objects.get(name="Paddy straw")
+
+    def test_logging_a_pickup_updates_the_stock_page(self):
+        response = self.client.post(
+            reverse("field:collection_new", args=[self.farmer.pk]),
+            {"biomass_type": self.straw.pk, "quantity_tonnes": "2.5", "price_paid": "3750", "collected_on": date.today().isoformat()},
+            follow=True,
+        )
+        self.assertContains(response, "2.5")
+        self.assertEqual(CollectionRecord.objects.get().price_paid, 3750)
+        self.assertContains(self.client.get(reverse("field:stock")), "2.500")
+
+    def test_future_pickup_date_is_rejected(self):
+        response = self.client.post(
+            reverse("field:collection_new", args=[self.farmer.pk]),
+            {"biomass_type": self.straw.pk, "quantity_tonnes": "1", "price_paid": "100", "collected_on": "2999-01-01"},
+        )
+        self.assertContains(response, "future")
+        self.assertEqual(CollectionRecord.objects.count(), 0)
+
+    def test_cannot_log_a_pickup_for_another_mitras_farmer(self):
+        stranger = self.other_mitra_farmer()
+        response = self.client.get(reverse("field:collection_new", args=[stranger.pk]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_reporting_output_shows_on_the_stock_page(self):
+        product = Product.objects.create(
+            name="Paddy pellets", form="processed", biomass_type=self.straw,
+            processing_type=ProcessingType.objects.get(name="Pelletising"),
+        )
+        response = self.client.post(
+            reverse("field:output_new"),
+            {"product": product.pk, "quantity_tonnes": "1.2", "produced_on": date.today().isoformat()},
+            follow=True,
+        )
+        self.assertContains(response, "Paddy pellets")
+        self.assertEqual(ProcessedOutput.objects.get().grid, self.grid)
+
+    def test_dashboard_shows_stock(self):
+        self.assertContains(self.client.get(reverse("field:dashboard")), "Stock at your site")
+
+    def test_admin_stock_report_for_staff(self):
+        boss = User.objects.create_superuser(username="boss", password="pw-12345-x")
+        self.client.force_login(boss)
+        self.assertEqual(self.client.get("/admin/reports/stock/").status_code, 200)

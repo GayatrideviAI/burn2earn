@@ -3,6 +3,7 @@
 {% block content %}
 <h1>{{ farmer.name }}</h1>
 <p class="muted">{{ farmer.code }} · {{ farmer.mobile }} · {{ farmer.village.name }}</p>
+<p><a class="button primary" href="{% url 'field:collection_new' farmer.pk %}">Log a pickup</a></p>
 <h2>Land</h2>
 {% for plot in plots %}
 <section class="card">
