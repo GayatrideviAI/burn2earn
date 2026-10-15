@@ -45,6 +45,15 @@ tonnes-per-acre and pilferage percent. Crops with no figure are left out and lis
 Admins see it at `/admin/reports/supply/` (by crop, Grid and GeoCell, for a chosen year, season
 and Region). A Mitra sees the total for their own Grid on the dashboard.
 
+## Posting a requirement
+
+Demand > Requirements (Admin). Pick the factory and the product, the volume needed in tonnes,
+the earliest and latest delivery dates, and optionally a rough target GCV and quality notes. The
+GCV is a figure a person types in; nothing checks it against a product's grade or matches it to
+supply. As deliveries are agreed, update the volume met and the status (open, partly met,
+fulfilled, cancelled). The list also shows how much of that product has been reported as made across
+the network, as a rough guide. Buyers do not log in in V1, so an Admin posts on their behalf.
+
 ## Collection, stock and output
 
 A Mitra logs each **pickup** from a farmer (residue type, tonnes, total rupees paid, date) from
