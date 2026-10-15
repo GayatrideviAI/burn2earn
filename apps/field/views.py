@@ -1,6 +1,8 @@
 from datetime import date
+from decimal import Decimal
 
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.contrib.gis.geos import Point
 from django.db import IntegrityError, transaction
 from django.db.models import Q
@@ -12,7 +14,10 @@ from apps.farms.services import register_farmer
 from apps.geography.models import Village
 
 from .access import farmers_visible_to, mitra_required
-from .forms import FarmerForm, PlotForm, SeasonForm
+from apps.operations.models import CollectionRecord, ProcessedOutput
+from apps.operations.services import NoGridAssigned, log_collection, submit_output, tally
+
+from .forms import CollectionForm, FarmerForm, OutputForm, PlotForm, SeasonForm
 
 
 def _villages_for(mitra):
@@ -36,6 +41,7 @@ def dashboard(request):
             "plot_count": FarmPlot.objects.filter(farmer__in=farmers).count(),
             "recent": farmers.order_by("-created_at")[:5],
             "year": date.today().year,
+            "stock": tally(grid=mitra.current_grid) if mitra.current_grid else None,
             "estimate": supply_estimate(date.today().year, grid=mitra.current_grid)
             if mitra.current_grid
             else None,
@@ -133,3 +139,60 @@ def season_new(request, pk, plot_pk):
             messages.success(request, "Crop saved.")
             return redirect("field:farmer_detail", pk=farmer.pk)
     return render(request, "field/season_form.html", {"form": form, "farmer": farmer, "plot": plot})
+
+
+@mitra_required
+def collection_new(request, pk):
+    farmer = _get_farmer(request, pk)
+    form = CollectionForm(request.POST or None, farmer=farmer)
+    if request.method == "POST" and form.is_valid():
+        try:
+            record = log_collection(mitra=request.mitra, farmer=farmer, **form.cleaned_data)
+        except NoGridAssigned:
+            form.add_error(None, "You have no Grid assigned yet, so a pickup cannot be recorded.")
+        except ValidationError as error:
+            form.add_error(None, "; ".join(error.messages))
+        else:
+            messages.success(request, f"Saved {record.quantity_tonnes} tonnes ({record.code}).")
+            return redirect("field:stock")
+    return render(request, "field/collection_form.html", {"form": form, "farmer": farmer})
+
+
+@mitra_required
+def output_new(request):
+    form = OutputForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        try:
+            output = submit_output(mitra=request.mitra, **form.cleaned_data)
+        except NoGridAssigned:
+            form.add_error(None, "You have no Grid assigned yet, so output cannot be reported.")
+        except ValidationError as error:
+            form.add_error(None, "; ".join(error.messages))
+        else:
+            messages.success(request, f"Reported {output.quantity_tonnes} tonnes ({output.code}).")
+            return redirect("field:stock")
+    return render(request, "field/output_form.html", {"form": form})
+
+
+@mitra_required
+def stock(request):
+    grid = request.mitra.current_grid
+    if grid is None:
+        return render(request, "field/stock.html", {"grid": None})
+    year = date.today().year
+    this_year = tally(grid=grid, year=year)
+    expected = supply_estimate(year, grid=grid).total.tonnes
+    return render(
+        request,
+        "field/stock.html",
+        {
+            "grid": grid,
+            "all_time": tally(grid=grid),
+            "this_year": this_year,
+            "year": year,
+            "expected": expected,
+            "share": (this_year.collected_tonnes / expected * 100).quantize(Decimal("1")) if expected else None,
+            "recent_collections": CollectionRecord.objects.filter(grid=grid).select_related("farmer", "biomass_type")[:10],
+            "recent_outputs": ProcessedOutput.objects.filter(grid=grid).select_related("product")[:10],
+        },
+    )

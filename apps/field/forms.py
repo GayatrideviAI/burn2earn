@@ -5,7 +5,7 @@ from django import forms
 from apps.core.validators import mobile_validator
 from apps.farms.models import Farmer, FarmPlot, PlotSeason
 from apps.geography.models import Village
-from apps.reference.models import Crop, Season
+from apps.reference.models import BiomassType, Crop, Product, Season
 
 # Rough box around India: catches swapped or mistyped coordinates.
 LAT_RANGE = (6.0, 38.0)
@@ -80,3 +80,49 @@ class SeasonForm(forms.Form):
         if sowing and harvest and harvest < sowing:
             self.add_error("expected_harvest_date", "The harvest date cannot be before the sowing date.")
         return data
+
+
+class CollectionForm(forms.Form):
+    plot = forms.ModelChoiceField(queryset=FarmPlot.objects.none(), required=False, empty_label="Not stated")
+    biomass_type = forms.ModelChoiceField(queryset=BiomassType.objects.none(), label="Residue")
+    quantity_tonnes = forms.DecimalField(
+        max_digits=10, decimal_places=3, min_value=0.001, label="Quantity picked up (tonnes)"
+    )
+    price_paid = forms.DecimalField(
+        max_digits=12, decimal_places=2, min_value=0, label="Price paid to the farmer (₹, total)"
+    )
+    collected_on = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}), initial=date.today)
+    notes = forms.CharField(required=False, widget=forms.Textarea(attrs={"rows": 2}))
+
+    def __init__(self, *args, farmer, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["plot"].queryset = farmer.plots.filter(status="active")
+        self.fields["biomass_type"].queryset = BiomassType.objects.filter(status="active")
+
+    def clean_collected_on(self):
+        value = self.cleaned_data["collected_on"]
+        if value > date.today():
+            raise forms.ValidationError("The pickup date cannot be in the future.")
+        return value
+
+
+class OutputForm(forms.Form):
+    product = forms.ModelChoiceField(queryset=Product.objects.none(), label="What was made")
+    quantity_tonnes = forms.DecimalField(
+        max_digits=10, decimal_places=3, min_value=0.001, label="Quantity made (tonnes, rough is fine)"
+    )
+    biomass_used_tonnes = forms.DecimalField(
+        max_digits=10, decimal_places=3, min_value=0, required=False, label="Residue used up (tonnes, if known)"
+    )
+    produced_on = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}), initial=date.today)
+    notes = forms.CharField(required=False, widget=forms.Textarea(attrs={"rows": 2}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["product"].queryset = Product.objects.filter(status="active", form="processed")
+
+    def clean_produced_on(self):
+        value = self.cleaned_data["produced_on"]
+        if value > date.today():
+            raise forms.ValidationError("The date cannot be in the future.")
+        return value
