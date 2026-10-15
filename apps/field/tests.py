@@ -168,3 +168,20 @@ class SeasonPageTests(FieldTestCase):
         response = self.client.post(self.url, data)
         self.assertContains(response, "cannot be before")
         self.assertEqual(PlotSeason.objects.count(), 0)
+
+
+class DashboardEstimateTests(FieldTestCase):
+    def test_dashboard_shows_expected_biomass_for_the_grid(self):
+        from datetime import date
+
+        farmer = self.register()
+        plot = FarmPlot.objects.create(farmer=farmer, location=self.inside(), area_acres=2)
+        PlotSeason.objects.create(
+            plot=plot,
+            season=Season.objects.get(name="Kharif"),
+            crop=Crop.objects.get(name="Paddy"),
+            year=date.today().year,
+        )
+        response = self.client.get(reverse("field:dashboard"))
+        self.assertContains(response, "Expected biomass")
+        self.assertContains(response, "2.60 tonnes")

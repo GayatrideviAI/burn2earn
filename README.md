@@ -33,6 +33,18 @@ panchayat, a Hub, a Grid, a pelletizer and a Mitra. Load one with `--site haryan
 `mitra-demo-123` (change it for anything real). The state, district and block names are right but
 the panchayat names and shapes are samples, not official data. Safe to re-run.
 
+## Biomass supply estimate
+
+Estimated collectable biomass = plot area (acres) x tonnes per acre for the crop, less the
+state's pilferage (expected loss) percentage. Nothing is stored, so it updates as soon as plots,
+crops or figures change. Set the figures under **Reference > Biomass types**: each type has a
+default tonnes-per-acre (Paddy straw 1.3, Mustard stalk 1.2 to start; the others are empty until
+you fill them in) and, on the same page, an optional row per state with that state's own
+tonnes-per-acre and pilferage percent. Crops with no figure are left out and listed as a warning.
+
+Admins see it at `/admin/reports/supply/` (by crop, Grid and GeoCell, for a chosen year, season
+and Region). A Mitra sees the total for their own Grid on the dashboard.
+
 ## The Mitra web page
 
 Log in at `/mitra/` with a Mitra's own account (Accounts > Users, role Biomass Mitra, linked
