@@ -216,7 +216,7 @@ class SaleTests(TradeTestCase):
     def test_only_delivered_lots_can_be_sold_and_only_once(self):
         self.schedule()
         with self.assertRaises(ValidationError):
-            record_sale(self.dispatch(), sale_value=Decimal("1"), farmer_payment=Decimal("1"))
+            record_sale(self.dispatch("3"), sale_value=Decimal("1"), farmer_payment=Decimal("1"))
         d = self.delivered()
         record_sale(d, sale_value=Decimal("100"), farmer_payment=Decimal("1"))
         with self.assertRaises(ValidationError):
