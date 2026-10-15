@@ -15,6 +15,7 @@
   <nav>
     <a href="{% url 'field:farmer_list' %}">Farmers</a>
     <a href="{% url 'field:stock' %}">Stock</a>
+    <a href="{% url 'field:dispatch_list' %}">Dispatch</a>
     <form method="post" action="{% url 'field:logout' %}">{% csrf_token %}<button class="link">Log out</button></form>
   </nav>
   {% endif %}

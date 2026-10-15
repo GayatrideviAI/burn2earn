@@ -5,6 +5,7 @@ from django import forms
 from apps.core.validators import mobile_validator
 from apps.farms.models import Farmer, FarmPlot, PlotSeason
 from apps.geography.models import Village
+from apps.demand.models import Factory, Requirement
 from apps.reference.models import BiomassType, Crop, Product, Season
 
 # Rough box around India: catches swapped or mistyped coordinates.
@@ -126,3 +127,20 @@ class OutputForm(forms.Form):
         if value > date.today():
             raise forms.ValidationError("The date cannot be in the future.")
         return value
+
+
+class DispatchForm(forms.Form):
+    product = forms.ModelChoiceField(queryset=Product.objects.none(), label="Product")
+    factory = forms.ModelChoiceField(queryset=Factory.objects.none(), label="Buyer's factory")
+    requirement = forms.ModelChoiceField(queryset=Requirement.objects.none(), required=False, empty_label="Not for a posted requirement")
+    quantity_tonnes = forms.DecimalField(max_digits=10, decimal_places=3, min_value=0.001, label="Weight loaded (tonnes)")
+    vehicle_ref = forms.CharField(max_length=50, required=False, label="Vehicle number or driver")
+    note = forms.CharField(required=False, widget=forms.Textarea(attrs={"rows": 2}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["product"].queryset = Product.objects.filter(status="active", form="processed")
+        self.fields["factory"].queryset = Factory.objects.filter(status="active")
+        self.fields["requirement"].queryset = Requirement.objects.filter(status="active").exclude(
+            fulfilment__in=["fulfilled", "cancelled"]
+        )
