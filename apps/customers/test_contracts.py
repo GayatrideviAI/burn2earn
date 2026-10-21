@@ -54,6 +54,7 @@ class SupplyCase(OperationsTestCase):
         if finish:
             record_event(d, EventType.IN_TRANSIT, quantity_tonnes=D(tonnes), occurred_at=at(days_ago + 1))
             record_event(d, EventType.DELIVERED, quantity_tonnes=D(gate or tonnes), occurred_at=at(days_ago))
+        d.refresh_from_db()
         return d
 
 
