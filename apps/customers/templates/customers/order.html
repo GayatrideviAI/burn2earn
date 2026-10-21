@@ -1,0 +1,25 @@
+{% extends "customers/base.html" %}
+{% block title %}{{ o.code }}{% endblock %}
+{% block content %}
+<p><a href="{% url 'customers:contract' o.line.contract.pk %}">← {{ o.line.contract.code }}</a></p>
+<h1>{{ o.code }} <span class="muted">{{ o.customer_po_number }}</span> <span class="tag {% if o.state == 'open' %}info{% else %}mute{% endif %}">{{ o.get_state_display }}</span></h1>
+<dl class="facts">
+  <div><dt>Product</dt><dd>{{ o.line.product }}</dd></div>
+  <div><dt>Plant</dt><dd>{{ o.factory.name }}</dd></div>
+  <div><dt>Delivery window</dt><dd>{{ o.deliver_from|date:"d M Y" }} to {{ o.deliver_by|date:"d M Y" }}</dd></div>
+  <div><dt>Ordered</dt><dd>{{ p.ordered|floatformat:"1g" }} t</dd></div>
+  <div><dt>Delivered</dt><dd>{{ p.delivered|floatformat:"1g" }} t ({{ p.percent }}%)</dd></div>
+  <div><dt>On the way</dt><dd>{{ p.on_the_way|floatformat:"1g" }} t</dd></div>
+  <div><dt>Still to come</dt><dd>{{ p.remaining|floatformat:"1g" }} t{% if p.over_delivered %} (over-delivered by {{ p.over_delivered|floatformat:"1g" }} t){% endif %}</dd></div>
+</dl>
+{% if p.overdue %}<p class="tag bad">Late: the window closed on {{ o.deliver_by|date:"d M" }}</p>{% endif %}
+
+<section class="card"><h2>Loads</h2>
+  <div class="scroll"><table><thead><tr><th>Dispatch</th><th>From</th><th>Stage</th><th class="r">Loaded</th><th class="r">At your gate</th><th>Vehicle</th><th>Delivered</th></tr></thead><tbody>
+  {% for d in dispatches %}<tr><td class="mono">{{ d.code }}</td><td>{{ d.grid.name }}</td><td>{{ d.get_stage_display }}</td><td class="r">{{ d.quantity_tonnes|floatformat:"1g" }} t</td>
+    <td class="r">{% if d.stage == 'delivered' %}{{ d.current_quantity_tonnes|floatformat:"1g" }} t{% else %}-{% endif %}</td><td>{{ d.vehicle_ref|default:"-" }}</td><td>{{ d.delivered_date|date:"d M Y"|default:"-" }}</td></tr>
+  {% empty %}<tr><td colspan="7" class="muted">Nothing dispatched yet.</td></tr>{% endfor %}
+  </tbody></table></div></section>
+
+{% include "customers/who.html" %}
+{% endblock %}

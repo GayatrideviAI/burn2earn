@@ -3,6 +3,8 @@ from datetime import date
 from django import forms
 
 from apps.core.validators import mobile_validator
+from apps.customers.contracts import order_progress
+from apps.customers.models import PurchaseOrder
 from apps.farms.models import Farmer, FarmPlot, PlotSeason
 from apps.geography.models import Village
 from apps.demand.models import Factory, Requirement
@@ -133,6 +135,9 @@ class DispatchForm(forms.Form):
     product = forms.ModelChoiceField(queryset=Product.objects.none(), label="Product")
     factory = forms.ModelChoiceField(queryset=Factory.objects.none(), label="Buyer's factory")
     requirement = forms.ModelChoiceField(queryset=Requirement.objects.none(), required=False, empty_label="Not for a posted requirement")
+    purchase_order = forms.ModelChoiceField(
+        queryset=PurchaseOrder.objects.none(), required=False, empty_label="Not against a purchase order", label="Purchase order"
+    )
     quantity_tonnes = forms.DecimalField(max_digits=10, decimal_places=3, min_value=0.001, label="Weight loaded (tonnes)")
     vehicle_ref = forms.CharField(max_length=50, required=False, label="Vehicle number or driver")
     note = forms.CharField(required=False, widget=forms.Textarea(attrs={"rows": 2}))
@@ -143,4 +148,10 @@ class DispatchForm(forms.Form):
         self.fields["factory"].queryset = Factory.objects.filter(status="active")
         self.fields["requirement"].queryset = Requirement.objects.filter(status="active").exclude(
             fulfilment__in=["fulfilled", "cancelled"]
+        )
+        self.fields["purchase_order"].queryset = PurchaseOrder.objects.filter(status="active", state="open").select_related(
+            "factory", "line__product"
+        )
+        self.fields["purchase_order"].label_from_instance = lambda po: (
+            f"{po.code} · {po.factory.name} · {po.line.product} · {order_progress(po).remaining:.1f} t still to send"
         )

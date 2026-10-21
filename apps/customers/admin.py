@@ -1,14 +1,20 @@
+from decimal import ROUND_DOWN, Decimal
+
 from django import forms
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.utils.html import format_html_join
 
 from apps.core.admin import NoDeleteAdminMixin
 from apps.ledger.chain import entries_for
 
-from . import services
+from . import contracts, services
 from .models import (
     Batch,
+    Contract,
+    ContractLine,
     CustomerMember,
+    MonthlyPlan,
+    PurchaseOrder,
     InventoryTransaction,
     PlantProfile,
     Pile,
@@ -207,3 +213,64 @@ class ReservationAdmin(NoDeleteAdminMixin, admin.ModelAdmin):
             return super().save_model(request, obj, form, change)
         d = form.cleaned_data
         adopt(obj, services.reserve(d["batch"], d["factory"], d["tonnes"], d.get("note", "")))
+
+
+# ---- contracts and purchase orders ------------------------------------------------------------
+
+
+class ContractLineInline(admin.TabularInline):
+    model = ContractLine
+    extra = 1
+    fields = ("product", "contracted_tonnes", "price_per_tonne", "max_moisture_percent", "min_gcv", "status")
+
+
+@admin.register(Contract)
+class ContractAdmin(NoDeleteAdminMixin, admin.ModelAdmin):
+    list_display = ("code", "customer", "reference", "start_date", "end_date", "risk_bearer", "status")
+    list_filter = ("customer", "risk_bearer", "status")
+    search_fields = ("code", "reference", "customer__company_name")
+    readonly_fields = ("code",)
+    filter_horizontal = ("allocated_yards",)
+    inlines = [ContractLineInline]
+
+
+class MonthlyPlanInline(admin.TabularInline):
+    model = MonthlyPlan
+    extra = 0
+    fields = ("month", "planned_tonnes", "status")
+
+
+@admin.register(ContractLine)
+class ContractLineAdmin(NoDeleteAdminMixin, admin.ModelAdmin):
+    list_display = ("contract", "product", "contracted_tonnes", "price_per_tonne", "status")
+    list_filter = ("contract__customer", "status")
+    search_fields = ("contract__code", "product__name")
+    inlines = [MonthlyPlanInline]
+    actions = ["spread_evenly"]
+
+    @admin.action(description="Spread the contracted tonnes evenly over the contract's months")
+    def spread_evenly(self, request, queryset):
+        for line in queryset:
+            if line.plan.exists():
+                self.message_user(request, f"{line}: already has a monthly plan, so it was left alone.", messages.WARNING)
+                continue
+            months = contracts.months_between(line.contract.start_date, line.contract.end_date)
+            each = (line.contracted_tonnes / len(months)).quantize(Decimal("0.001"), rounding=ROUND_DOWN)
+            for i, month in enumerate(months):
+                last = i == len(months) - 1
+                MonthlyPlan.objects.create(
+                    line=line, month=month, planned_tonnes=line.contracted_tonnes - each * (len(months) - 1) if last else each
+                )
+            self.message_user(request, f"{line}: planned {len(months)} months.")
+
+
+@admin.register(PurchaseOrder)
+class PurchaseOrderAdmin(NoDeleteAdminMixin, admin.ModelAdmin):
+    list_display = ("code", "customer_po_number", "line", "factory", "tonnes", "deliver_from", "deliver_by", "state", "delivered")
+    list_filter = ("state", "factory__buyer", "status")
+    search_fields = ("code", "customer_po_number", "factory__name")
+    readonly_fields = ("code",)
+
+    @admin.display(description="Delivered (t)")
+    def delivered(self, obj):
+        return contracts.order_progress(obj).delivered
