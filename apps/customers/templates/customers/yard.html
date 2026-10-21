@@ -1,0 +1,23 @@
+{% extends "customers/base.html" %}
+{% block title %}{{ yard.name }}{% endblock %}
+{% block content %}
+<p><a href="{% url 'customers:dashboard' %}">← All yards</a></p>
+<h1>{{ yard.name }} <span class="mono">{{ yard.code }}</span></h1>
+<p class="muted">{{ yard.get_owner_type_display }}{% if yard.owner_name %}: {{ yard.owner_name }}{% endif %} · your stock here: {{ totals.book|floatformat:"1g" }} t on the books, {{ totals.available|floatformat:"1g" }} t available to use</p>
+<section class="card">
+  <div class="scroll"><table>
+    <thead><tr><th>Pile</th><th>Batch</th><th>Material</th><th class="r">Book</th><th class="r">Counted</th><th>Confidence</th><th>Moisture</th></tr></thead>
+    <tbody>
+    {% for v in rows %}
+      <tr><td>{{ v.batch.pile.label }} <span class="muted small">{{ v.batch.pile.get_exposure_display }}</span></td>
+        <td><a href="{% url 'customers:batch' v.batch.pk %}">{{ v.batch.code }}</a></td>
+        <td>{{ v.batch.get_form_display }}</td>
+        <td class="r">{{ v.book|floatformat:"1g" }} t</td>
+        <td class="r">{% if v.physical is None %}-{% else %}{{ v.physical|floatformat:"1g" }} t{% endif %}</td>
+        <td><span class="tag {% if v.confidence == 'Verified' %}good{% elif v.confidence == 'Overdue' %}bad{% elif v.confidence == 'Estimated' %}warn{% else %}mute{% endif %}">{% if v.confidence == 'Overdue' %}Overdue for check{% else %}{{ v.confidence }}{% endif %}</span></td>
+        <td>{% if v.moisture is None %}<span class="muted">no reading</span>{% else %}{{ v.moisture|floatformat:"1" }}%{% if v.quality == 'over_limit' %} <span class="tag bad">over limit</span>{% endif %}{% endif %}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</section>
+{% endblock %}

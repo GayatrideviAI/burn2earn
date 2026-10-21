@@ -10,5 +10,6 @@ urlpatterns = [
     path("admin/reports/stock/", stock_report, name="stock_report"),
     path("admin/", admin.site.urls),
     path("mitra/", include("apps.field.urls")),
+    path("customer/", include("apps.customers.urls")),
     path("", RedirectView.as_view(pattern_name="field:dashboard", permanent=False)),
 ]
