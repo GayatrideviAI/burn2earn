@@ -83,7 +83,14 @@ class BatchAdmin(NoDeleteAdminMixin, admin.ModelAdmin):
         if obj is None:
             return ()
         # Quantities change only through stock transactions.
-        return ("code", "customer", "biomass_type", "form", "intake_tonnes", "intake_moisture_percent", "received_on", "book", "journey")
+        return ("code", "customer", "biomass_type", "form", "intake_tonnes", "intake_moisture_percent", "received_on", "source_dispatch", "book", "journey")
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "source_dispatch":
+            from apps.trade.models import Dispatch, DispatchStage
+
+            kwargs["queryset"] = Dispatch.objects.filter(stage=DispatchStage.DELIVERED, status="active")
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     @admin.display(description="Book stock (t)")
     def book(self, obj):

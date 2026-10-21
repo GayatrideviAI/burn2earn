@@ -21,6 +21,7 @@ from .models import (
     Reservation,
     StockCount,
     TransactionKind,
+    unreceived_tonnes,
 )
 
 ZERO = Decimal("0")
@@ -98,6 +99,7 @@ def record_transaction(batch, kind, tonnes=None, *, loss_cause="", to_pile=None,
         {
             "batch": batch.code,
             "customer": batch.customer.code,
+            "source_dispatch": batch.source_dispatch.code if batch.source_dispatch_id else None,
             "kind": kind,
             "tonnes_change": change,
             "book_after_tonnes": book_tonnes(batch),
@@ -111,6 +113,25 @@ def record_transaction(batch, kind, tonnes=None, *, loss_cause="", to_pile=None,
     InventoryTransaction.objects.filter(pk=entry_row.pk).update(ledger_seq=entry.seq)
     entry_row.ledger_seq = entry.seq
     return entry_row
+
+
+@transaction.atomic
+def receive_delivery(dispatch, pile, form, *, tonnes=None, moisture=None, received_on=None):
+    """Put (all or part of) a delivered load into a yard pile as a new batch, linked back to the load."""
+    from apps.trade.models import Dispatch
+
+    dispatch = Dispatch.objects.select_for_update().get(pk=dispatch.pk)
+    left = unreceived_tonnes(dispatch)
+    batch = Batch(
+        customer=dispatch.factory.buyer, pile=pile, biomass_type=dispatch.product.biomass_type, form=form,
+        source_dispatch=dispatch, received_on=received_on or date.today(),
+        intake_tonnes=left if tonnes in (None, "") else Decimal(tonnes),
+        intake_moisture_percent=None if moisture in (None, "") else Decimal(moisture),
+    )
+    batch.clean()
+    batch.save()
+    receive_batch(batch)
+    return batch
 
 
 @transaction.atomic

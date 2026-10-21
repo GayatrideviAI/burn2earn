@@ -140,6 +140,11 @@ class Batch(BaseModel):
     biomass_type = models.ForeignKey(BiomassType, on_delete=models.PROTECT, related_name="+")
     form = models.CharField(max_length=10, choices=BiomassForm.choices)
     source_grid = models.ForeignKey(Grid, on_delete=models.PROTECT, null=True, blank=True, related_name="+")
+    # The delivery this batch was put into the yard from. One delivered load can be split into several batches.
+    source_dispatch = models.ForeignKey(
+        "trade.Dispatch", on_delete=models.PROTECT, null=True, blank=True, related_name="yard_batches",
+        help_text="The delivered load this batch came from, so it can be traced back to its farmers",
+    )
     source_note = models.TextField(blank=True, help_text="Source villages and the VLE or supplier")
     received_on = models.DateField(default=timezone.localdate)
     intake_tonnes = models.DecimalField(max_digits=10, decimal_places=3, validators=[POSITIVE_TONNES])
@@ -157,7 +162,36 @@ class Batch(BaseModel):
     def save(self, *args, **kwargs):
         if not self.code:
             self.code = next_code("batch", "BAT")
+        d = self.source_dispatch if self.source_dispatch_id else None
+        if d is not None and self._state.adding:
+            if self.source_grid_id is None:
+                self.source_grid = d.grid
+            if not self.source_note:
+                mitra = d.created_by_mitra or d.grid.current_mitra
+                self.source_note = f"Load {d.code} from {d.grid.name}" + (f", Mitra {mitra.name}" if mitra else "")
         super().save(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+        self.check_source()
+
+    def check_source(self):
+        """A batch from a delivery must match that delivery and cannot be bigger than what is left of it."""
+        from apps.trade.models import DispatchStage
+
+        d = self.source_dispatch if self.source_dispatch_id else None
+        if d is None or not self.customer_id:
+            return
+        if d.stage != DispatchStage.DELIVERED:
+            raise ValidationError("That load has not been delivered yet.")
+        if d.factory.buyer_id != self.customer_id:
+            raise ValidationError("That load was delivered to a different company.")
+        if self.biomass_type_id and d.product.biomass_type_id != self.biomass_type_id:
+            raise ValidationError("The biomass type does not match the delivered load.")
+        if self.intake_tonnes is not None:
+            left = unreceived_tonnes(d, exclude=self.pk)
+            if self.intake_tonnes > left:
+                raise ValidationError(f"Only {left} t of {d.code} is still to be put into the yard.")
 
 
 class TransactionKind(models.TextChoices):
@@ -388,3 +422,13 @@ class PurchaseOrder(BaseModel):
         super().clean()
         if self.line_id and self.factory_id and self.factory.buyer_id != self.line.contract.customer_id:
             raise ValidationError({"factory": "This plant belongs to a different company than the contract."})
+
+
+def unreceived_tonnes(dispatch, exclude=None):
+    """Tonnes weighed at the buyer's gate that no yard batch accounts for yet."""
+    from django.db.models import Sum
+
+    taken = Batch.objects.filter(source_dispatch=dispatch, status="active")
+    if exclude is not None:
+        taken = taken.exclude(pk=exclude)
+    return dispatch.current_quantity_tonnes - (taken.aggregate(t=Sum("intake_tonnes"))["t"] or Decimal("0"))
