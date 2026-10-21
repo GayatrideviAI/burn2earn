@@ -18,8 +18,8 @@
   <div class="scroll"><table><thead><tr><th>Dispatch</th><th>From</th><th>Stage</th><th class="r">Loaded</th><th class="r">At your gate</th><th>Vehicle</th><th>Delivered</th><th>In your yards</th></tr></thead><tbody>
   {% for d in dispatches %}<tr><td class="mono">{{ d.code }}</td><td>{{ d.grid.name }}</td><td>{{ d.get_stage_display }}</td><td class="r">{{ d.quantity_tonnes|floatformat:"1g" }} t</td>
     <td class="r">{% if d.stage == 'delivered' %}{{ d.current_quantity_tonnes|floatformat:"1g" }} t{% else %}-{% endif %}</td><td>{{ d.vehicle_ref|default:"-" }}</td><td>{{ d.delivered_date|date:"d M Y"|default:"-" }}</td>
-    <td>{% if d.stage == 'delivered' %}{% for b in d.yard_batches %}<a href="{% url 'customers:batch' b.pk %}">{{ b.code }}</a> ({{ b.intake_tonnes|floatformat:"1g" }} t){% if not forloop.last %}, {% endif %}{% endfor %}
-      {% if d.to_receive > 0.05 %}<span class="tag warn">{{ d.to_receive|floatformat:"1g" }} t not in a yard</span>{% elif d.yard_batches %}<span class="tag good">all received</span>{% endif %}{% else %}-{% endif %}</td></tr>
+    <td>{% if d.stage == 'delivered' %}{% for b in d.receipt_batches %}<a href="{% url 'customers:batch' b.pk %}">{{ b.code }}</a> ({{ b.intake_tonnes|floatformat:"1g" }} t){% if not forloop.last %}, {% endif %}{% endfor %}
+      {% if d.to_receive > 0.05 %}<span class="tag warn">{{ d.to_receive|floatformat:"1g" }} t not in a yard</span>{% elif d.receipt_batches %}<span class="tag good">all received</span>{% endif %}{% else %}-{% endif %}</td></tr>
   {% empty %}<tr><td colspan="8" class="muted">Nothing dispatched yet.</td></tr>{% endfor %}
   </tbody></table></div></section>
 
