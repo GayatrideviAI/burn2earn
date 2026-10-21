@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "apps.operations",
     "apps.ledger",
     "apps.trade",
+    "apps.customers",
 ]
 
 MIDDLEWARE = [
@@ -110,3 +111,8 @@ LOGOUT_REDIRECT_URL = "field:login"
 # The admin map loads its background tiles from OpenStreetMap, which refuses requests
 # that carry no Referer. Django's default ("same-origin") strips it for other sites.
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+
+# Customer stock: how old a physical count may be before it is "overdue", and the days it takes to
+# bring in new stock. Both are starting values to adjust with the first pilot customer.
+STOCK_VERIFICATION_DAYS = 14
+STOCK_REPLENISH_LEAD_DAYS = 14
