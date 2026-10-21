@@ -66,7 +66,7 @@ msgstr "उपयोग के लिए उपलब्ध"
 #: apps/customers/templates/customers/batch.html:18
 #. The trail from farmer to Mitra to Grid to truck to the customer's yard.
 msgid "Chain of custody"
-msgstr ""
+msgstr "Chain of custody"
 
 #: apps/customers/templates/customers/batch.html:21
 msgid "Farmers"
@@ -96,7 +96,7 @@ msgstr "इस खेप के लिए किसानों से कोई
 #: apps/customers/templates/customers/batch.html:26
 #. The local person who collects crop residue from farmers and runs a Grid. Use the word the field team uses.
 msgid "Biomass Mitra"
-msgstr ""
+msgstr "Biomass Mitra"
 
 #: apps/customers/templates/customers/batch.html:26
 msgid "not recorded"
@@ -177,11 +177,11 @@ msgstr "अभी कोई रीडिंग नहीं।"
 #: apps/customers/templates/customers/batch.html:53
 #. A log where altering an old entry would be detected.
 msgid "Tamper-evident trail"
-msgstr ""
+msgstr "Tamper-evident trail"
 
 #: apps/customers/templates/customers/batch.html:54
 msgid "Each entry carries a fingerprint of the one before it, so a changed record would be detected."
-msgstr ""
+msgstr "Each entry carries a fingerprint of the one before it, so a changed record would be detected."
 
 #: apps/customers/templates/customers/batch.html:8
 #, python-format
@@ -191,7 +191,7 @@ msgstr "%(y)s, ढेर %(p)s (%(e)s)"
 #: apps/customers/templates/customers/batch.html:22
 #, python-format
 msgid "Farmers: %(n)s. Shared out by what each handed over at the Grid. Codes and villages only."
-msgstr ""
+msgstr "Farmers: %(n)s. Shared out by what each handed over at the Grid. Codes and villages only."
 
 #: apps/customers/templates/customers/batch.html:27
 #, python-format
@@ -381,7 +381,7 @@ msgstr "स्टॉक की स्थिति"
 #: apps/customers/templates/customers/dashboard.html:9
 #. Stock according to the paperwork/records, before anyone counts it.
 msgid "Book inventory"
-msgstr ""
+msgstr "Book inventory"
 
 #: apps/customers/templates/customers/dashboard.html:9
 msgid "What the records say"
@@ -390,7 +390,7 @@ msgstr "रिकॉर्ड के अनुसार"
 #: apps/customers/templates/customers/dashboard.html:10
 #. Stock that has actually been counted, plus what moved since.
 msgid "Physical inventory"
-msgstr ""
+msgstr "Physical inventory"
 
 #: apps/customers/templates/customers/dashboard.html:10
 msgid "Counted, plus movements since"
@@ -399,7 +399,7 @@ msgstr "गिना हुआ, और उसके बाद की आवा�
 #: apps/customers/templates/customers/dashboard.html:11
 #. Counted stock that is dry enough for the plant (below its moisture limit).
 msgid "Usable inventory"
-msgstr ""
+msgstr "Usable inventory"
 
 #: apps/customers/templates/customers/dashboard.html:11
 msgid "Physical stock that meets your moisture limit"
@@ -408,7 +408,7 @@ msgstr "वह भौतिक स्टॉक जो आपकी नमी स
 #: apps/customers/templates/customers/dashboard.html:13
 #. How many days the plant can run on the stock it has available.
 msgid "Fuel cover"
-msgstr ""
+msgstr "Fuel cover"
 
 #: apps/customers/templates/customers/dashboard.html:14
 msgid "Add your plant's daily burn to see this"
@@ -574,20 +574,20 @@ msgstr "पहुँचा हुआ बायोमास कहाँ से �
 #: apps/customers/templates/customers/who.html:6
 #. Plural of 'Biomass Mitra'.
 msgid "Biomass Mitras"
-msgstr ""
+msgstr "Biomass Mitras"
 
 #: apps/customers/templates/customers/who.html:7
 msgid "No Mitra recorded."
-msgstr ""
+msgstr "No Mitra recorded."
 
 #: apps/customers/templates/customers/who.html:9
 #. A Grid is a local collection and processing point run by a Biomass Mitra.
 msgid "Grids"
-msgstr ""
+msgstr "Grids"
 
 #: apps/customers/templates/customers/who.html:11
 msgid "Attributed"
-msgstr ""
+msgstr "Attributed"
 
 #: apps/customers/templates/customers/who.html:16
 msgid "Nothing delivered yet."
@@ -596,7 +596,7 @@ msgstr "अभी कुछ नहीं पहुँचा।"
 #: apps/customers/templates/customers/who.html:4
 #, python-format
 msgid "%(t)s delivered. Farmers are shared out in proportion to the tonnes each handed over at the supplying Grid (the lots are not tagged farmer by farmer), so read this as a fair attribution, not lot-level proof. Only farmer codes and villages are shown."
-msgstr ""
+msgstr "%(t)s delivered. Farmers are shared out in proportion to the tonnes each handed over at the supplying Grid (the lots are not tagged farmer by farmer), so read this as a fair attribution, not lot-level proof. Only farmer codes and villages are shown."
 
 #: apps/customers/templates/customers/who.html:10
 #, python-format
@@ -606,7 +606,7 @@ msgstr "किसान (%(n)s)"
 #: apps/customers/templates/customers/who.html:14
 #, python-format
 msgid "%(t)s could not be attributed because no farmer pickups are recorded for it."
-msgstr ""
+msgstr "%(t)s could not be attributed because no farmer pickups are recorded for it."
 
 #: apps/customers/templates/customers/yard.html:5
 msgid "All yards"
@@ -623,7 +623,7 @@ msgstr "बैच"
 
 #: apps/customers/templates/customers/yard.html:10
 msgid "Confidence"
-msgstr ""
+msgstr "Confidence"
 
 #: apps/customers/templates/customers/yard.html:10
 msgid "Moisture"
@@ -656,15 +656,15 @@ msgstr "वित्त"
 
 #: apps/customers/models.py:35
 msgid "ESG / sustainability"
-msgstr ""
+msgstr "ESG / sustainability"
 
 #: apps/customers/models.py:75 apps/customers/models.py:310
 msgid "Regenerix"
-msgstr ""
+msgstr "Regenerix"
 
 #: apps/customers/models.py:76
 msgid "VLE"
-msgstr ""
+msgstr "VLE"
 
 #: apps/customers/models.py:77
 msgid "Third party"
@@ -842,7 +842,7 @@ msgstr "%(code)s (%(where)s) में नमी %(moisture)s%% है, जो �
 #: apps/customers/services.py:368
 #. Action title: the records and the physical count do not match, someone should check.
 msgid "Reconcile"
-msgstr ""
+msgstr "Reconcile"
 
 #: apps/customers/services.py:368
 #, python-format
@@ -851,12 +851,12 @@ msgstr "%(code)s (%(where)s): रिकॉर्ड में %(book)s टन, �
 
 #: apps/customers/services.py:370
 msgid "Low fuel cover"
-msgstr ""
+msgstr "Low fuel cover"
 
 #: apps/customers/services.py:370
 #, python-format
 msgid "%(days)s days of cover is less than the %(lead)s-day replenishment lead time."
-msgstr ""
+msgstr "%(days)s days of cover is less than the %(lead)s-day replenishment lead time."
 
 #: apps/customers/contracts.py:292
 #. Alert title.
@@ -910,11 +910,11 @@ msgstr "टन"
 
 #: apps/trade/models.py:117
 msgid "At the Grid"
-msgstr ""
+msgstr "At the Grid"
 
 #: apps/trade/models.py:118
 msgid "At the Hub"
-msgstr ""
+msgstr "At the Hub"
 
 #: apps/trade/models.py:119
 msgid "On the way to the buyer"

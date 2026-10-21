@@ -255,7 +255,7 @@ Try it: `docker compose exec web python manage.py load_demo_deliveries` (the fir
 
 The customer pages (`/customer/`) can be shown in English, हिन्दी and ਪੰਜਾਬੀ. A switch in the top bar changes the language and the choice is remembered in the browser. This covers every page the customer sees, the "what to do next" and "needs attention" alert texts, stage and type labels, and the unit (t for tonnes). The Mitra app and the admin are not translated yet.
 
-**The first draft has not been checked by anyone who speaks the local dialects.** About 25 phrases are left blank on purpose, where I was not sure of the wording; blanks show English on the page.
+**The first draft has not been checked by anyone who speaks the local dialects.** About 25 phrases still show the English word in both languages (yellow in the sheet), where I was not sure of the wording.
 
 How the field check works:
 

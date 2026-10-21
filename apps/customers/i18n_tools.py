@@ -259,15 +259,16 @@ def export_sheet(path=SHEET):
     blank = PatternFill("solid", fgColor="FFF2CC")
     for msgid, places in found.items():
         h, p = hi.get(msgid, ""), pa.get(msgid, "")
-        status = "Blank: please supply" if not (h and p) else "Draft: please check"
+        todo = [not v or v == msgid for v in (h, p)]
+        status = "English placeholder: please translate" if any(todo) else "Draft: please check"
         where = NOTES.get(msgid, "")
         if msgid.count("%(") or "%%" in msgid:
             where = (where + " " if where else "") + "Keep the %(name)s parts exactly as they are; they are replaced by numbers or names."
         where += (" " if where else "") + "Used in: " + places[0].split("/")[-1]
         ws.append([msgid, h, p, status, where, ""])
         row = ws.max_row
-        for col, val in ((2, h), (3, p)):
-            if not val:
+        for col, is_todo in ((2, todo[0]), (3, todo[1])):
+            if is_todo:
                 ws.cell(row, col).fill = blank
     for col, width in zip("ABCDEF", (55, 45, 45, 22, 60, 30)):
         ws.column_dimensions[col].width = width
@@ -275,13 +276,13 @@ def export_sheet(path=SHEET):
         for c in row:
             c.alignment = Alignment(wrap_text=True, vertical="top")
     ws.freeze_panes = "B2"
-    dv = DataValidation(type="list", formula1='"Blank: please supply,Draft: please check,Checked in the field,Needs discussion"', allow_blank=True)
+    dv = DataValidation(type="list", formula1='"English placeholder: please translate,Draft: please check,Checked in the field,Needs discussion"', allow_blank=True)
     ws.add_data_validation(dv)
     dv.add(f"D2:D{ws.max_row}")
     ws2 = wb.create_sheet("How to use")
     for line in (
         "This sheet lists every word and sentence the customer application shows.",
-        "Column A is the English. Fill in or correct column B (Hindi) and column C (Punjabi). Yellow cells are blank because I was not sure of the local wording.",
+        "Column A is the English. Fill in or correct column B (Hindi) and column C (Punjabi). Yellow cells still show the English word because I was not sure of the local wording; please replace it.",
         "Please do not change column A. Leave a cell empty if you do not want a translation; the page will then show English for that phrase.",
         "Where you see %(something)s, keep it exactly as written: the application puts a number or a name there. You may move it within the sentence.",
         "Use the Status column to mark what you have checked. Use the last column for comments such as 'farmers say X here'.",
