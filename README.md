@@ -194,3 +194,25 @@ Sales cannot be edited afterwards.
 **Ledger.** Every dispatch step, sale, payment, settlement and lease charge is written to an append-only ledger. Each entry
 includes a fingerprint of the one before it, and the database refuses any edit or delete. This is a tamper-evident log inside our
 own database, not a public blockchain. Check it with `python manage.py verify_ledger` or on Admin > Ledger.
+
+## Customer stock (first slice of the customer platform)
+
+Customers (buyers) get their own login at `/customer/` and see only their own company's stock.
+
+**Try it:** `docker compose exec web python manage.py load_demo_customer`, then log in at `/customer/` as `customer1` / `customer-demo-123`.
+This adds "Sample Power Ltd" with four yards, eleven piles and made-up counts. Safe to re-run.
+
+**Setting up a real customer (Admin > Customers):** link a login with the Buyer role to the company (Customer members), set the plant's
+daily burn (Plant profiles) and its maximum moisture on the Factory, add Stockyards with their Piles, then add Batches.
+Adding a batch records its receipt and any intake moisture reading.
+
+**The numbers on the overview**
+- *Book inventory*: the sum of a batch's stock transactions (receipts, burning, losses, moves, adjustments). Never overwritten.
+- *Physical inventory*: the latest physical count plus movements recorded after it.
+- *Usable inventory*: physical stock whose latest **measured** moisture reading is within the plant's limit. A batch with no count or no reading is not usable.
+- *Available to use*: usable minus reservations. *Fuel cover* = available ÷ the plant's daily burn.
+- Each batch shows how well its quantity is known: Verified, Calculated, Estimated (survey counts) or Overdue (count older than `STOCK_VERIFICATION_DAYS`, 14 by default).
+
+Stock records are added, not edited: a correction is a new transaction or count. Every one is written to the tamper-evident ledger.
+
+**Not built yet** (see the product spec): contracts and delivery schedules, weather alerts, fire-risk monitoring, the yard app, customer-facing dispatch and finance, ESG reports.
