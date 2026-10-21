@@ -92,7 +92,7 @@ def order_detail(request, pk):
     dispatches = list(contracts.live_dispatches(purchase_order=order).select_related("grid", "created_by_mitra").order_by("created_at"))
     for d in dispatches:
         d.delivered_date = contracts.delivered_on(d)
-        d.received, d.yard_batches, d.to_receive = contracts.dispatch_receipts(d)
+        d.received, d.receipt_batches, d.to_receive = contracts.dispatch_receipts(d)
     return render(
         request,
         "customers/order.html",
