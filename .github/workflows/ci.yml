@@ -40,7 +40,14 @@ jobs:
       - name: Django system check
         run: python manage.py check
       - name: Migrations are up to date
-        run: python manage.py makemigrations --check --dry-run
+        run: |
+          python manage.py makemigrations --check --dry-run -v 3 > migration-check.txt 2>&1 || {
+            python - <<'PY'
+          text = open("migration-check.txt").read()[-5000:]
+          print("::error title=Migrations out of date::" + text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))
+          PY
+            exit 1
+          }
       - name: Run tests
         run: |
           set -o pipefail

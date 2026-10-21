@@ -1,0 +1,9 @@
+{% extends "customers/base.html" %}
+{% block title %}No access{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>This login is not set up for customer stock</h1>
+  <p>Ask Regenerix to link your login to your company.</p>
+  <form method="post" action="{% url 'customers:logout' %}">{% csrf_token %}<button class="btn">Log out</button></form>
+</section>
+{% endblock %}

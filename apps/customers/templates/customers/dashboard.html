@@ -1,0 +1,48 @@
+{% extends "customers/base.html" %}
+{% block title %}Stock overview{% endblock %}
+{% block content %}
+<h1>Stock overview</h1>
+<p class="muted">{{ buyer.company_name }} · {{ member.get_job_role_display }}</p>
+
+<section class="tiles">
+  <div class="tile"><span>Book inventory</span><b>{{ s.book|floatformat:"1g" }} t</b><small>What the records say</small></div>
+  <div class="tile"><span>Physical inventory</span><b>{{ s.physical|floatformat:"1g" }} t</b><small>Counted, plus movements since</small></div>
+  <div class="tile"><span>Usable inventory</span><b>{{ s.usable|floatformat:"1g" }} t</b><small>Physical stock that meets your moisture limit</small></div>
+  <div class="tile"><span>Available to use</span><b>{{ s.available|floatformat:"1g" }} t</b><small>Usable minus {{ s.reserved|floatformat:"1g" }} t reserved</small></div>
+  <div class="tile accent"><span>Fuel cover</span>
+    {% if s.fuel_cover_days is None %}<b>-</b><small>Add your plant's daily burn to see this</small>
+    {% else %}<b>{{ s.fuel_cover_days|floatformat:"1" }} days</b><small>{{ s.available|floatformat:"1g" }} t ÷ {{ s.daily_burn|floatformat:"0g" }} t/day</small>{% endif %}
+  </div>
+</section>
+
+<section class="card">
+  <h2>What to do next</h2>
+  {% if s.actions %}
+  <ul class="actions">
+    {% for level, title, text, batch in s.actions %}
+    <li><span class="tag {{ level }}">{{ title }}</span>
+      <span>{% if batch %}<a href="{% url 'customers:batch' batch.pk %}">{{ text }}</a>{% else %}{{ text }}{% endif %}</span></li>
+    {% endfor %}
+  </ul>
+  {% else %}<p class="muted">Nothing needs attention right now.</p>{% endif %}
+</section>
+
+<section class="card">
+  <h2>Stock by yard</h2>
+  {% if s.yards %}
+  <div class="scroll"><table>
+    <thead><tr><th>Yard</th><th class="r">Book</th><th class="r">Physical</th><th class="r">Usable</th><th class="r">Available</th><th class="r">Open to rain</th></tr></thead>
+    <tbody>
+    {% for y in s.yards %}
+      <tr><td><a href="{% url 'customers:yard' y.yard.pk %}">{{ y.yard.name }}</a> <span class="mono">{{ y.yard.code }}</span>
+        {% if y.uncounted %}<span class="tag warn">{{ y.uncounted }} not counted</span>{% endif %}</td>
+        <td class="r">{{ y.book|floatformat:"1g" }} t</td><td class="r">{{ y.physical|floatformat:"1g" }} t</td>
+        <td class="r">{{ y.usable|floatformat:"1g" }} t</td><td class="r">{{ y.available|floatformat:"1g" }} t</td>
+        <td class="r">{{ y.exposed|floatformat:"1g" }} t</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}<p class="muted">No stock is recorded for your company yet.</p>{% endif %}
+  <p class="muted small">Stock only counts as usable once it has been physically counted (within {{ verify_days }} days) and has a measured moisture reading within your plant's limit.</p>
+</section>
+{% endblock %}
