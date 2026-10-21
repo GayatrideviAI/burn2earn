@@ -29,3 +29,4 @@ td { padding:8px; border-bottom:1px solid var(--line); } .r { text-align:right; 
 input { font:inherit; padding:7px 9px; border:1px solid var(--line); border-radius:6px; width:100%; }
 .nav { display:flex; gap:14px; } .nav a { text-decoration:none; font-weight:500; }
 .bar2 { position:relative; height:12px; background:#e5eaef; border-radius:6px; margin:8px 0; } .bar2 i { display:block; height:100%; background:var(--accent); border-radius:6px; } .bar2 u { position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--ink); }
+.chain { margin:0; padding-left:20px; } .chain li { padding:6px 0; }

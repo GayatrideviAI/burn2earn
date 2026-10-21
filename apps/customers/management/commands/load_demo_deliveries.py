@@ -12,8 +12,8 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
-from apps.customers import contracts
-from apps.customers.models import Contract, ContractLine, MonthlyPlan, PurchaseOrder
+from apps.customers import contracts, services
+from apps.customers.models import Contract, ContractLine, MonthlyPlan, Pile, PurchaseOrder, Stockyard, TransactionKind
 from apps.demand.models import Buyer
 from apps.farms.services import register_farmer
 from apps.geography.models import Village
@@ -72,10 +72,22 @@ class Command(BaseCommand):
         coming = PurchaseOrder.objects.create(line=line, factory=plant, customer_po_number="4500012399", tonnes=D("500"),
                                               deliver_from=date.today(), deliver_by=date.today() + timedelta(days=30))
         grid = mitra.current_grid
+        delivered = []
         for order, tonnes, gate, days_ago in ((due_now, "250", "247", 35), (due_now, "200", "198", 20), (coming, "150", "149", 3)):
             d = create_dispatch(grid=grid, product=product, factory=plant, quantity_tonnes=D(tonnes), mitra=mitra, purchase_order=order,
                                 vehicle_ref="HR-61-1234")
             record_event(d, EventType.IN_TRANSIT, quantity_tonnes=D(tonnes), occurred_at=at(days_ago + 1))
             record_event(d, EventType.DELIVERED, quantity_tonnes=D(gate), occurred_at=at(days_ago))
+            delivered.append(d)
+        # The first two loads go into yards; the third is left unreceived so the gap shows up as an action.
+        yards = {y.name: y for y in Stockyard.objects.all()}
+        received = []
+        for d, yard_name, label, moisture in ((delivered[0], "Yard D", "D-04", "9"), (delivered[1], "Yard A", "A-04", "10")):
+            pile = Pile.objects.create(yard=yards[yard_name], label=label, form="pellets", exposure="protected", cover_type="Shed")
+            received.append(services.receive_delivery(d, pile, "pellets", moisture=D(moisture), received_on=date.today() - timedelta(days=2)))
+        services.record_transaction(received[0], TransactionKind.CONSUMPTION, D("40"), note="Fed to the boiler")
+        services.record_transaction(received[0], TransactionKind.LOSS, D("2"), loss_cause="handling", note="Spilled while unloading")
+        for batch in received:
+            services.record_count(batch, services.book_tonnes(batch), "weighbridge", counted_by="Yard supervisor")
         create_dispatch(grid=grid, product=product, factory=plant, quantity_tonnes=D("120"), mitra=mitra, purchase_order=coming)
         self.stdout.write(self.style.SUCCESS("Demo contract ready. Log in at /customer/ as customer1 and open Contracts."))
