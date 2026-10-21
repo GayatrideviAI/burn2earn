@@ -1,18 +1,24 @@
-{% load static %}<!doctype html>
-<html lang="en">
+{% load static i18n customers_i18n %}{% get_current_language as LANGUAGE_CODE %}{% get_available_languages as LANGUAGES %}<!doctype html>
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Stock{% endblock %} · Regenerix</title>
+  <title>{% block title %}{% trans "Stock" %}{% endblock %} · Regenerix</title>
   <link rel="stylesheet" href="{% static 'customers/customers.css' %}">
 </head>
 <body>
 <header class="bar">
   <a class="brand" href="{% url 'customers:dashboard' %}">Regenerix</a>
   {% if user.is_authenticated %}
-  <nav class="nav"><a href="{% url 'customers:dashboard' %}">Stock</a><a href="{% url 'customers:contracts' %}">Contracts</a></nav>
+  <nav class="nav"><a href="{% url 'customers:dashboard' %}">{% trans "Stock" %}</a><a href="{% url 'customers:contracts' %}">{% trans "Contracts" %}</a></nav>
   <span class="who">{{ buyer.company_name }}</span>
-  <form method="post" action="{% url 'customers:logout' %}">{% csrf_token %}<button class="link">Log out</button></form>
+  {% endif %}
+  <form class="lang" method="post" action="{% url 'set_language' %}">{% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+    {% for code, name in LANGUAGES %}<button name="language" value="{{ code }}" class="link{% if code == LANGUAGE_CODE %} on{% endif %}" lang="{{ code }}">{{ name }}</button>{% endfor %}
+  </form>
+  {% if user.is_authenticated %}
+  <form method="post" action="{% url 'customers:logout' %}">{% csrf_token %}<button class="link">{% trans "Log out" %}</button></form>
   {% endif %}
 </header>
 <main>{% block content %}{% endblock %}</main>

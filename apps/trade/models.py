@@ -6,6 +6,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import F, Q
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from apps.core.codes import next_code
 from apps.core.models import BaseModel, Status
@@ -113,11 +114,11 @@ class FeeSchedule(BaseModel):
 
 
 class DispatchStage(models.TextChoices):
-    AT_GRID = "at_grid", "At the Grid"
-    AT_HUB = "at_hub", "At the Hub"
-    IN_TRANSIT = "in_transit", "On the way to the buyer"
-    DELIVERED = "delivered", "Delivered"
-    CANCELLED = "cancelled", "Cancelled"
+    AT_GRID = "at_grid", _("At the Grid")
+    AT_HUB = "at_hub", _("At the Hub")
+    IN_TRANSIT = "in_transit", _("On the way to the buyer")
+    DELIVERED = "delivered", _("Delivered")
+    CANCELLED = "cancelled", _("Cancelled")
 
 
 class Dispatch(BaseModel):

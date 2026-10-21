@@ -1,22 +1,23 @@
 {% extends "customers/base.html" %}
-{% block title %}Stock overview{% endblock %}
+{% load i18n customers_i18n %}
+{% block title %}{% trans "Stock overview" %}{% endblock %}
 {% block content %}
-<h1>Stock overview</h1>
+<h1>{% trans "Stock overview" %}</h1>
 <p class="muted">{{ buyer.company_name }} · {{ member.get_job_role_display }}</p>
 
 <section class="tiles">
-  <div class="tile"><span>Book inventory</span><b>{{ s.book|floatformat:"1g" }} t</b><small>What the records say</small></div>
-  <div class="tile"><span>Physical inventory</span><b>{{ s.physical|floatformat:"1g" }} t</b><small>Counted, plus movements since</small></div>
-  <div class="tile"><span>Usable inventory</span><b>{{ s.usable|floatformat:"1g" }} t</b><small>Physical stock that meets your moisture limit</small></div>
-  <div class="tile"><span>Available to use</span><b>{{ s.available|floatformat:"1g" }} t</b><small>Usable minus {{ s.reserved|floatformat:"1g" }} t reserved</small></div>
-  <div class="tile accent"><span>Fuel cover</span>
-    {% if s.fuel_cover_days is None %}<b>-</b><small>Add your plant's daily burn to see this</small>
-    {% else %}<b>{{ s.fuel_cover_days|floatformat:"1" }} days</b><small>{{ s.available|floatformat:"1g" }} t ÷ {{ s.daily_burn|floatformat:"0g" }} t/day</small>{% endif %}
+  <div class="tile"><span>{% trans "Book inventory" %}</span><b>{{ s.book|tn:"1g" }}</b><small>{% trans "What the records say" %}</small></div>
+  <div class="tile"><span>{% trans "Physical inventory" %}</span><b>{{ s.physical|tn:"1g" }}</b><small>{% trans "Counted, plus movements since" %}</small></div>
+  <div class="tile"><span>{% trans "Usable inventory" %}</span><b>{{ s.usable|tn:"1g" }}</b><small>{% trans "Physical stock that meets your moisture limit" %}</small></div>
+  <div class="tile"><span>{% trans "Available to use" %}</span><b>{{ s.available|tn:"1g" }}</b><small>{% blocktrans trimmed with r=s.reserved|tn:"1g" %}Usable minus {{ r }} reserved{% endblocktrans %}</small></div>
+  <div class="tile accent"><span>{% trans "Fuel cover" %}</span>
+    {% if s.fuel_cover_days is None %}<b>-</b><small>{% trans "Add your plant's daily burn to see this" %}</small>
+    {% else %}<b>{% blocktrans trimmed with n=s.fuel_cover_days|floatformat:"1" %}{{ n }} days{% endblocktrans %}</b><small>{{ s.available|tn:"1g" }} ÷ {{ s.daily_burn|tn:"0g" }}/{% trans "day" %}</small>{% endif %}
   </div>
 </section>
 
 <section class="card">
-  <h2>What to do next</h2>
+  <h2>{% trans "What to do next" %}</h2>
   {% if s.actions or supply %}
   <ul class="actions">
     {% for level, title, text, obj in supply %}
@@ -28,25 +29,25 @@
       <span>{% if batch %}<a href="{% url 'customers:batch' batch.pk %}">{{ text }}</a>{% else %}{{ text }}{% endif %}</span></li>
     {% endfor %}
   </ul>
-  {% else %}<p class="muted">Nothing needs attention right now.</p>{% endif %}
+  {% else %}<p class="muted">{% trans "Nothing needs attention right now." %}</p>{% endif %}
 </section>
 
 <section class="card">
-  <h2>Stock by yard</h2>
+  <h2>{% trans "Stock by yard" %}</h2>
   {% if s.yards %}
   <div class="scroll"><table>
-    <thead><tr><th>Yard</th><th class="r">Book</th><th class="r">Physical</th><th class="r">Usable</th><th class="r">Available</th><th class="r">Open to rain</th></tr></thead>
+    <thead><tr><th>{% trans "Yard" %}</th><th class="r">{% trans "Book" %}</th><th class="r">{% trans "Physical" %}</th><th class="r">{% trans "Usable" %}</th><th class="r">{% trans "Available" %}</th><th class="r">{% trans "Open to rain" %}</th></tr></thead>
     <tbody>
     {% for y in s.yards %}
       <tr><td><a href="{% url 'customers:yard' y.yard.pk %}">{{ y.yard.name }}</a> <span class="mono">{{ y.yard.code }}</span>
-        {% if y.uncounted %}<span class="tag warn">{{ y.uncounted }} not counted</span>{% endif %}</td>
-        <td class="r">{{ y.book|floatformat:"1g" }} t</td><td class="r">{{ y.physical|floatformat:"1g" }} t</td>
-        <td class="r">{{ y.usable|floatformat:"1g" }} t</td><td class="r">{{ y.available|floatformat:"1g" }} t</td>
-        <td class="r">{{ y.exposed|floatformat:"1g" }} t</td></tr>
+        {% if y.uncounted %}<span class="tag warn">{% blocktrans trimmed with n=y.uncounted %}{{ n }} not counted{% endblocktrans %}</span>{% endif %}</td>
+        <td class="r">{{ y.book|tn:"1g" }}</td><td class="r">{{ y.physical|tn:"1g" }}</td>
+        <td class="r">{{ y.usable|tn:"1g" }}</td><td class="r">{{ y.available|tn:"1g" }}</td>
+        <td class="r">{{ y.exposed|tn:"1g" }}</td></tr>
     {% endfor %}
     </tbody>
   </table></div>
-  {% else %}<p class="muted">No stock is recorded for your company yet.</p>{% endif %}
-  <p class="muted small">Stock only counts as usable once it has been physically counted (within {{ verify_days }} days) and has a measured moisture reading within your plant's limit.</p>
+  {% else %}<p class="muted">{% trans "No stock is recorded for your company yet." %}</p>{% endif %}
+  <p class="muted small">{% blocktrans trimmed with n=verify_days %}Stock only counts as usable once it has been physically counted (within {{ n }} days) and has a measured moisture reading within your plant's limit.{% endblocktrans %}</p>
 </section>
 {% endblock %}

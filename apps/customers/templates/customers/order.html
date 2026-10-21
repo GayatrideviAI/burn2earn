@@ -1,26 +1,27 @@
 {% extends "customers/base.html" %}
+{% load i18n customers_i18n %}
 {% block title %}{{ o.code }}{% endblock %}
 {% block content %}
 <p><a href="{% url 'customers:contract' o.line.contract.pk %}">← {{ o.line.contract.code }}</a></p>
 <h1>{{ o.code }} <span class="muted">{{ o.customer_po_number }}</span> <span class="tag {% if o.state == 'open' %}info{% else %}mute{% endif %}">{{ o.get_state_display }}</span></h1>
 <dl class="facts">
-  <div><dt>Product</dt><dd>{{ o.line.product }}</dd></div>
-  <div><dt>Plant</dt><dd>{{ o.factory.name }}</dd></div>
-  <div><dt>Delivery window</dt><dd>{{ o.deliver_from|date:"d M Y" }} to {{ o.deliver_by|date:"d M Y" }}</dd></div>
-  <div><dt>Ordered</dt><dd>{{ p.ordered|floatformat:"1g" }} t</dd></div>
-  <div><dt>Delivered</dt><dd>{{ p.delivered|floatformat:"1g" }} t ({{ p.percent }}%)</dd></div>
-  <div><dt>On the way</dt><dd>{{ p.on_the_way|floatformat:"1g" }} t</dd></div>
-  <div><dt>Still to come</dt><dd>{{ p.remaining|floatformat:"1g" }} t{% if p.over_delivered %} (over-delivered by {{ p.over_delivered|floatformat:"1g" }} t){% endif %}</dd></div>
+  <div><dt>{% trans "Product" %}</dt><dd>{{ o.line.product }}</dd></div>
+  <div><dt>{% trans "Plant" %}</dt><dd>{{ o.factory.name }}</dd></div>
+  <div><dt>{% trans "Delivery window" %}</dt><dd>{{ o.deliver_from|date:"d M Y" }} {% trans "to" %} {{ o.deliver_by|date:"d M Y" }}</dd></div>
+  <div><dt>{% trans "Ordered" %}</dt><dd>{{ p.ordered|tn:"1g" }}</dd></div>
+  <div><dt>{% trans "Delivered" %}</dt><dd>{% blocktrans trimmed with d=p.delivered|tn:"1g" pc=p.percent %}{{ d }} ({{ pc }}%){% endblocktrans %}</dd></div>
+  <div><dt>{% trans "On the way" %}</dt><dd>{{ p.on_the_way|tn:"1g" }}</dd></div>
+  <div><dt>{% trans "Still to come" %}</dt><dd>{{ p.remaining|tn:"1g" }}{% if p.over_delivered %} {% blocktrans trimmed with t=p.over_delivered|tn:"1g" %}(over-delivered by {{ t }}){% endblocktrans %}{% endif %}</dd></div>
 </dl>
-{% if p.overdue %}<p class="tag bad">Late: the window closed on {{ o.deliver_by|date:"d M" }}</p>{% endif %}
+{% if p.overdue %}<p class="tag bad">{% blocktrans trimmed with d=o.deliver_by|date:"d M" %}Late: the window closed on {{ d }}{% endblocktrans %}</p>{% endif %}
 
-<section class="card"><h2>Loads</h2>
-  <div class="scroll"><table><thead><tr><th>Dispatch</th><th>From</th><th>Stage</th><th class="r">Loaded</th><th class="r">At your gate</th><th>Vehicle</th><th>Delivered</th><th>In your yards</th></tr></thead><tbody>
-  {% for d in dispatches %}<tr><td class="mono">{{ d.code }}</td><td>{{ d.grid.name }}</td><td>{{ d.get_stage_display }}</td><td class="r">{{ d.quantity_tonnes|floatformat:"1g" }} t</td>
-    <td class="r">{% if d.stage == 'delivered' %}{{ d.current_quantity_tonnes|floatformat:"1g" }} t{% else %}-{% endif %}</td><td>{{ d.vehicle_ref|default:"-" }}</td><td>{{ d.delivered_date|date:"d M Y"|default:"-" }}</td>
-    <td>{% if d.stage == 'delivered' %}{% for b in d.receipt_batches %}<a href="{% url 'customers:batch' b.pk %}">{{ b.code }}</a> ({{ b.intake_tonnes|floatformat:"1g" }} t){% if not forloop.last %}, {% endif %}{% endfor %}
-      {% if d.to_receive > 0.05 %}<span class="tag warn">{{ d.to_receive|floatformat:"1g" }} t not in a yard</span>{% elif d.receipt_batches %}<span class="tag good">all received</span>{% endif %}{% else %}-{% endif %}</td></tr>
-  {% empty %}<tr><td colspan="8" class="muted">Nothing dispatched yet.</td></tr>{% endfor %}
+<section class="card"><h2>{% trans "Loads" %}</h2>
+  <div class="scroll"><table><thead><tr><th>{% trans "Dispatch" %}</th><th>{% trans "From" %}</th><th>{% trans "Stage" %}</th><th class="r">{% trans "Loaded" %}</th><th class="r">{% trans "At your gate" %}</th><th>{% trans "Vehicle" %}</th><th>{% trans "Delivered" %}</th><th>{% trans "In your yards" %}</th></tr></thead><tbody>
+  {% for d in dispatches %}<tr><td class="mono">{{ d.code }}</td><td>{{ d.grid.name }}</td><td>{{ d.get_stage_display }}</td><td class="r">{{ d.quantity_tonnes|tn:"1g" }}</td>
+    <td class="r">{% if d.stage == 'delivered' %}{{ d.current_quantity_tonnes|tn:"1g" }}{% else %}-{% endif %}</td><td>{{ d.vehicle_ref|default:"-" }}</td><td>{{ d.delivered_date|date:"d M Y"|default:"-" }}</td>
+    <td>{% if d.stage == 'delivered' %}{% for b in d.receipt_batches %}<a href="{% url 'customers:batch' b.pk %}">{{ b.code }}</a> ({{ b.intake_tonnes|tn:"1g" }}){% if not forloop.last %}, {% endif %}{% endfor %}
+      {% if d.to_receive > 0.05 %}<span class="tag warn">{% blocktrans trimmed with t=d.to_receive|tn:"1g" %}{{ t }} not in a yard{% endblocktrans %}</span>{% elif d.receipt_batches %}<span class="tag good">{% trans "all received" %}</span>{% endif %}{% else %}-{% endif %}</td></tr>
+  {% empty %}<tr><td colspan="8" class="muted">{% trans "Nothing dispatched yet." %}</td></tr>{% endfor %}
   </tbody></table></div></section>
 
 {% include "customers/who.html" %}

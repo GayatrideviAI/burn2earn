@@ -1,0 +1,921 @@
+# Punjabi translations for the customer pages.
+# Edit via the spreadsheet (translations export/import) or directly here.
+
+msgid ""
+msgstr ""
+"Project-Id-Version: Regenerix customer app\n"
+"Language: pa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: apps/customers/templates/customers/base.html:6 apps/customers/templates/customers/base.html:13
+msgid "Stock"
+msgstr "ਸਟਾਕ"
+
+#: apps/customers/templates/customers/base.html:13 apps/customers/templates/customers/contracts.html:3
+msgid "Contracts"
+msgstr "ਇਕਰਾਰਨਾਮੇ"
+
+#: apps/customers/templates/customers/base.html:21 apps/customers/templates/customers/forbidden.html:8
+msgid "Log out"
+msgstr "ਲਾਗ ਆਊਟ"
+
+#: apps/customers/templates/customers/batch.html:8
+msgid "Where"
+msgstr "ਕਿੱਥੇ"
+
+#: apps/customers/templates/customers/batch.html:9 apps/customers/templates/customers/yard.html:10
+msgid "Material"
+msgstr "ਸਮੱਗਰੀ"
+
+#: apps/customers/templates/customers/batch.html:10
+msgid "Received"
+msgstr "ਪ੍ਰਾਪਤ"
+
+#: apps/customers/templates/customers/batch.html:11
+msgid "Source"
+msgstr "ਸਰੋਤ"
+
+#: apps/customers/templates/customers/batch.html:11
+msgid "Not recorded"
+msgstr "ਦਰਜ ਨਹੀਂ"
+
+#: apps/customers/templates/customers/batch.html:12
+msgid "On the books"
+msgstr "ਰਿਕਾਰਡ ਵਿੱਚ"
+
+#: apps/customers/templates/customers/batch.html:13 apps/customers/templates/customers/yard.html:10
+msgid "Counted"
+msgstr "ਗਿਣਿਆ ਗਿਆ"
+
+#: apps/customers/templates/customers/batch.html:13
+msgid "Never counted"
+msgstr "ਕਦੇ ਨਹੀਂ ਗਿਣਿਆ ਗਿਆ"
+
+#: apps/customers/templates/customers/batch.html:14
+msgid "Reserved"
+msgstr "ਰਾਖਵਾਂ"
+
+#: apps/customers/templates/customers/batch.html:15 apps/customers/templates/customers/dashboard.html:12
+#. Usable stock minus what is already set aside for something.
+msgid "Available to use"
+msgstr "ਵਰਤਣ ਲਈ ਉਪਲਬਧ"
+
+#: apps/customers/templates/customers/batch.html:18
+#. The trail from farmer to Mitra to Grid to truck to the customer's yard.
+msgid "Chain of custody"
+msgstr ""
+
+#: apps/customers/templates/customers/batch.html:21
+msgid "Farmers"
+msgstr "ਕਿਸਾਨ"
+
+#: apps/customers/templates/customers/batch.html:21
+msgid "handed over the residue"
+msgstr "ਨੇ ਰਹਿੰਦ-ਖੂੰਹਦ ਸੌਂਪੀ"
+
+#: apps/customers/templates/customers/batch.html:23 apps/customers/templates/customers/who.html:11
+#. Shown as a code (e.g. FRM-000012) plus village; never a name.
+msgid "Farmer"
+msgstr "ਕਿਸਾਨ"
+
+#: apps/customers/templates/customers/batch.html:23 apps/customers/templates/customers/who.html:11
+msgid "Village"
+msgstr "ਪਿੰਡ"
+
+#: apps/customers/templates/customers/batch.html:23
+msgid "In this batch"
+msgstr "ਇਸ ਬੈਚ ਵਿੱਚ"
+
+#: apps/customers/templates/customers/batch.html:25
+msgid "No farmer pickups are recorded for this load."
+msgstr "ਇਸ ਖੇਪ ਲਈ ਕਿਸਾਨਾਂ ਤੋਂ ਕੋਈ ਚੁਕਾਈ ਦਰਜ ਨਹੀਂ ਹੈ।"
+
+#: apps/customers/templates/customers/batch.html:26
+#. The local person who collects crop residue from farmers and runs a Grid. Use the word the field team uses.
+msgid "Biomass Mitra"
+msgstr ""
+
+#: apps/customers/templates/customers/batch.html:26
+msgid "not recorded"
+msgstr "ਦਰਜ ਨਹੀਂ"
+
+#: apps/customers/templates/customers/batch.html:26
+msgid "collected and processed it at"
+msgstr "ਨੇ ਇਸਨੂੰ ਇੱਥੇ ਇਕੱਠਾ ਅਤੇ ਪ੍ਰੋਸੈਸ ਕੀਤਾ:"
+
+#: apps/customers/templates/customers/batch.html:28
+msgid "Against"
+msgstr "ਦੇ ਵਿਰੁੱਧ"
+
+#: apps/customers/templates/customers/batch.html:28
+msgid "under"
+msgstr "ਦੇ ਅਧੀਨ"
+
+#: apps/customers/templates/customers/batch.html:30
+msgid "Since then"
+msgstr "ਉਦੋਂ ਤੋਂ"
+
+#: apps/customers/templates/customers/batch.html:32
+msgid "This batch is not linked to a delivered load, so it cannot be traced back to farmers."
+msgstr "ਇਹ ਬੈਚ ਕਿਸੇ ਪਹੁੰਚਾਈ ਗਈ ਖੇਪ ਨਾਲ ਜੁੜਿਆ ਨਹੀਂ ਹੈ, ਇਸ ਲਈ ਇਸਨੂੰ ਕਿਸਾਨਾਂ ਤੱਕ ਨਹੀਂ ਲੱਭਿਆ ਜਾ ਸਕਦਾ।"
+
+#: apps/customers/templates/customers/batch.html:35
+msgid "Movements"
+msgstr "ਆਵਾਜਾਈ"
+
+#: apps/customers/templates/customers/batch.html:36
+msgid "When"
+msgstr "ਕਦੋਂ"
+
+#: apps/customers/templates/customers/batch.html:36
+msgid "What"
+msgstr "ਕੀ"
+
+#: apps/customers/templates/customers/batch.html:36
+msgid "Change"
+msgstr "ਬਦਲਾਅ"
+
+#: apps/customers/templates/customers/batch.html:36
+msgid "Note"
+msgstr "ਟਿੱਪਣੀ"
+
+#: apps/customers/templates/customers/batch.html:36
+msgid "Ledger"
+msgstr "ਵਹੀ"
+
+#: apps/customers/templates/customers/batch.html:39
+msgid "None yet."
+msgstr "ਹਾਲੇ ਕੋਈ ਨਹੀਂ।"
+
+#: apps/customers/templates/customers/batch.html:43
+msgid "Physical counts"
+msgstr "ਅਸਲ ਗਿਣਤੀ"
+
+#: apps/customers/templates/customers/batch.html:44
+msgid "Not counted yet."
+msgstr "ਹਾਲੇ ਗਿਣਤੀ ਨਹੀਂ ਹੋਈ।"
+
+#: apps/customers/templates/customers/batch.html:45
+msgid "Quality readings"
+msgstr "ਗੁਣਵੱਤਾ ਦੀਆਂ ਰੀਡਿੰਗਾਂ"
+
+#: apps/customers/templates/customers/batch.html:47
+msgid "moisture"
+msgstr "ਨਮੀ"
+
+#: apps/customers/templates/customers/batch.html:48
+msgid "ash"
+msgstr "ਸੁਆਹ"
+
+#: apps/customers/templates/customers/batch.html:50
+msgid "No readings yet."
+msgstr "ਹਾਲੇ ਕੋਈ ਰੀਡਿੰਗ ਨਹੀਂ।"
+
+#: apps/customers/templates/customers/batch.html:53
+#. A log where altering an old entry would be detected.
+msgid "Tamper-evident trail"
+msgstr ""
+
+#: apps/customers/templates/customers/batch.html:54
+msgid "Each entry carries a fingerprint of the one before it, so a changed record would be detected."
+msgstr ""
+
+#: apps/customers/templates/customers/batch.html:8
+#, python-format
+msgid "%(y)s, pile %(p)s (%(e)s)"
+msgstr "%(y)s, ਢੇਰ %(p)s (%(e)s)"
+
+#: apps/customers/templates/customers/batch.html:22
+#, python-format
+msgid "Farmers: %(n)s. Shared out by what each handed over at the Grid. Codes and villages only."
+msgstr ""
+
+#: apps/customers/templates/customers/batch.html:27
+#, python-format
+msgid "Dispatch %(c)s"
+msgstr "ਰਵਾਨਗੀ %(c)s"
+
+#: apps/customers/templates/customers/batch.html:27
+#, python-format
+msgid "left with %(q)s"
+msgstr "%(q)s ਨਾਲ ਰਵਾਨਾ ਹੋਇਆ"
+
+#: apps/customers/templates/customers/batch.html:27
+#, python-format
+msgid "on %(v)s"
+msgstr "%(v)s ਉੱਤੇ"
+
+#: apps/customers/templates/customers/batch.html:27
+#, python-format
+msgid "weighed %(w)s at your gate."
+msgstr "ਤੁਹਾਡੇ ਗੇਟ ਉੱਤੇ %(w)s ਤੋਲਿਆ ਗਿਆ।"
+
+#: apps/customers/templates/customers/batch.html:29
+#, python-format
+msgid "Yard batch %(c)s"
+msgstr "ਯਾਰਡ ਬੈਚ %(c)s"
+
+#: apps/customers/templates/customers/batch.html:29
+#, python-format
+msgid "%(t)s (%(s)s%% of that load) received %(d)s into %(y)s, pile %(p)s"
+msgstr "%(t)s (ਉਸ ਖੇਪ ਦਾ %(s)s%%) %(d)s ਨੂੰ %(y)s, ਢੇਰ %(p)s ਵਿੱਚ ਪ੍ਰਾਪਤ ਹੋਇਆ"
+
+#: apps/customers/templates/customers/batch.html:30
+#, python-format
+msgid "%(c)s burned at the plant, %(l)s lost"
+msgstr "ਪਲਾਂਟ ਵਿੱਚ %(c)s ਸਾੜਿਆ ਗਿਆ, %(l)s ਨੁਕਸਾਨ"
+
+#: apps/customers/templates/customers/batch.html:30
+#, python-format
+msgid "%(b)s still on the books."
+msgstr "%(b)s ਹਾਲੇ ਰਿਕਾਰਡ ਵਿੱਚ ਹੈ।"
+
+#: apps/customers/templates/customers/batch.html:44
+#, python-format
+msgid "%(d)s: <b>%(t)s</b> by %(m)s"
+msgstr "%(d)s: <b>%(t)s</b>, ਤਰੀਕਾ: %(m)s"
+
+#: apps/customers/templates/customers/contract.html:5
+msgid "All contracts"
+msgstr "ਸਾਰੇ ਇਕਰਾਰਨਾਮੇ"
+
+#: apps/customers/templates/customers/contract.html:8
+msgid "Period"
+msgstr "ਮਿਆਦ"
+
+#: apps/customers/templates/customers/contract.html:8 apps/customers/templates/customers/contract.html:28 apps/customers/templates/customers/contracts.html:18
+msgid "to"
+msgstr "ਤੋਂ"
+
+#: apps/customers/templates/customers/contract.html:9 apps/customers/templates/customers/contract.html:18 apps/customers/templates/customers/contract.html:26
+msgid "Delivered"
+msgstr "ਪਹੁੰਚਾਇਆ ਗਿਆ"
+
+#: apps/customers/templates/customers/contract.html:10
+#. Who bears the loss if stored stock is spoiled, rained on or burnt.
+msgid "Spoilage, rain and fire risk"
+msgstr "ਖਰਾਬੀ, ਮੀਂਹ ਅਤੇ ਅੱਗ ਦਾ ਜੋਖਮ"
+
+#: apps/customers/templates/customers/contract.html:11
+#. Contract penalties for late or short delivery.
+msgid "Penalties"
+msgstr "ਜੁਰਮਾਨੇ"
+
+#: apps/customers/templates/customers/contract.html:11
+msgid "None recorded"
+msgstr "ਕੁਝ ਦਰਜ ਨਹੀਂ"
+
+#: apps/customers/templates/customers/contract.html:18
+msgid "Month"
+msgstr "ਮਹੀਨਾ"
+
+#: apps/customers/templates/customers/contract.html:18
+msgid "Planned"
+msgstr "ਯੋਜਨਾ"
+
+#: apps/customers/templates/customers/contract.html:18
+msgid "Difference"
+msgstr "ਫ਼ਰਕ"
+
+#: apps/customers/templates/customers/contract.html:25
+#. A purchase order is the customer's call for a quantity within a contract.
+msgid "Purchase orders"
+msgstr "ਖਰੀਦ ਆਰਡਰ"
+
+#: apps/customers/templates/customers/contract.html:26
+msgid "Order"
+msgstr "ਆਰਡਰ"
+
+#: apps/customers/templates/customers/contract.html:26 apps/customers/templates/customers/order.html:9
+msgid "Plant"
+msgstr "ਪਲਾਂਟ"
+
+#: apps/customers/templates/customers/contract.html:26
+msgid "Window"
+msgstr "ਸਮਾਂ-ਸੀਮਾ"
+
+#: apps/customers/templates/customers/contract.html:26 apps/customers/templates/customers/contracts.html:21 apps/customers/templates/customers/order.html:11
+msgid "Ordered"
+msgstr "ਮੰਗਵਾਇਆ ਗਿਆ"
+
+#: apps/customers/templates/customers/contract.html:26 apps/customers/templates/customers/contracts.html:21 apps/customers/templates/customers/order.html:13
+msgid "On the way"
+msgstr "ਰਸਤੇ ਵਿੱਚ"
+
+#: apps/customers/templates/customers/contract.html:30 apps/customers/models.py:392 apps/trade/models.py:121
+msgid "Cancelled"
+msgstr "ਰੱਦ"
+
+#: apps/customers/templates/customers/contract.html:30
+msgid "Late"
+msgstr "ਦੇਰੀ"
+
+#: apps/customers/templates/customers/contract.html:30
+msgid "Complete"
+msgstr "ਮੁਕੰਮਲ"
+
+#: apps/customers/templates/customers/contract.html:31
+msgid "No purchase orders yet."
+msgstr "ਹਾਲੇ ਕੋਈ ਖਰੀਦ ਆਰਡਰ ਨਹੀਂ।"
+
+#: apps/customers/templates/customers/contract.html:9
+#, python-format
+msgid "%(d)s of %(c)s (%(pc)s%%)"
+msgstr "%(c)s ਵਿੱਚੋਂ %(d)s (%(pc)s%%)"
+
+#: apps/customers/templates/customers/contract.html:16
+#, python-format
+msgid "at ₹%(pr)s/t"
+msgstr "₹%(pr)s/ਟਨ ਦੀ ਦਰ ਨਾਲ"
+
+#: apps/customers/templates/customers/contract.html:17
+#, python-format
+msgid "%(d)s delivered (%(pc)s%%), %(w)s on the way, %(o)s ordered, %(n)s not yet ordered."
+msgstr "%(d)s ਪਹੁੰਚਿਆ (%(pc)s%%), %(w)s ਰਸਤੇ ਵਿੱਚ, %(o)s ਮੰਗਵਾਇਆ ਗਿਆ, %(n)s ਦਾ ਆਰਡਰ ਹਾਲੇ ਨਹੀਂ ਦਿੱਤਾ ਗਿਆ।"
+
+#: apps/customers/templates/customers/contracts.html:5
+msgid "Contracts and deliveries"
+msgstr "ਇਕਰਾਰਨਾਮੇ ਅਤੇ ਸਪਲਾਈ"
+
+#: apps/customers/templates/customers/contracts.html:6
+msgid "What was contracted, what has reached your gate, and what is still to come."
+msgstr "ਕੀ ਤੈਅ ਹੋਇਆ ਸੀ, ਤੁਹਾਡੇ ਗੇਟ ਤੱਕ ਕੀ ਪਹੁੰਚਿਆ, ਅਤੇ ਹਾਲੇ ਕੀ ਆਉਣਾ ਬਾਕੀ ਹੈ।"
+
+#: apps/customers/templates/customers/contracts.html:8
+msgid "Needs attention"
+msgstr "ਧਿਆਨ ਦੇਣ ਦੀ ਲੋੜ"
+
+#: apps/customers/templates/customers/contracts.html:17
+msgid "Behind"
+msgstr "ਪਿੱਛੇ"
+
+#: apps/customers/templates/customers/contracts.html:21 apps/customers/templates/customers/order.html:8
+msgid "Product"
+msgstr "ਉਤਪਾਦ"
+
+#: apps/customers/templates/customers/contracts.html:21
+msgid "Contracted"
+msgstr "ਇਕਰਾਰ ਕੀਤਾ"
+
+#: apps/customers/templates/customers/contracts.html:25
+msgid "No contracts are recorded for your company yet."
+msgstr "ਤੁਹਾਡੀ ਕੰਪਨੀ ਲਈ ਹਾਲੇ ਕੋਈ ਇਕਰਾਰਨਾਮਾ ਦਰਜ ਨਹੀਂ ਹੈ।"
+
+#: apps/customers/templates/customers/contracts.html:19
+#, python-format
+msgid "%(p)s%% delivered"
+msgstr "%(p)s%% ਪਹੁੰਚਿਆ"
+
+#: apps/customers/templates/customers/contracts.html:20
+#, python-format
+msgid "%(d)s delivered of %(c)s (%(p)s%%). The marker shows how much of the period has passed."
+msgstr "%(c)s ਵਿੱਚੋਂ %(d)s ਪਹੁੰਚਿਆ (%(p)s%%)। ਨਿਸ਼ਾਨ ਦਿਖਾਉਂਦਾ ਹੈ ਕਿ ਮਿਆਦ ਦਾ ਕਿੰਨਾ ਹਿੱਸਾ ਬੀਤ ਚੁੱਕਾ ਹੈ।"
+
+#: apps/customers/templates/customers/dashboard.html:3 apps/customers/templates/customers/dashboard.html:5
+msgid "Stock overview"
+msgstr "ਸਟਾਕ ਦੀ ਸਥਿਤੀ"
+
+#: apps/customers/templates/customers/dashboard.html:9
+#. Stock according to the paperwork/records, before anyone counts it.
+msgid "Book inventory"
+msgstr ""
+
+#: apps/customers/templates/customers/dashboard.html:9
+msgid "What the records say"
+msgstr "ਰਿਕਾਰਡ ਅਨੁਸਾਰ"
+
+#: apps/customers/templates/customers/dashboard.html:10
+#. Stock that has actually been counted, plus what moved since.
+msgid "Physical inventory"
+msgstr ""
+
+#: apps/customers/templates/customers/dashboard.html:10
+msgid "Counted, plus movements since"
+msgstr "ਗਿਣਿਆ ਹੋਇਆ, ਅਤੇ ਉਸ ਤੋਂ ਬਾਅਦ ਦੀ ਆਵਾਜਾਈ"
+
+#: apps/customers/templates/customers/dashboard.html:11
+#. Counted stock that is dry enough for the plant (below its moisture limit).
+msgid "Usable inventory"
+msgstr ""
+
+#: apps/customers/templates/customers/dashboard.html:11
+msgid "Physical stock that meets your moisture limit"
+msgstr "ਉਹ ਅਸਲ ਸਟਾਕ ਜੋ ਤੁਹਾਡੀ ਨਮੀ ਦੀ ਹੱਦ ਦੇ ਅੰਦਰ ਹੈ"
+
+#: apps/customers/templates/customers/dashboard.html:13
+#. How many days the plant can run on the stock it has available.
+msgid "Fuel cover"
+msgstr ""
+
+#: apps/customers/templates/customers/dashboard.html:14
+msgid "Add your plant's daily burn to see this"
+msgstr "ਇਹ ਵੇਖਣ ਲਈ ਆਪਣੇ ਪਲਾਂਟ ਦੀ ਰੋਜ਼ ਦੀ ਖਪਤ ਜੋੜੋ"
+
+#: apps/customers/templates/customers/dashboard.html:15
+msgid "day"
+msgstr "ਦਿਨ"
+
+#: apps/customers/templates/customers/dashboard.html:20
+msgid "What to do next"
+msgstr "ਅੱਗੇ ਕੀ ਕਰਨਾ ਹੈ"
+
+#: apps/customers/templates/customers/dashboard.html:32
+msgid "Nothing needs attention right now."
+msgstr "ਇਸ ਵੇਲੇ ਕਿਸੇ ਚੀਜ਼ ਵੱਲ ਧਿਆਨ ਦੇਣ ਦੀ ਲੋੜ ਨਹੀਂ ਹੈ।"
+
+#: apps/customers/templates/customers/dashboard.html:36
+msgid "Stock by yard"
+msgstr "ਯਾਰਡ ਅਨੁਸਾਰ ਸਟਾਕ"
+
+#: apps/customers/templates/customers/dashboard.html:39
+msgid "Yard"
+msgstr "ਯਾਰਡ"
+
+#: apps/customers/templates/customers/dashboard.html:39 apps/customers/templates/customers/yard.html:10
+msgid "Book"
+msgstr "ਰਿਕਾਰਡ"
+
+#: apps/customers/templates/customers/dashboard.html:39
+msgid "Physical"
+msgstr "ਅਸਲ"
+
+#: apps/customers/templates/customers/dashboard.html:39
+msgid "Usable"
+msgstr "ਵਰਤੋਂ ਯੋਗ"
+
+#: apps/customers/templates/customers/dashboard.html:39
+msgid "Available"
+msgstr "ਉਪਲਬਧ"
+
+#: apps/customers/templates/customers/dashboard.html:39 apps/customers/models.py:113
+#. Stored without a cover so rain can reach it.
+msgid "Open to rain"
+msgstr "ਮੀਂਹ ਵਿੱਚ ਖੁੱਲ੍ਹਾ"
+
+#: apps/customers/templates/customers/dashboard.html:50
+msgid "No stock is recorded for your company yet."
+msgstr "ਤੁਹਾਡੀ ਕੰਪਨੀ ਲਈ ਹਾਲੇ ਕੋਈ ਸਟਾਕ ਦਰਜ ਨਹੀਂ ਹੈ।"
+
+#: apps/customers/templates/customers/dashboard.html:12
+#, python-format
+msgid "Usable minus %(r)s reserved"
+msgstr "ਵਰਤੋਂ ਯੋਗ ਵਿੱਚੋਂ %(r)s ਰਾਖਵਾਂ ਘਟਾ ਕੇ"
+
+#: apps/customers/templates/customers/dashboard.html:15
+#, python-format
+msgid "%(n)s days"
+msgstr "%(n)s ਦਿਨ"
+
+#: apps/customers/templates/customers/dashboard.html:43
+#, python-format
+msgid "%(n)s not counted"
+msgstr "%(n)s ਦੀ ਗਿਣਤੀ ਨਹੀਂ ਹੋਈ"
+
+#: apps/customers/templates/customers/dashboard.html:51
+#, python-format
+msgid "Stock only counts as usable once it has been physically counted (within %(n)s days) and has a measured moisture reading within your plant's limit."
+msgstr "ਸਟਾਕ ਤਦ ਹੀ ਵਰਤੋਂ ਯੋਗ ਮੰਨਿਆ ਜਾਂਦਾ ਹੈ ਜਦੋਂ ਉਸਦੀ ਅਸਲ ਗਿਣਤੀ ਹੋ ਚੁੱਕੀ ਹੋਵੇ (%(n)s ਦਿਨਾਂ ਦੇ ਅੰਦਰ) ਅਤੇ ਮਾਪੀ ਗਈ ਨਮੀ ਤੁਹਾਡੇ ਪਲਾਂਟ ਦੀ ਹੱਦ ਦੇ ਅੰਦਰ ਹੋਵੇ।"
+
+#: apps/customers/templates/customers/forbidden.html:3
+msgid "No access"
+msgstr "ਪਹੁੰਚ ਨਹੀਂ"
+
+#: apps/customers/templates/customers/forbidden.html:6
+msgid "This login is not set up for customer stock"
+msgstr "ਇਹ ਲਾਗਇਨ ਗਾਹਕ ਸਟਾਕ ਲਈ ਸੈੱਟ ਨਹੀਂ ਹੈ"
+
+#: apps/customers/templates/customers/forbidden.html:7
+msgid "Ask Regenerix to link your login to your company."
+msgstr "Regenerix ਨੂੰ ਕਹੋ ਕਿ ਉਹ ਤੁਹਾਡਾ ਲਾਗਇਨ ਤੁਹਾਡੀ ਕੰਪਨੀ ਨਾਲ ਜੋੜ ਦੇਵੇ।"
+
+#: apps/customers/templates/customers/login.html:3 apps/customers/templates/customers/login.html:10
+msgid "Log in"
+msgstr "ਲਾਗ ਇਨ"
+
+#: apps/customers/templates/customers/login.html:6
+msgid "Customer log in"
+msgstr "ਗਾਹਕ ਲਾਗ ਇਨ"
+
+#: apps/customers/templates/customers/order.html:10
+msgid "Delivery window"
+msgstr "ਸਪਲਾਈ ਦੀ ਸਮਾਂ-ਸੀਮਾ"
+
+#: apps/customers/templates/customers/order.html:14
+msgid "Still to come"
+msgstr "ਆਉਣਾ ਬਾਕੀ"
+
+#: apps/customers/templates/customers/order.html:18
+msgid "Loads"
+msgstr "ਖੇਪਾਂ"
+
+#: apps/customers/templates/customers/order.html:19
+msgid "Dispatch"
+msgstr "ਰਵਾਨਗੀ"
+
+#: apps/customers/templates/customers/order.html:19
+msgid "From"
+msgstr "ਕਿੱਥੋਂ"
+
+#: apps/customers/templates/customers/order.html:19
+msgid "Stage"
+msgstr "ਪੜਾਅ"
+
+#: apps/customers/templates/customers/order.html:19
+msgid "Loaded"
+msgstr "ਲੱਦਿਆ ਗਿਆ"
+
+#: apps/customers/templates/customers/order.html:19
+msgid "At your gate"
+msgstr "ਤੁਹਾਡੇ ਗੇਟ ਉੱਤੇ"
+
+#: apps/customers/templates/customers/order.html:19
+msgid "Vehicle"
+msgstr "ਗੱਡੀ"
+
+#: apps/customers/templates/customers/order.html:19
+msgid "In your yards"
+msgstr "ਤੁਹਾਡੇ ਯਾਰਡਾਂ ਵਿੱਚ"
+
+#: apps/customers/templates/customers/order.html:23
+msgid "all received"
+msgstr "ਸਭ ਪ੍ਰਾਪਤ"
+
+#: apps/customers/templates/customers/order.html:24
+msgid "Nothing dispatched yet."
+msgstr "ਹਾਲੇ ਕੁਝ ਰਵਾਨਾ ਨਹੀਂ ਹੋਇਆ।"
+
+#: apps/customers/templates/customers/order.html:12
+#, python-format
+msgid "%(d)s (%(pc)s%%)"
+msgstr "%(d)s (%(pc)s%%)"
+
+#: apps/customers/templates/customers/order.html:14
+#, python-format
+msgid "(over-delivered by %(t)s)"
+msgstr "(%(t)s ਵੱਧ ਪਹੁੰਚਿਆ)"
+
+#: apps/customers/templates/customers/order.html:16
+#, python-format
+msgid "Late: the window closed on %(d)s"
+msgstr "ਦੇਰੀ: ਸਮਾਂ-ਸੀਮਾ %(d)s ਨੂੰ ਖ਼ਤਮ ਹੋ ਗਈ"
+
+#: apps/customers/templates/customers/order.html:23
+#, python-format
+msgid "%(t)s not in a yard"
+msgstr "%(t)s ਯਾਰਡ ਵਿੱਚ ਨਹੀਂ ਹੈ"
+
+#: apps/customers/templates/customers/who.html:2
+msgid "Where the delivered biomass came from"
+msgstr "ਪਹੁੰਚਿਆ ਹੋਇਆ ਬਾਇਓਮਾਸ ਕਿੱਥੋਂ ਆਇਆ"
+
+#: apps/customers/templates/customers/who.html:6
+#. Plural of 'Biomass Mitra'.
+msgid "Biomass Mitras"
+msgstr ""
+
+#: apps/customers/templates/customers/who.html:7
+msgid "No Mitra recorded."
+msgstr ""
+
+#: apps/customers/templates/customers/who.html:9
+#. A Grid is a local collection and processing point run by a Biomass Mitra.
+msgid "Grids"
+msgstr ""
+
+#: apps/customers/templates/customers/who.html:11
+msgid "Attributed"
+msgstr ""
+
+#: apps/customers/templates/customers/who.html:16
+msgid "Nothing delivered yet."
+msgstr "ਹਾਲੇ ਕੁਝ ਨਹੀਂ ਪਹੁੰਚਿਆ।"
+
+#: apps/customers/templates/customers/who.html:4
+#, python-format
+msgid "%(t)s delivered. Farmers are shared out in proportion to the tonnes each handed over at the supplying Grid (the lots are not tagged farmer by farmer), so read this as a fair attribution, not lot-level proof. Only farmer codes and villages are shown."
+msgstr ""
+
+#: apps/customers/templates/customers/who.html:10
+#, python-format
+msgid "Farmers (%(n)s)"
+msgstr "ਕਿਸਾਨ (%(n)s)"
+
+#: apps/customers/templates/customers/who.html:14
+#, python-format
+msgid "%(t)s could not be attributed because no farmer pickups are recorded for it."
+msgstr ""
+
+#: apps/customers/templates/customers/yard.html:5
+msgid "All yards"
+msgstr "ਸਾਰੇ ਯਾਰਡ"
+
+#: apps/customers/templates/customers/yard.html:10
+#. A heap of stored biomass inside a yard.
+msgid "Pile"
+msgstr "ਢੇਰ"
+
+#: apps/customers/templates/customers/yard.html:10
+msgid "Batch"
+msgstr "ਬੈਚ"
+
+#: apps/customers/templates/customers/yard.html:10
+msgid "Confidence"
+msgstr ""
+
+#: apps/customers/templates/customers/yard.html:10
+msgid "Moisture"
+msgstr "ਨਮੀ"
+
+#: apps/customers/templates/customers/yard.html:19
+msgid "no reading"
+msgstr "ਕੋਈ ਰੀਡਿੰਗ ਨਹੀਂ"
+
+#: apps/customers/templates/customers/yard.html:19
+msgid "over limit"
+msgstr "ਹੱਦ ਤੋਂ ਵੱਧ"
+
+#: apps/customers/templates/customers/yard.html:7
+#, python-format
+msgid "your stock here: %(b)s on the books, %(a)s available to use"
+msgstr "ਇੱਥੇ ਤੁਹਾਡਾ ਸਟਾਕ: ਰਿਕਾਰਡ ਵਿੱਚ %(b)s, ਵਰਤੋਂ ਲਈ %(a)s ਉਪਲਬਧ"
+
+#: apps/customers/models.py:32
+msgid "Procurement / fuel manager"
+msgstr "ਖਰੀਦ / ਬਾਲਣ ਮੈਨੇਜਰ"
+
+#: apps/customers/models.py:33
+msgid "Plant operations"
+msgstr "ਪਲਾਂਟ ਸੰਚਾਲਨ"
+
+#: apps/customers/models.py:34
+msgid "Finance"
+msgstr "ਵਿੱਤ"
+
+#: apps/customers/models.py:35
+msgid "ESG / sustainability"
+msgstr ""
+
+#: apps/customers/models.py:75 apps/customers/models.py:310
+msgid "Regenerix"
+msgstr ""
+
+#: apps/customers/models.py:76
+msgid "VLE"
+msgstr ""
+
+#: apps/customers/models.py:77
+msgid "Third party"
+msgstr "ਤੀਜੀ ਧਿਰ"
+
+#: apps/customers/models.py:78 apps/customers/models.py:312
+msgid "The customer"
+msgstr "ਗਾਹਕ"
+
+#: apps/customers/models.py:106
+#. Compressed rectangular blocks of straw.
+msgid "Bales"
+msgstr "ਗੱਠਾਂ"
+
+#: apps/customers/models.py:107
+#. Straw cut up but not baled.
+msgid "Loose chopped straw"
+msgstr "ਖੁੱਲ੍ਹੀ ਕੱਟੀ ਹੋਈ ਪਰਾਲੀ"
+
+#: apps/customers/models.py:108
+#. Small pressed pieces of biomass.
+msgid "Pellets"
+msgstr "ਪੈਲੇਟ"
+
+#: apps/customers/models.py:109
+#. Larger pressed blocks of biomass.
+msgid "Briquettes"
+msgstr "ਬ੍ਰਿਕੇਟ"
+
+#: apps/customers/models.py:114
+msgid "Part covered"
+msgstr "ਅੰਸ਼ਕ ਤੌਰ ਉੱਤੇ ਢਕਿਆ"
+
+#: apps/customers/models.py:115
+msgid "Protected"
+msgstr "ਸੁਰੱਖਿਅਤ"
+
+#: apps/customers/models.py:199
+msgid "Receipt"
+msgstr "ਪ੍ਰਾਪਤੀ"
+
+#: apps/customers/models.py:200
+#. Stock moved from one pile to another inside the yard.
+msgid "Moved to another pile"
+msgstr "ਦੂਜੇ ਢੇਰ ਵਿੱਚ ਲਿਜਾਇਆ ਗਿਆ"
+
+#: apps/customers/models.py:201
+#. Used as fuel.
+msgid "Burned at the plant"
+msgstr "ਪਲਾਂਟ ਵਿੱਚ ਸਾੜਿਆ ਗਿਆ"
+
+#: apps/customers/models.py:202
+msgid "Adjustment"
+msgstr "ਸੁਧਾਈ"
+
+#: apps/customers/models.py:203
+msgid "Loss"
+msgstr "ਨੁਕਸਾਨ"
+
+#: apps/customers/models.py:204
+msgid "Returned to supplier"
+msgstr "ਸਪਲਾਇਰ ਨੂੰ ਮੋੜਿਆ ਗਿਆ"
+
+#: apps/customers/models.py:205
+msgid "Disposed of"
+msgstr "ਸੁੱਟਿਆ ਗਿਆ"
+
+#: apps/customers/models.py:209
+msgid "Rain"
+msgstr "ਮੀਂਹ"
+
+#: apps/customers/models.py:210
+msgid "Decomposition"
+msgstr "ਸੜਨ"
+
+#: apps/customers/models.py:211
+msgid "Contamination"
+msgstr "ਮਿਲਾਵਟ"
+
+#: apps/customers/models.py:212
+msgid "Handling"
+msgstr "ਚੁੱਕ-ਧਰਾਈ"
+
+#: apps/customers/models.py:213
+msgid "Fire"
+msgstr "ਅੱਗ"
+
+#: apps/customers/models.py:214
+msgid "Other"
+msgstr "ਹੋਰ"
+
+#: apps/customers/models.py:237
+msgid "Measured"
+msgstr "ਮਾਪਿਆ ਗਿਆ"
+
+#: apps/customers/models.py:238 apps/customers/templatetags/customers_i18n.py:15
+#. Estimated by survey or drone, not weighed.
+msgid "Estimated"
+msgstr "ਅੰਦਾਜ਼ਨ"
+
+#: apps/customers/models.py:268
+#. The truck scale at the plant gate.
+msgid "Weighbridge"
+msgstr "ਧਰਮ ਕੰਡਾ"
+
+#: apps/customers/models.py:269
+msgid "QR scan and count"
+msgstr "QR ਸਕੈਨ ਅਤੇ ਗਿਣਤੀ"
+
+#: apps/customers/models.py:270
+msgid "Survey or drone estimate"
+msgstr "ਸਰਵੇ ਜਾਂ ਡਰੋਨ ਨਾਲ ਅੰਦਾਜ਼ਾ"
+
+#: apps/customers/models.py:271
+msgid "Physical audit"
+msgstr "ਅਸਲ ਜਾਂਚ"
+
+#: apps/customers/models.py:311
+msgid "The yard operator"
+msgstr "ਯਾਰਡ ਸੰਚਾਲਕ"
+
+#: apps/customers/models.py:313
+msgid "Shared (see notes)"
+msgstr "ਸਾਂਝਾ (ਟਿੱਪਣੀ ਵੇਖੋ)"
+
+#: apps/customers/models.py:390
+msgid "Open"
+msgstr "ਖੁੱਲ੍ਹਾ"
+
+#: apps/customers/models.py:391
+msgid "Fulfilled"
+msgstr "ਪੂਰਾ ਹੋਇਆ"
+
+#: apps/customers/services.py:356
+#, python-format
+msgid "%(yard)s, pile %(pile)s"
+msgstr "%(yard)s, ਢੇਰ %(pile)s"
+
+#: apps/customers/services.py:359
+msgid "Verification overdue"
+msgstr "ਜਾਂਚ ਵਿੱਚ ਦੇਰੀ"
+
+#: apps/customers/services.py:359
+#, python-format
+msgid "%(code)s (%(where)s) was last counted %(days)s days ago."
+msgstr "%(code)s (%(where)s) ਦੀ ਆਖ਼ਰੀ ਗਿਣਤੀ %(days)s ਦਿਨ ਪਹਿਲਾਂ ਹੋਈ ਸੀ।"
+
+#: apps/customers/services.py:361
+msgid "Not counted yet"
+msgstr "ਹਾਲੇ ਗਿਣਤੀ ਨਹੀਂ ਹੋਈ"
+
+#: apps/customers/services.py:361
+#, python-format
+msgid "%(code)s (%(where)s) has never been physically counted, so it is not usable stock yet."
+msgstr "%(code)s (%(where)s) ਦੀ ਕਦੇ ਅਸਲ ਗਿਣਤੀ ਨਹੀਂ ਹੋਈ, ਇਸ ਲਈ ਇਹ ਹਾਲੇ ਵਰਤੋਂ ਯੋਗ ਸਟਾਕ ਨਹੀਂ ਹੈ।"
+
+#: apps/customers/services.py:363
+msgid "Check moisture"
+msgstr "ਨਮੀ ਜਾਂਚੋ"
+
+#: apps/customers/services.py:363
+#, python-format
+msgid "%(code)s (%(where)s) has no measured moisture reading."
+msgstr "%(code)s (%(where)s) ਦੀ ਨਮੀ ਦੀ ਕੋਈ ਮਾਪੀ ਹੋਈ ਰੀਡਿੰਗ ਨਹੀਂ ਹੈ।"
+
+#: apps/customers/services.py:365
+msgid "Over moisture limit"
+msgstr "ਨਮੀ ਦੀ ਹੱਦ ਤੋਂ ਵੱਧ"
+
+#: apps/customers/services.py:365
+#, python-format
+msgid "%(code)s (%(where)s) is at %(moisture)s%%, above your %(limit)s%% limit."
+msgstr "%(code)s (%(where)s) ਵਿੱਚ ਨਮੀ %(moisture)s%% ਹੈ, ਜੋ ਤੁਹਾਡੀ %(limit)s%% ਦੀ ਹੱਦ ਤੋਂ ਵੱਧ ਹੈ।"
+
+#: apps/customers/services.py:368
+#. Action title: the records and the physical count do not match, someone should check.
+msgid "Reconcile"
+msgstr ""
+
+#: apps/customers/services.py:368
+#, python-format
+msgid "%(code)s (%(where)s): books say %(book)s t, counted %(counted)s t."
+msgstr "%(code)s (%(where)s): ਰਿਕਾਰਡ ਵਿੱਚ %(book)s ਟਨ, ਗਿਣਤੀ ਵਿੱਚ %(counted)s ਟਨ।"
+
+#: apps/customers/services.py:370
+msgid "Low fuel cover"
+msgstr ""
+
+#: apps/customers/services.py:370
+#, python-format
+msgid "%(days)s days of cover is less than the %(lead)s-day replenishment lead time."
+msgstr ""
+
+#: apps/customers/contracts.py:292
+#. Alert title.
+msgid "Delivery late"
+msgstr "ਸਪਲਾਈ ਵਿੱਚ ਦੇਰੀ"
+
+#: apps/customers/contracts.py:292
+#, python-format
+msgid "%(code)s (%(product)s) was due by %(date)s; %(left)s t still to come."
+msgstr "%(code)s (%(product)s) %(date)s ਤੱਕ ਆਉਣਾ ਸੀ; %(left)s ਟਨ ਹਾਲੇ ਆਉਣਾ ਬਾਕੀ ਹੈ।"
+
+#: apps/customers/contracts.py:296
+#. Alert title: delivered to the plant gate but not yet recorded as put into a yard.
+msgid "Not in a yard yet"
+msgstr "ਹਾਲੇ ਯਾਰਡ ਵਿੱਚ ਨਹੀਂ"
+
+#: apps/customers/contracts.py:296
+#, python-format
+msgid "%(code)s: %(left)s t was delivered to your gate but is not recorded in any yard."
+msgstr "%(code)s: %(left)s ਟਨ ਤੁਹਾਡੇ ਗੇਟ ਉੱਤੇ ਪਹੁੰਚਿਆ, ਪਰ ਕਿਸੇ ਯਾਰਡ ਵਿੱਚ ਦਰਜ ਨਹੀਂ ਹੈ।"
+
+#: apps/customers/contracts.py:300
+#. Alert title: less delivered than the time passed would suggest.
+msgid "Contract behind"
+msgstr "ਇਕਰਾਰਨਾਮਾ ਪਿੱਛੇ ਚੱਲ ਰਿਹਾ ਹੈ"
+
+#: apps/customers/contracts.py:300
+#, python-format
+msgid "%(code)s has had %(percent)s%% delivered with %(elapsed)s%% of the period gone."
+msgstr "%(code)s ਵਿੱਚ %(percent)s%% ਪਹੁੰਚਿਆ ਹੈ ਜਦਕਿ ਮਿਆਦ ਦਾ %(elapsed)s%% ਬੀਤ ਚੁੱਕਾ ਹੈ।"
+
+#: apps/customers/templatetags/customers_i18n.py:13
+#. Counted recently and measured.
+msgid "Verified"
+msgstr "ਪੁਸ਼ਟੀ ਕੀਤੀ"
+
+#: apps/customers/templatetags/customers_i18n.py:14
+#. Worked out from records and movements, not counted.
+msgid "Calculated"
+msgstr "ਹਿਸਾਬ ਨਾਲ ਕੱਢਿਆ"
+
+#: apps/customers/templatetags/customers_i18n.py:16
+#. Last counted too long ago; needs a fresh count.
+msgid "Overdue for check"
+msgstr "ਜਾਂਚ ਵਿੱਚ ਦੇਰੀ"
+
+#: apps/customers/templatetags/customers_i18n.py:23
+#. Short for tonne (1,000 kg), written after every weight, e.g. '12.5 t'.
+msgid "t"
+msgstr "ਟਨ"
+
+#: apps/trade/models.py:117
+msgid "At the Grid"
+msgstr ""
+
+#: apps/trade/models.py:118
+msgid "At the Hub"
+msgstr ""
+
+#: apps/trade/models.py:119
+msgid "On the way to the buyer"
+msgstr "ਖਰੀਦਦਾਰ ਵੱਲ ਰਸਤੇ ਵਿੱਚ"

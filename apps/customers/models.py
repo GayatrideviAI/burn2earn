@@ -14,6 +14,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.models import Role
 from apps.core.codes import next_code
@@ -28,10 +29,10 @@ PERCENT = [MinValueValidator(0), MaxValueValidator(100)]
 
 
 class JobRole(models.TextChoices):
-    PROCUREMENT = "procurement", "Procurement / fuel manager"
-    OPERATIONS = "operations", "Plant operations"
-    FINANCE = "finance", "Finance"
-    ESG = "esg", "ESG / sustainability"
+    PROCUREMENT = "procurement", _("Procurement / fuel manager")
+    OPERATIONS = "operations", _("Plant operations")
+    FINANCE = "finance", _("Finance")
+    ESG = "esg", _("ESG / sustainability")
 
 
 class CustomerMember(BaseModel):
@@ -71,10 +72,10 @@ class PlantProfile(BaseModel):
 
 
 class OwnerType(models.TextChoices):
-    REGENERIX = "regenerix", "Regenerix"
-    VLE = "vle", "VLE"
-    THIRD_PARTY = "third_party", "Third party"
-    CUSTOMER = "customer", "The customer"
+    REGENERIX = "regenerix", _("Regenerix")
+    VLE = "vle", _("VLE")
+    THIRD_PARTY = "third_party", _("Third party")
+    CUSTOMER = "customer", _("The customer")
 
 
 class Stockyard(BaseModel):
@@ -102,16 +103,16 @@ class Stockyard(BaseModel):
 
 
 class BiomassForm(models.TextChoices):
-    BALES = "bales", "Bales"
-    LOOSE = "loose", "Loose chopped straw"
-    PELLETS = "pellets", "Pellets"
-    BRIQUETTES = "briquettes", "Briquettes"
+    BALES = "bales", _("Bales")
+    LOOSE = "loose", _("Loose chopped straw")
+    PELLETS = "pellets", _("Pellets")
+    BRIQUETTES = "briquettes", _("Briquettes")
 
 
 class Exposure(models.TextChoices):
-    OPEN = "open", "Open to rain"
-    PART = "part", "Part covered"
-    PROTECTED = "protected", "Protected"
+    OPEN = "open", _("Open to rain")
+    PART = "part", _("Part covered")
+    PROTECTED = "protected", _("Protected")
 
 
 class Pile(BaseModel):
@@ -195,22 +196,22 @@ class Batch(BaseModel):
 
 
 class TransactionKind(models.TextChoices):
-    RECEIPT = "receipt", "Receipt"
-    TRANSFER = "transfer", "Moved to another pile"
-    CONSUMPTION = "consumption", "Burned at the plant"
-    ADJUSTMENT = "adjustment", "Adjustment"
-    LOSS = "loss", "Loss"
-    RETURN = "return", "Returned to supplier"
-    DISPOSAL = "disposal", "Disposed of"
+    RECEIPT = "receipt", _("Receipt")
+    TRANSFER = "transfer", _("Moved to another pile")
+    CONSUMPTION = "consumption", _("Burned at the plant")
+    ADJUSTMENT = "adjustment", _("Adjustment")
+    LOSS = "loss", _("Loss")
+    RETURN = "return", _("Returned to supplier")
+    DISPOSAL = "disposal", _("Disposed of")
 
 
 class LossCause(models.TextChoices):
-    RAIN = "rain", "Rain"
-    DECOMPOSITION = "decomposition", "Decomposition"
-    CONTAMINATION = "contamination", "Contamination"
-    HANDLING = "handling", "Handling"
-    FIRE = "fire", "Fire"
-    OTHER = "other", "Other"
+    RAIN = "rain", _("Rain")
+    DECOMPOSITION = "decomposition", _("Decomposition")
+    CONTAMINATION = "contamination", _("Contamination")
+    HANDLING = "handling", _("Handling")
+    FIRE = "fire", _("Fire")
+    OTHER = "other", _("Other")
 
 
 class InventoryTransaction(BaseModel):
@@ -233,8 +234,8 @@ class InventoryTransaction(BaseModel):
 
 
 class Basis(models.TextChoices):
-    MEASURED = "measured", "Measured"
-    ESTIMATED = "estimated", "Estimated"
+    MEASURED = "measured", _("Measured")
+    ESTIMATED = "estimated", _("Estimated")
 
 
 class QualityObservation(BaseModel):
@@ -264,10 +265,10 @@ class QualityObservation(BaseModel):
 
 
 class CountMethod(models.TextChoices):
-    WEIGHBRIDGE = "weighbridge", "Weighbridge"
-    QR_SCAN = "qr_scan", "QR scan and count"
-    SURVEY = "survey", "Survey or drone estimate"
-    AUDIT = "audit", "Physical audit"
+    WEIGHBRIDGE = "weighbridge", _("Weighbridge")
+    QR_SCAN = "qr_scan", _("QR scan and count")
+    SURVEY = "survey", _("Survey or drone estimate")
+    AUDIT = "audit", _("Physical audit")
 
 
 class StockCount(BaseModel):
@@ -306,10 +307,10 @@ class Reservation(BaseModel):
 
 
 class RiskBearer(models.TextChoices):
-    REGENERIX = "regenerix", "Regenerix"
-    YARD_OPERATOR = "yard_operator", "The yard operator"
-    CUSTOMER = "customer", "The customer"
-    SHARED = "shared", "Shared (see notes)"
+    REGENERIX = "regenerix", _("Regenerix")
+    YARD_OPERATOR = "yard_operator", _("The yard operator")
+    CUSTOMER = "customer", _("The customer")
+    SHARED = "shared", _("Shared (see notes)")
 
 
 class Contract(BaseModel):
@@ -386,9 +387,9 @@ class MonthlyPlan(BaseModel):
 
 
 class OrderState(models.TextChoices):
-    OPEN = "open", "Open"
-    FULFILLED = "fulfilled", "Fulfilled"
-    CANCELLED = "cancelled", "Cancelled"
+    OPEN = "open", _("Open")
+    FULFILLED = "fulfilled", _("Fulfilled")
+    CANCELLED = "cancelled", _("Cancelled")
 
 
 class PurchaseOrder(BaseModel):

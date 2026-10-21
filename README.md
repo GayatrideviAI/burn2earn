@@ -250,3 +250,34 @@ every load shows which batches it went into, or "n t not in a yard" when part of
 As before, farmers are credited in proportion to what each handed over at the supplying Grid, so this is an attribution, not lot-level proof.
 
 Try it: `docker compose exec web python manage.py load_demo_deliveries` (the first two demo loads go into yards, the third is left unreceived).
+
+## Hindi and Punjabi for the customer pages
+
+The customer pages (`/customer/`) can be shown in English, हिन्दी and ਪੰਜਾਬੀ. A switch in the top bar changes the language and the choice is remembered in the browser. This covers every page the customer sees, the "what to do next" and "needs attention" alert texts, stage and type labels, and the unit (t for tonnes). The Mitra app and the admin are not translated yet.
+
+**The first draft has not been checked by anyone who speaks the local dialects.** About 25 phrases are left blank on purpose, where I was not sure of the wording; blanks show English on the page.
+
+How the field check works:
+
+1. Open `locale/translations.xlsx`. Column A is the English, B is Hindi, C is Punjabi. Yellow cells are blank. Fix or fill in B and C, use the Status and Comments columns, and leave column A alone.
+2. Keep every `%(name)s` exactly as written; the page puts a number or name there.
+3. Put the returned sheet at `locale/translations.xlsx` and run:
+
+```
+docker compose exec web python manage.py translations import
+```
+
+That loads the sheet into `locale/hi` and `locale/pa` (a cell with a broken `%(name)s` is skipped and reported), and rebuilds the files Django reads. Restart the web container to pick them up.
+
+Other commands, all `python manage.py translations <action>`:
+
+| Action | What it does |
+|---|---|
+| `extract` | Finds every marked phrase in the templates and code and adds new ones, blank, to the `.po` files |
+| `export` | Writes a fresh `locale/translations.xlsx` from the `.po` files |
+| `import` | Reads the sheet back and compiles |
+| `compile` | Rebuilds the `.mo` files from the `.po` files |
+
+No gettext programs are needed: the tooling is plain Python (`apps/customers/i18n_tools.py`). A test fails if a new phrase is marked but not extracted, or if the `.mo` files are out of date.
+
+When adding a customer-facing word: in a template use `{% trans "Text" %}` or `{% blocktrans trimmed with x=value %}... {{ x }} ...{% endblocktrans %}` (no plurals, no filters inside); in Python use `gettext` (`_`) at request time and `gettext_lazy` for model choices. Weights go through the `|tn` filter so the unit is translated. Then run `extract`, `export`.

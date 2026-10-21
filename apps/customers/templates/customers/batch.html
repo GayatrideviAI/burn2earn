@@ -1,55 +1,56 @@
 {% extends "customers/base.html" %}
+{% load i18n customers_i18n %}
 {% block title %}{{ batch.code }}{% endblock %}
 {% block content %}
 <p><a href="{% url 'customers:yard' batch.pile.yard.pk %}">← {{ batch.pile.yard.name }}</a></p>
 <h1>{{ batch.code }} <span class="muted">{{ batch.get_form_display }}</span></h1>
 <dl class="facts">
-  <div><dt>Where</dt><dd>{{ batch.pile.yard.name }}, pile {{ batch.pile.label }} ({{ batch.pile.get_exposure_display }})</dd></div>
-  <div><dt>Material</dt><dd>{{ batch.biomass_type.name }}</dd></div>
-  <div><dt>Received</dt><dd>{{ batch.received_on }}, {{ batch.intake_tonnes|floatformat:"1g" }} t</dd></div>
-  <div><dt>Source</dt><dd>{{ batch.source_note|default:"Not recorded" }}</dd></div>
-  <div><dt>On the books</dt><dd>{{ v.book|floatformat:"1g" }} t</dd></div>
-  <div><dt>Counted</dt><dd>{% if v.physical is None %}Never counted{% else %}{{ v.physical|floatformat:"1g" }} t ({{ v.confidence }}){% endif %}</dd></div>
-  <div><dt>Reserved</dt><dd>{{ v.reserved|floatformat:"1g" }} t</dd></div>
-  <div><dt>Available to use</dt><dd>{{ v.available|floatformat:"1g" }} t</dd></div>
+  <div><dt>{% trans "Where" %}</dt><dd>{% blocktrans trimmed with y=batch.pile.yard.name p=batch.pile.label e=batch.pile.get_exposure_display %}{{ y }}, pile {{ p }} ({{ e }}){% endblocktrans %}</dd></div>
+  <div><dt>{% trans "Material" %}</dt><dd>{{ batch.biomass_type.name }}</dd></div>
+  <div><dt>{% trans "Received" %}</dt><dd>{{ batch.received_on|date:"d M Y" }}, {{ batch.intake_tonnes|tn:"1g" }}</dd></div>
+  <div><dt>{% trans "Source" %}</dt><dd>{% if batch.source_note %}{{ batch.source_note }}{% else %}{% trans "Not recorded" %}{% endif %}</dd></div>
+  <div><dt>{% trans "On the books" %}</dt><dd>{{ v.book|tn:"1g" }}</dd></div>
+  <div><dt>{% trans "Counted" %}</dt><dd>{% if v.physical is None %}{% trans "Never counted" %}{% else %}{{ v.physical|tn:"1g" }} ({{ v.confidence|confidence_label }}){% endif %}</dd></div>
+  <div><dt>{% trans "Reserved" %}</dt><dd>{{ v.reserved|tn:"1g" }}</dd></div>
+  <div><dt>{% trans "Available to use" %}</dt><dd>{{ v.available|tn:"1g" }}</dd></div>
 </dl>
 
-<section class="card"><h2>Chain of custody</h2>
+<section class="card"><h2>{% trans "Chain of custody" %}</h2>
   {% if origin.dispatch %}
   <ol class="chain">
-    <li><b>Farmers</b> handed over the residue
-      {% if origin.farmers %}<div class="small muted">{{ origin.farmers|length }} farmer{{ origin.farmers|length|pluralize }}, shared out by what each handed over at the Grid. Codes and villages only.</div>
-      <div class="scroll"><table><thead><tr><th>Farmer</th><th>Village</th><th class="r">In this batch</th></tr></thead><tbody>
-        {% for f, t in origin.farmers %}<tr><td class="mono">{{ f.code }}</td><td>{{ f.village.name }}</td><td class="r">{{ t|floatformat:"2g" }} t</td></tr>{% endfor %}
-      </tbody></table></div>{% else %}<div class="small muted">No farmer pickups are recorded for this load.</div>{% endif %}</li>
-    <li><b>Biomass Mitra</b> {% if origin.mitra %}{{ origin.mitra.name }} <span class="mono">{{ origin.mitra.code }}</span>{% else %}not recorded{% endif %} collected and processed it at {{ origin.dispatch.grid.name }} <span class="mono">{{ origin.dispatch.grid.code }}</span></li>
-    <li><b>Dispatch {{ origin.dispatch.code }}</b> left with {{ origin.dispatch.quantity_tonnes|floatformat:"1g" }} t{% if origin.dispatch.vehicle_ref %} on {{ origin.dispatch.vehicle_ref }}{% endif %}, weighed {{ origin.dispatch.current_quantity_tonnes|floatformat:"1g" }} t at your gate.</li>
-    {% if origin.order %}<li><b>Against</b> <a href="{% url 'customers:order' origin.order.pk %}">{{ origin.order.code }}</a> under <a href="{% url 'customers:contract' origin.contract.pk %}">{{ origin.contract.code }}</a></li>{% endif %}
-    <li><b>Yard batch {{ batch.code }}</b>: {{ batch.intake_tonnes|floatformat:"1g" }} t ({% widthratio origin.share 1 100 %}% of that load) received {{ batch.received_on|date:"d M Y" }} into {{ batch.pile.yard.name }}, pile {{ batch.pile.label }}</li>
-    <li><b>Since then</b>: {{ origin.consumed|floatformat:"1g" }} t burned at the plant, {{ origin.lost|floatformat:"1g" }} t lost{% for cause, t in origin.lost_by_cause.items %} ({{ cause|lower }}: {{ t|floatformat:"1g" }} t){% endfor %}, {{ v.book|floatformat:"1g" }} t still on the books.</li>
+    <li><b>{% trans "Farmers" %}</b> {% trans "handed over the residue" %}
+      {% if origin.farmers %}<div class="small muted">{% blocktrans trimmed with n=origin.farmers|length %}Farmers: {{ n }}. Shared out by what each handed over at the Grid. Codes and villages only.{% endblocktrans %}</div>
+      <div class="scroll"><table><thead><tr><th>{% trans "Farmer" %}</th><th>{% trans "Village" %}</th><th class="r">{% trans "In this batch" %}</th></tr></thead><tbody>
+        {% for f, t in origin.farmers %}<tr><td class="mono">{{ f.code }}</td><td>{{ f.village.name }}</td><td class="r">{{ t|tn:"2g" }}</td></tr>{% endfor %}
+      </tbody></table></div>{% else %}<div class="small muted">{% trans "No farmer pickups are recorded for this load." %}</div>{% endif %}</li>
+    <li><b>{% trans "Biomass Mitra" %}</b> {% if origin.mitra %}{{ origin.mitra.name }} <span class="mono">{{ origin.mitra.code }}</span>{% else %}{% trans "not recorded" %}{% endif %} {% trans "collected and processed it at" %} {{ origin.dispatch.grid.name }} <span class="mono">{{ origin.dispatch.grid.code }}</span></li>
+    <li><b>{% blocktrans trimmed with c=origin.dispatch.code %}Dispatch {{ c }}{% endblocktrans %}</b> {% blocktrans trimmed with q=origin.dispatch.quantity_tonnes|tn:"1g" %}left with {{ q }}{% endblocktrans %}{% if origin.dispatch.vehicle_ref %} {% blocktrans trimmed with v=origin.dispatch.vehicle_ref %}on {{ v }}{% endblocktrans %}{% endif %}, {% blocktrans trimmed with w=origin.dispatch.current_quantity_tonnes|tn:"1g" %}weighed {{ w }} at your gate.{% endblocktrans %}</li>
+    {% if origin.order %}<li><b>{% trans "Against" %}</b> <a href="{% url 'customers:order' origin.order.pk %}">{{ origin.order.code }}</a> {% trans "under" %} <a href="{% url 'customers:contract' origin.contract.pk %}">{{ origin.contract.code }}</a></li>{% endif %}
+    <li><b>{% blocktrans trimmed with c=batch.code %}Yard batch {{ c }}{% endblocktrans %}</b>: {% widthratio origin.share 1 100 as share_pct %}{% blocktrans trimmed with t=batch.intake_tonnes|tn:"1g" s=share_pct d=batch.received_on|date:"d M Y" y=batch.pile.yard.name p=batch.pile.label %}{{ t }} ({{ s }}% of that load) received {{ d }} into {{ y }}, pile {{ p }}{% endblocktrans %}</li>
+    <li><b>{% trans "Since then" %}</b>: {% blocktrans trimmed with c=origin.consumed|tn:"1g" l=origin.lost|tn:"1g" b=v.book|tn:"1g" %}{{ c }} burned at the plant, {{ l }} lost{% endblocktrans %}{% for cause, t in origin.lost_by_cause.items %} ({{ cause|lower }}: {{ t|tn:"1g" }}){% endfor %}, {% blocktrans trimmed with b=v.book|tn:"1g" %}{{ b }} still on the books.{% endblocktrans %}</li>
   </ol>
-  {% else %}<p class="muted">This batch is not linked to a delivered load, so it cannot be traced back to farmers.</p>{% endif %}
+  {% else %}<p class="muted">{% trans "This batch is not linked to a delivered load, so it cannot be traced back to farmers." %}</p>{% endif %}
 </section>
 
-<section class="card"><h2>Movements</h2>
-  <div class="scroll"><table><thead><tr><th>When</th><th>What</th><th class="r">Change</th><th>Note</th><th class="r">Ledger</th></tr></thead><tbody>
+<section class="card"><h2>{% trans "Movements" %}</h2>
+  <div class="scroll"><table><thead><tr><th>{% trans "When" %}</th><th>{% trans "What" %}</th><th class="r">{% trans "Change" %}</th><th>{% trans "Note" %}</th><th class="r">{% trans "Ledger" %}</th></tr></thead><tbody>
   {% for t in transactions %}<tr><td>{{ t.occurred_at|date:"d M Y H:i" }}</td><td>{{ t.get_kind_display }}{% if t.loss_cause %} ({{ t.get_loss_cause_display }}){% endif %}</td>
-    <td class="r">{{ t.tonnes_change|floatformat:"-3g" }} t</td><td>{{ t.note }}</td><td class="r mono">{{ t.ledger_seq|default:"" }}</td></tr>
-  {% empty %}<tr><td colspan="5" class="muted">None yet.</td></tr>{% endfor %}
+    <td class="r">{{ t.tonnes_change|tn:"-3g" }}</td><td>{{ t.note }}</td><td class="r mono">{{ t.ledger_seq|default:"" }}</td></tr>
+  {% empty %}<tr><td colspan="5" class="muted">{% trans "None yet." %}</td></tr>{% endfor %}
   </tbody></table></div></section>
 
 <div class="two">
-<section class="card"><h2>Physical counts</h2>
-  <ul class="plain">{% for c in counts %}<li>{{ c.counted_on }}: <b>{{ c.counted_tonnes|floatformat:"-3g" }} t</b> by {{ c.get_method_display|lower }}{% if c.counted_by %}, {{ c.counted_by }}{% endif %}</li>{% empty %}<li class="muted">Not counted yet.</li>{% endfor %}</ul></section>
-<section class="card"><h2>Quality readings</h2>
+<section class="card"><h2>{% trans "Physical counts" %}</h2>
+  <ul class="plain">{% for c in counts %}<li>{% blocktrans trimmed with d=c.counted_on|date:"d M Y" t=c.counted_tonnes|tn:"-3g" m=c.get_method_display|lower %}{{ d }}: <b>{{ t }}</b> by {{ m }}{% endblocktrans %}{% if c.counted_by %}, {{ c.counted_by }}{% endif %}</li>{% empty %}<li class="muted">{% trans "Not counted yet." %}</li>{% endfor %}</ul></section>
+<section class="card"><h2>{% trans "Quality readings" %}</h2>
   <ul class="plain">{% for q in quality %}<li>{{ q.observed_at|date:"d M Y" }} · <span class="tag {% if q.basis == 'measured' %}good{% else %}warn{% endif %}">{{ q.get_basis_display }}</span>
-    {% if q.moisture_percent is not None %}moisture {{ q.moisture_percent|floatformat:"-1" }}%{% endif %}
-    {% if q.ash_percent is not None %} ash {{ q.ash_percent|floatformat:"-1" }}%{% endif %}
+    {% if q.moisture_percent is not None %}{% trans "moisture" %} {{ q.moisture_percent|floatformat:"-1" }}%{% endif %}
+    {% if q.ash_percent is not None %} {% trans "ash" %} {{ q.ash_percent|floatformat:"-1" }}%{% endif %}
     {% if q.gcv is not None %} GCV {{ q.gcv|floatformat:"0" }} kcal/kg{% endif %}
-    <span class="muted small">{{ q.method }}{% if q.tested_by %}, {{ q.tested_by }}{% endif %}</span></li>{% empty %}<li class="muted">No readings yet.</li>{% endfor %}</ul></section>
+    <span class="muted small">{{ q.method }}{% if q.tested_by %}, {{ q.tested_by }}{% endif %}</span></li>{% empty %}<li class="muted">{% trans "No readings yet." %}</li>{% endfor %}</ul></section>
 </div>
 
-<section class="card"><h2>Tamper-evident trail</h2>
-  <p class="muted small">Each entry carries a fingerprint of the one before it, so a changed record would be detected.</p>
+<section class="card"><h2>{% trans "Tamper-evident trail" %}</h2>
+  <p class="muted small">{% trans "Each entry carries a fingerprint of the one before it, so a changed record would be detected." %}</p>
   <ul class="plain">{% for e in trail %}<li><span class="mono">#{{ e.seq }}</span> {{ e.created_at|date:"d M Y H:i" }} · {{ e.entry_type }}</li>{% endfor %}</ul></section>
 {% endblock %}
