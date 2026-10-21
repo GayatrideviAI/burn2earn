@@ -11,4 +11,7 @@ urlpatterns = [
     path("", views.dashboard, name="dashboard"),
     path("yards/<uuid:pk>/", views.yard_detail, name="yard"),
     path("batches/<uuid:pk>/", views.batch_detail, name="batch"),
+    path("contracts/", views.contract_list, name="contracts"),
+    path("contracts/<uuid:pk>/", views.contract_detail, name="contract"),
+    path("orders/<uuid:pk>/", views.order_detail, name="order"),
 ]

@@ -216,3 +216,22 @@ Adding a batch records its receipt and any intake moisture reading.
 Stock records are added, not edited: a correction is a new transaction or count. Every one is written to the tamper-evident ledger.
 
 **Not built yet** (see the product spec): contracts and delivery schedules, weather alerts, fire-risk monitoring, the yard app, customer-facing dispatch and finance, ESG reports.
+
+## Contracts, purchase orders and deliveries
+
+**Setting up (Admin > Customers):** add a *Contract* for a customer with its period, penalty terms, and who bears spoilage risk, with one
+*line* per product (contracted tonnes, price, moisture and GCV limits). On a Contract line, the action "Spread the contracted tonnes
+evenly" creates the monthly plan. Add *Purchase orders* against a line: plant, tonnes and a delivery window.
+
+**Delivering against an order:** when a Mitra creates a dispatch (or Admin does, under Trade > Dispatches) they can pick the open purchase order it
+is for. The plant and product must match. Delivered means the dispatch reached the buyer (stage Delivered), counted at the weight taken at
+the gate. Loads still moving are shown as "on the way". Cancelled loads count for nothing.
+
+**What the customer sees** (`/customer/contracts/`): contracted, ordered, on the way and delivered per product; planned vs delivered for each month;
+late orders and contracts that are behind (more than 15 points behind the share of the period gone); and every load with its vehicle and date.
+
+**Who supplied it:** lots are not tagged farmer by farmer, so each delivered dispatch is shared out between the farmers who handed over that biomass
+at the supplying Grid, in proportion to tonnes handed over up to the delivery date. Customers see Mitra name and code, Grid, and farmer **code and village only**
+(never name or mobile). Treat it as a fair attribution, not lot-level proof.
+
+Try it: `docker compose exec web python manage.py load_demo_deliveries` (loads the demo network and customer too if missing), then log in at `/customer/`.
