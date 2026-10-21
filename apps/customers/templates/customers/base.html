@@ -10,6 +10,7 @@
 <header class="bar">
   <a class="brand" href="{% url 'customers:dashboard' %}">Regenerix</a>
   {% if user.is_authenticated %}
+  <nav class="nav"><a href="{% url 'customers:dashboard' %}">Stock</a><a href="{% url 'customers:contracts' %}">Contracts</a></nav>
   <span class="who">{{ buyer.company_name }}</span>
   <form method="post" action="{% url 'customers:logout' %}">{% csrf_token %}<button class="link">Log out</button></form>
   {% endif %}

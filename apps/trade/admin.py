@@ -38,7 +38,7 @@ class FeeScheduleAdmin(NoDeleteAdminMixin, admin.ModelAdmin):
 class DispatchAdminForm(forms.ModelForm):
     class Meta:
         model = Dispatch
-        fields = ["grid", "product", "factory", "requirement", "quantity_tonnes", "vehicle_ref", "note"]
+        fields = ["grid", "product", "factory", "requirement", "purchase_order", "quantity_tonnes", "vehicle_ref", "note"]
 
     def clean(self):
         data = super().clean()
@@ -46,6 +46,7 @@ class DispatchAdminForm(forms.ModelForm):
             validate_new_dispatch(
                 grid=data["grid"], product=data["product"], factory=data["factory"],
                 quantity_tonnes=data["quantity_tonnes"], requirement=data.get("requirement"),
+                purchase_order=data.get("purchase_order"),
             )
         return data
 
@@ -86,13 +87,13 @@ class DispatchAdmin(NoDeleteAdminMixin, admin.ModelAdmin):
 
     def get_fields(self, request, obj=None):
         if obj is None:
-            return ["grid", "product", "factory", "requirement", "quantity_tonnes", "vehicle_ref", "note"]
-        return ["code", "grid", "hub", "product", "factory", "requirement", "quantity_tonnes", "current_quantity_tonnes", "loss", "stage", "vehicle_ref", "note", "journey"]
+            return ["grid", "product", "factory", "requirement", "purchase_order", "quantity_tonnes", "vehicle_ref", "note"]
+        return ["code", "grid", "hub", "product", "factory", "requirement", "purchase_order", "quantity_tonnes", "current_quantity_tonnes", "loss", "stage", "vehicle_ref", "note", "journey"]
 
     def get_readonly_fields(self, request, obj=None):
         if obj is None:
             return ()
-        return ("code", "grid", "hub", "product", "factory", "requirement", "quantity_tonnes", "current_quantity_tonnes", "loss", "stage", "journey")
+        return ("code", "grid", "hub", "product", "factory", "requirement", "purchase_order", "quantity_tonnes", "current_quantity_tonnes", "loss", "stage", "journey")
 
     def get_inlines(self, request, obj):
         return [DispatchEventInline] if obj is not None and not obj.is_closed else []

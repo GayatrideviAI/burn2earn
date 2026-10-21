@@ -58,7 +58,7 @@ def available_to_dispatch(grid, product):
     return made - sent
 
 
-def validate_new_dispatch(*, grid, product, factory, quantity_tonnes, requirement=None):
+def validate_new_dispatch(*, grid, product, factory, quantity_tonnes, requirement=None, purchase_order=None):
     quantity_tonnes = Decimal(quantity_tonnes)
     if product.form != "processed":
         raise ValidationError("Only processed products can be dispatched.")
@@ -69,6 +69,11 @@ def validate_new_dispatch(*, grid, product, factory, quantity_tonnes, requiremen
         raise ValidationError(f"Only {available} t of {product} is available at this Grid.")
     if requirement is not None and (requirement.factory_id != factory.pk or requirement.product_id != product.pk):
         raise ValidationError("That requirement is for a different factory or product.")
+    if purchase_order is not None:
+        if purchase_order.state != "open":
+            raise ValidationError(f"{purchase_order.code} is {purchase_order.get_state_display().lower()}, so nothing more can be sent against it.")
+        if purchase_order.factory_id != factory.pk or purchase_order.line.product_id != product.pk:
+            raise ValidationError(f"{purchase_order.code} is for a different plant or product.")
 
 
 def announce_dispatch(dispatch):
@@ -82,6 +87,7 @@ def announce_dispatch(dispatch):
             "hub": dispatch.hub.code if dispatch.hub else None,
             "product": str(dispatch.product),
             "factory": dispatch.factory.code,
+            "purchase_order": dispatch.purchase_order.code if dispatch.purchase_order_id else None,
             "quantity_tonnes": dispatch.quantity_tonnes,
             "vehicle_ref": dispatch.vehicle_ref,
         },
@@ -89,9 +95,10 @@ def announce_dispatch(dispatch):
 
 
 @transaction.atomic
-def create_dispatch(*, grid, product, factory, quantity_tonnes, mitra=None, requirement=None, vehicle_ref="", note=""):
+def create_dispatch(*, grid, product, factory, quantity_tonnes, mitra=None, requirement=None, purchase_order=None, vehicle_ref="", note=""):
     validate_new_dispatch(
-        grid=grid, product=product, factory=factory, quantity_tonnes=quantity_tonnes, requirement=requirement
+        grid=grid, product=product, factory=factory, quantity_tonnes=quantity_tonnes, requirement=requirement,
+        purchase_order=purchase_order,
     )
     dispatch = Dispatch.objects.create(
         grid=grid,
@@ -99,6 +106,7 @@ def create_dispatch(*, grid, product, factory, quantity_tonnes, mitra=None, requ
         product=product,
         factory=factory,
         requirement=requirement,
+        purchase_order=purchase_order,
         created_by_mitra=mitra,
         quantity_tonnes=Decimal(quantity_tonnes),
         vehicle_ref=vehicle_ref,

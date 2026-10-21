@@ -1,0 +1,25 @@
+{% extends "customers/base.html" %}
+{% block title %}Contracts{% endblock %}
+{% block content %}
+<h1>Contracts and deliveries</h1>
+<p class="muted">What was contracted, what has reached your gate, and what is still to come.</p>
+
+{% if actions %}<section class="card"><h2>Needs attention</h2><ul class="actions">
+  {% for level, title, text, obj in actions %}<li><span class="tag {{ level }}">{{ title }}</span>
+    <a href="{% if obj.line_id %}{% url 'customers:order' obj.pk %}{% else %}{% url 'customers:contract' obj.pk %}{% endif %}">{{ text }}</a></li>{% endfor %}
+</ul></section>{% endif %}
+
+{% for cp in items %}
+<section class="card">
+  <h2><a href="{% url 'customers:contract' cp.contract.pk %}">{{ cp.contract.code }}</a>
+    <span class="muted">{{ cp.contract.reference }}</span>
+    {% if cp.at_risk %}<span class="tag warn">Behind</span>{% endif %}</h2>
+  <p class="muted small">{{ cp.contract.start_date|date:"d M Y" }} to {{ cp.contract.end_date|date:"d M Y" }}</p>
+  <div class="bar2" title="{{ cp.percent }}% delivered"><i style="width:{{ cp.percent }}%"></i><u style="left:{% widthratio cp.elapsed 1 100 %}%"></u></div>
+  <p class="small">{{ cp.delivered|floatformat:"1g" }} t delivered of {{ cp.contracted|floatformat:"1g" }} t ({{ cp.percent }}%). The marker shows how much of the period has passed.</p>
+  <div class="scroll"><table><thead><tr><th>Product</th><th class="r">Contracted</th><th class="r">Ordered</th><th class="r">On the way</th><th class="r">Delivered</th></tr></thead><tbody>
+  {% for l in cp.lines %}<tr><td>{{ l.line.product }}</td><td class="r">{{ l.line.contracted_tonnes|floatformat:"1g" }} t</td><td class="r">{{ l.ordered|floatformat:"1g" }} t</td><td class="r">{{ l.on_the_way|floatformat:"1g" }} t</td><td class="r">{{ l.delivered|floatformat:"1g" }} t</td></tr>{% endfor %}
+  </tbody></table></div>
+</section>
+{% empty %}<section class="card"><p class="muted">No contracts are recorded for your company yet.</p></section>{% endfor %}
+{% endblock %}
