@@ -20,7 +20,7 @@ from apps.core.codes import next_code
 from apps.core.models import BaseModel
 from apps.demand.models import Buyer, Factory
 from apps.network.models import Grid
-from apps.reference.models import BiomassType
+from apps.reference.models import BiomassType, Product
 from apps.territory.models import Region
 
 POSITIVE_TONNES = MinValueValidator(Decimal("0.001"))
@@ -266,3 +266,125 @@ class Reservation(BaseModel):
 
     def __str__(self):
         return f"{self.tonnes} t of {self.batch.code} for {self.factory.name}"
+
+
+# ---- contracts and purchase orders --------------------------------------------------------------
+
+
+class RiskBearer(models.TextChoices):
+    REGENERIX = "regenerix", "Regenerix"
+    YARD_OPERATOR = "yard_operator", "The yard operator"
+    CUSTOMER = "customer", "The customer"
+    SHARED = "shared", "Shared (see notes)"
+
+
+class Contract(BaseModel):
+    """A customer's supply agreement for a period. Quantities sit on its lines, one per product."""
+
+    code = models.CharField(max_length=20, unique=True, editable=False)
+    customer = models.ForeignKey(Buyer, on_delete=models.PROTECT, related_name="contracts")
+    reference = models.CharField(max_length=100, blank=True, help_text="The customer's own contract number")
+    start_date = models.DateField()
+    end_date = models.DateField()
+    penalties = models.TextField(blank=True, help_text="Late delivery and quality penalty terms")
+    risk_bearer = models.CharField(
+        max_length=14, choices=RiskBearer.choices, default=RiskBearer.REGENERIX,
+        help_text="Who bears spoilage, rain and fire loss while stock is in a yard",
+    )
+    allocated_yards = models.ManyToManyField(Stockyard, blank=True, related_name="contracts")
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["-start_date", "code"]
+        constraints = [
+            models.CheckConstraint(condition=models.Q(end_date__gte=models.F("start_date")), name="contract_dates_in_order"),
+        ]
+
+    def __str__(self):
+        return f"{self.code} {self.customer.company_name}"
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            self.code = next_code("contract", "CON")
+        super().save(*args, **kwargs)
+
+
+class ContractLine(BaseModel):
+    """The quantity of one product a contract covers, with its price and quality limits."""
+
+    contract = models.ForeignKey(Contract, on_delete=models.PROTECT, related_name="lines")
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name="+")
+    contracted_tonnes = models.DecimalField(max_digits=12, decimal_places=3, validators=[POSITIVE_TONNES])
+    price_per_tonne = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=True, validators=[MinValueValidator(0)]
+    )
+    max_moisture_percent = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, validators=PERCENT)
+    min_gcv = models.DecimalField(
+        max_digits=7, decimal_places=0, null=True, blank=True, validators=[MinValueValidator(0)],
+        verbose_name="Minimum GCV (kcal/kg)",
+    )
+
+    class Meta:
+        ordering = ["contract__code", "product__name"]
+        constraints = [models.UniqueConstraint(fields=["contract", "product"], name="one_line_per_product_in_contract")]
+
+    def __str__(self):
+        return f"{self.contract.code} {self.product} {self.contracted_tonnes} t"
+
+
+class MonthlyPlan(BaseModel):
+    """How much of a line is planned to arrive in a month (the drawdown schedule)."""
+
+    line = models.ForeignKey(ContractLine, on_delete=models.PROTECT, related_name="plan")
+    month = models.DateField(help_text="Any date in the month; saved as the first of the month")
+    planned_tonnes = models.DecimalField(max_digits=12, decimal_places=3, validators=[MinValueValidator(0)])
+
+    class Meta:
+        ordering = ["line", "month"]
+        constraints = [models.UniqueConstraint(fields=["line", "month"], name="one_plan_per_line_month")]
+
+    def __str__(self):
+        return f"{self.line.contract.code} {self.month:%b %Y}: {self.planned_tonnes} t"
+
+    def save(self, *args, **kwargs):
+        self.month = self.month.replace(day=1)
+        super().save(*args, **kwargs)
+
+
+class OrderState(models.TextChoices):
+    OPEN = "open", "Open"
+    FULFILLED = "fulfilled", "Fulfilled"
+    CANCELLED = "cancelled", "Cancelled"
+
+
+class PurchaseOrder(BaseModel):
+    """A call-off against a contract line: this much, to this plant, in this window."""
+
+    code = models.CharField(max_length=20, unique=True, editable=False)
+    line = models.ForeignKey(ContractLine, on_delete=models.PROTECT, related_name="orders")
+    factory = models.ForeignKey(Factory, on_delete=models.PROTECT, related_name="purchase_orders")
+    customer_po_number = models.CharField(max_length=60, blank=True, help_text="The customer's own PO number")
+    tonnes = models.DecimalField(max_digits=12, decimal_places=3, validators=[POSITIVE_TONNES])
+    deliver_from = models.DateField()
+    deliver_by = models.DateField()
+    state = models.CharField(max_length=10, choices=OrderState.choices, default=OrderState.OPEN)
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["deliver_by", "code"]
+        constraints = [
+            models.CheckConstraint(condition=models.Q(deliver_by__gte=models.F("deliver_from")), name="po_dates_in_order"),
+        ]
+
+    def __str__(self):
+        return f"{self.code} {self.tonnes} t {self.line.product}"
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            self.code = next_code("purchase_order", "PO")
+        super().save(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+        if self.line_id and self.factory_id and self.factory.buyer_id != self.line.contract.customer_id:
+            raise ValidationError({"factory": "This plant belongs to a different company than the contract."})

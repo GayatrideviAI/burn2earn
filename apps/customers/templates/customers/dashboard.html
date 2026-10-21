@@ -17,8 +17,12 @@
 
 <section class="card">
   <h2>What to do next</h2>
-  {% if s.actions %}
+  {% if s.actions or supply %}
   <ul class="actions">
+    {% for level, title, text, obj in supply %}
+    <li><span class="tag {{ level }}">{{ title }}</span>
+      <span><a href="{% if obj.line_id %}{% url 'customers:order' obj.pk %}{% else %}{% url 'customers:contract' obj.pk %}{% endif %}">{{ text }}</a></span></li>
+    {% endfor %}
     {% for level, title, text, batch in s.actions %}
     <li><span class="tag {{ level }}">{{ title }}</span>
       <span>{% if batch %}<a href="{% url 'customers:batch' batch.pk %}">{{ text }}</a>{% else %}{{ text }}{% endif %}</span></li>

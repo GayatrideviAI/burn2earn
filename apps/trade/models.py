@@ -134,6 +134,10 @@ class Dispatch(BaseModel):
     created_by_mitra = models.ForeignKey(
         Mitra, on_delete=models.PROTECT, null=True, blank=True, related_name="dispatches"
     )
+    purchase_order = models.ForeignKey(
+        "customers.PurchaseOrder", on_delete=models.PROTECT, null=True, blank=True, related_name="dispatches",
+        help_text="The customer's purchase order this lot is delivered against, if any",
+    )
     quantity_tonnes = models.DecimalField(
         max_digits=10, decimal_places=3, validators=[MinValueValidator(Decimal("0.001"))],
         help_text="Weight when it left the Grid",

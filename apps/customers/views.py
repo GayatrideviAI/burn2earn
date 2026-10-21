@@ -1,21 +1,24 @@
+from datetime import date
+
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 
 from apps.core.models import Status
 from apps.ledger.chain import entries_for
 
-from . import services
+from . import contracts, services
 from .access import customer_required
-from .models import Batch
+from .models import Batch, Contract, PurchaseOrder
 
 
 @customer_required
 def dashboard(request):
     s = services.summary(request.buyer)
+    supply = contracts.supply_actions(request.buyer)
     return render(
         request,
         "customers/dashboard.html",
-        {"buyer": request.buyer, "member": request.member, "s": s, "lead_days": services.lead_time_days(),
+        {"buyer": request.buyer, "member": request.member, "s": s, "supply": supply, "lead_days": services.lead_time_days(),
          "verify_days": services.verification_days()},
     )
 
@@ -47,4 +50,47 @@ def batch_detail(request, pk):
             "quality": batch.quality.filter(status=Status.ACTIVE),
             "trail": entries_for(batch),
         },
+    )
+
+
+@customer_required
+def contract_list(request):
+    contracts_ = [
+        contracts.contract_progress(c)
+        for c in Contract.objects.filter(customer=request.buyer, status=Status.ACTIVE).prefetch_related("lines")
+    ]
+    actions = contracts.supply_actions(request.buyer)
+    return render(request, "customers/contracts.html", {"buyer": request.buyer, "items": contracts_, "actions": actions})
+
+
+@customer_required
+def contract_detail(request, pk):
+    contract = get_object_or_404(Contract, pk=pk, customer=request.buyer)
+    progress = contracts.contract_progress(contract)
+    orders = [
+        contracts.order_progress(o)
+        for o in PurchaseOrder.objects.filter(line__contract=contract, status=Status.ACTIVE).select_related("factory", "line__product")
+    ]
+    dispatches = contracts.live_dispatches(purchase_order__line__contract=contract).select_related("grid", "product")
+    return render(
+        request,
+        "customers/contract.html",
+        {"buyer": request.buyer, "c": contract, "p": progress, "orders": orders, "who": contracts.provenance(dispatches),
+         "today": date.today()},
+    )
+
+
+@customer_required
+def order_detail(request, pk):
+    order = get_object_or_404(
+        PurchaseOrder.objects.select_related("factory", "line__product", "line__contract"), pk=pk, line__contract__customer=request.buyer
+    )
+    dispatches = list(contracts.live_dispatches(purchase_order=order).select_related("grid", "created_by_mitra").order_by("created_at"))
+    for d in dispatches:
+        d.delivered_date = contracts.delivered_on(d)
+    return render(
+        request,
+        "customers/order.html",
+        {"buyer": request.buyer, "o": order, "p": contracts.order_progress(order), "dispatches": dispatches,
+         "who": contracts.provenance(dispatches), "today": date.today()},
     )
