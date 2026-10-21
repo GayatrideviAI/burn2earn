@@ -1,0 +1,38 @@
+{% extends "customers/base.html" %}
+{% block title %}{{ batch.code }}{% endblock %}
+{% block content %}
+<p><a href="{% url 'customers:yard' batch.pile.yard.pk %}">← {{ batch.pile.yard.name }}</a></p>
+<h1>{{ batch.code }} <span class="muted">{{ batch.get_form_display }}</span></h1>
+<dl class="facts">
+  <div><dt>Where</dt><dd>{{ batch.pile.yard.name }}, pile {{ batch.pile.label }} ({{ batch.pile.get_exposure_display }})</dd></div>
+  <div><dt>Material</dt><dd>{{ batch.biomass_type.name }}</dd></div>
+  <div><dt>Received</dt><dd>{{ batch.received_on }}, {{ batch.intake_tonnes|floatformat:"1g" }} t</dd></div>
+  <div><dt>Source</dt><dd>{{ batch.source_note|default:"Not recorded" }}</dd></div>
+  <div><dt>On the books</dt><dd>{{ v.book|floatformat:"1g" }} t</dd></div>
+  <div><dt>Counted</dt><dd>{% if v.physical is None %}Never counted{% else %}{{ v.physical|floatformat:"1g" }} t ({{ v.confidence }}){% endif %}</dd></div>
+  <div><dt>Reserved</dt><dd>{{ v.reserved|floatformat:"1g" }} t</dd></div>
+  <div><dt>Available to use</dt><dd>{{ v.available|floatformat:"1g" }} t</dd></div>
+</dl>
+
+<section class="card"><h2>Movements</h2>
+  <div class="scroll"><table><thead><tr><th>When</th><th>What</th><th class="r">Change</th><th>Note</th><th class="r">Ledger</th></tr></thead><tbody>
+  {% for t in transactions %}<tr><td>{{ t.occurred_at|date:"d M Y H:i" }}</td><td>{{ t.get_kind_display }}{% if t.loss_cause %} ({{ t.get_loss_cause_display }}){% endif %}</td>
+    <td class="r">{{ t.tonnes_change|floatformat:"-3g" }} t</td><td>{{ t.note }}</td><td class="r mono">{{ t.ledger_seq|default:"" }}</td></tr>
+  {% empty %}<tr><td colspan="5" class="muted">None yet.</td></tr>{% endfor %}
+  </tbody></table></div></section>
+
+<div class="two">
+<section class="card"><h2>Physical counts</h2>
+  <ul class="plain">{% for c in counts %}<li>{{ c.counted_on }}: <b>{{ c.counted_tonnes|floatformat:"-3g" }} t</b> by {{ c.get_method_display|lower }}{% if c.counted_by %}, {{ c.counted_by }}{% endif %}</li>{% empty %}<li class="muted">Not counted yet.</li>{% endfor %}</ul></section>
+<section class="card"><h2>Quality readings</h2>
+  <ul class="plain">{% for q in quality %}<li>{{ q.observed_at|date:"d M Y" }} · <span class="tag {% if q.basis == 'measured' %}good{% else %}warn{% endif %}">{{ q.get_basis_display }}</span>
+    {% if q.moisture_percent is not None %}moisture {{ q.moisture_percent|floatformat:"-1" }}%{% endif %}
+    {% if q.ash_percent is not None %} ash {{ q.ash_percent|floatformat:"-1" }}%{% endif %}
+    {% if q.gcv is not None %} GCV {{ q.gcv|floatformat:"0" }} kcal/kg{% endif %}
+    <span class="muted small">{{ q.method }}{% if q.tested_by %}, {{ q.tested_by }}{% endif %}</span></li>{% empty %}<li class="muted">No readings yet.</li>{% endfor %}</ul></section>
+</div>
+
+<section class="card"><h2>Tamper-evident trail</h2>
+  <p class="muted small">Each entry carries a fingerprint of the one before it, so a changed record would be detected.</p>
+  <ul class="plain">{% for e in trail %}<li><span class="mono">#{{ e.seq }}</span> {{ e.created_at|date:"d M Y H:i" }} · {{ e.entry_type }}</li>{% endfor %}</ul></section>
+{% endblock %}

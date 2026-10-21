@@ -1,0 +1,268 @@
+"""Customer-side stock: yards, piles, batches and everything that changes how much of a batch there is.
+
+Three rules from the product spec shape this file:
+* Quantities are never overwritten. A batch's book stock is the sum of its transactions.
+* A measured reading is never mixed up with an estimate (QualityObservation.basis).
+* A physical count (StockCount) is a separate record from the book figure, so the gap between them shows.
+"""
+
+from decimal import Decimal
+
+from django.conf import settings
+from django.contrib.gis.db import models as gis_models
+from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+from django.utils import timezone
+
+from apps.accounts.models import Role
+from apps.core.codes import next_code
+from apps.core.models import BaseModel
+from apps.demand.models import Buyer, Factory
+from apps.network.models import Grid
+from apps.reference.models import BiomassType
+from apps.territory.models import Region
+
+POSITIVE_TONNES = MinValueValidator(Decimal("0.001"))
+PERCENT = [MinValueValidator(0), MaxValueValidator(100)]
+
+
+class JobRole(models.TextChoices):
+    PROCUREMENT = "procurement", "Procurement / fuel manager"
+    OPERATIONS = "operations", "Plant operations"
+    FINANCE = "finance", "Finance"
+    ESG = "esg", "ESG / sustainability"
+
+
+class CustomerMember(BaseModel):
+    """A login that belongs to a customer company. Members see only that company's stock."""
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="customer_member",
+        limit_choices_to={"role": Role.BUYER.value},
+    )
+    buyer = models.ForeignKey(Buyer, on_delete=models.PROTECT, related_name="members")
+    job_role = models.CharField(max_length=12, choices=JobRole.choices)
+
+    class Meta:
+        ordering = ["buyer__company_name", "user__username"]
+
+    def __str__(self):
+        return f"{self.user.username} at {self.buyer.company_name}"
+
+    def clean(self):
+        super().clean()
+        if self.user_id and self.user.role != Role.BUYER:
+            raise ValidationError({"user": "This login must have the Buyer role."})
+
+
+class PlantProfile(BaseModel):
+    """How much a plant burns. The quality limits (moisture, GCV) already sit on the Factory."""
+
+    factory = models.OneToOneField(Factory, on_delete=models.PROTECT, related_name="profile")
+    daily_consumption_tonnes = models.DecimalField(
+        max_digits=10, decimal_places=2, validators=[MinValueValidator(0)], help_text="Average tonnes burned per day"
+    )
+
+    def __str__(self):
+        return f"{self.factory} burns {self.daily_consumption_tonnes} t/day"
+
+
+class OwnerType(models.TextChoices):
+    REGENERIX = "regenerix", "Regenerix"
+    VLE = "vle", "VLE"
+    THIRD_PARTY = "third_party", "Third party"
+    CUSTOMER = "customer", "The customer"
+
+
+class Stockyard(BaseModel):
+    code = models.CharField(max_length=20, unique=True, editable=False)
+    name = models.CharField(max_length=200)
+    location = gis_models.PointField(srid=4326)
+    owner_type = models.CharField(max_length=12, choices=OwnerType.choices, default=OwnerType.REGENERIX)
+    owner_name = models.CharField(max_length=200, blank=True)
+    capacity_tonnes = models.DecimalField(
+        max_digits=10, decimal_places=0, null=True, blank=True, validators=[MinValueValidator(0)]
+    )
+    region = models.ForeignKey(Region, on_delete=models.PROTECT, null=True, blank=True, related_name="stockyards")
+    notes = models.TextField(blank=True, help_text="Roofed and open areas, drainage, safety requirements")
+
+    class Meta:
+        ordering = ["code"]
+
+    def __str__(self):
+        return f"{self.code} {self.name}"
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            self.code = next_code("stockyard", "YRD")
+        super().save(*args, **kwargs)
+
+
+class BiomassForm(models.TextChoices):
+    BALES = "bales", "Bales"
+    LOOSE = "loose", "Loose chopped straw"
+    PELLETS = "pellets", "Pellets"
+    BRIQUETTES = "briquettes", "Briquettes"
+
+
+class Exposure(models.TextChoices):
+    OPEN = "open", "Open to rain"
+    PART = "part", "Part covered"
+    PROTECTED = "protected", "Protected"
+
+
+class Pile(BaseModel):
+    """A storage unit inside a yard: a stack, a shed bay or a bagged pallet block."""
+
+    yard = models.ForeignKey(Stockyard, on_delete=models.PROTECT, related_name="piles")
+    label = models.CharField(max_length=20, help_text="For example A-01")
+    form = models.CharField(max_length=10, choices=BiomassForm.choices)
+    exposure = models.CharField(max_length=10, choices=Exposure.choices, default=Exposure.OPEN)
+    cover_type = models.CharField(max_length=100, blank=True, help_text="For example tarp, shed, none")
+
+    class Meta:
+        ordering = ["yard__code", "label"]
+        constraints = [models.UniqueConstraint(fields=["yard", "label"], name="unique_pile_label_per_yard")]
+
+    def __str__(self):
+        return f"{self.yard.name} / {self.label}"
+
+
+class Batch(BaseModel):
+    """A lot of one material with a unique ID (the QR tag). It belongs to one customer."""
+
+    code = models.CharField(max_length=20, unique=True, editable=False, help_text="Printed on the QR tag")
+    customer = models.ForeignKey(Buyer, on_delete=models.PROTECT, related_name="batches")
+    pile = models.ForeignKey(Pile, on_delete=models.PROTECT, related_name="batches")
+    biomass_type = models.ForeignKey(BiomassType, on_delete=models.PROTECT, related_name="+")
+    form = models.CharField(max_length=10, choices=BiomassForm.choices)
+    source_grid = models.ForeignKey(Grid, on_delete=models.PROTECT, null=True, blank=True, related_name="+")
+    source_note = models.TextField(blank=True, help_text="Source villages and the VLE or supplier")
+    received_on = models.DateField(default=timezone.localdate)
+    intake_tonnes = models.DecimalField(max_digits=10, decimal_places=3, validators=[POSITIVE_TONNES])
+    intake_moisture_percent = models.DecimalField(
+        max_digits=5, decimal_places=2, null=True, blank=True, validators=PERCENT
+    )
+
+    class Meta:
+        ordering = ["-received_on", "code"]
+        verbose_name_plural = "batches"
+
+    def __str__(self):
+        return f"{self.code} {self.get_form_display()}"
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            self.code = next_code("batch", "BAT")
+        super().save(*args, **kwargs)
+
+
+class TransactionKind(models.TextChoices):
+    RECEIPT = "receipt", "Receipt"
+    TRANSFER = "transfer", "Moved to another pile"
+    CONSUMPTION = "consumption", "Burned at the plant"
+    ADJUSTMENT = "adjustment", "Adjustment"
+    LOSS = "loss", "Loss"
+    RETURN = "return", "Returned to supplier"
+    DISPOSAL = "disposal", "Disposed of"
+
+
+class LossCause(models.TextChoices):
+    RAIN = "rain", "Rain"
+    DECOMPOSITION = "decomposition", "Decomposition"
+    CONTAMINATION = "contamination", "Contamination"
+    HANDLING = "handling", "Handling"
+    FIRE = "fire", "Fire"
+    OTHER = "other", "Other"
+
+
+class InventoryTransaction(BaseModel):
+    """One change to a batch. Added through apps.customers.services so the ledger sees it too."""
+
+    batch = models.ForeignKey(Batch, on_delete=models.PROTECT, related_name="transactions")
+    kind = models.CharField(max_length=12, choices=TransactionKind.choices)
+    tonnes_change = models.DecimalField(max_digits=10, decimal_places=3, editable=False)
+    loss_cause = models.CharField(max_length=14, choices=LossCause.choices, blank=True)
+    to_pile = models.ForeignKey(Pile, on_delete=models.PROTECT, null=True, blank=True, related_name="+")
+    occurred_at = models.DateTimeField(default=timezone.now)
+    note = models.TextField(blank=True)
+    ledger_seq = models.PositiveBigIntegerField(null=True, blank=True, editable=False)
+
+    class Meta:
+        ordering = ["-occurred_at", "-created_at"]
+
+    def __str__(self):
+        return f"{self.batch.code} {self.get_kind_display()} {self.tonnes_change} t"
+
+
+class Basis(models.TextChoices):
+    MEASURED = "measured", "Measured"
+    ESTIMATED = "estimated", "Estimated"
+
+
+class QualityObservation(BaseModel):
+    batch = models.ForeignKey(Batch, on_delete=models.PROTECT, related_name="quality")
+    basis = models.CharField(max_length=10, choices=Basis.choices, default=Basis.MEASURED)
+    observed_at = models.DateTimeField(default=timezone.now)
+    moisture_percent = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, validators=PERCENT)
+    ash_percent = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, validators=PERCENT)
+    gcv = models.DecimalField(
+        max_digits=7, decimal_places=0, null=True, blank=True, validators=[MinValueValidator(0)],
+        verbose_name="GCV (kcal/kg)",
+    )
+    method = models.CharField(max_length=60, blank=True, help_text="For example handheld meter, lab test")
+    tested_by = models.CharField(max_length=100, blank=True)
+    ledger_seq = models.PositiveBigIntegerField(null=True, blank=True, editable=False)
+
+    class Meta:
+        ordering = ["-observed_at"]
+
+    def __str__(self):
+        return f"{self.batch.code} quality on {self.observed_at:%d %b %Y}"
+
+    def clean(self):
+        super().clean()
+        if self.moisture_percent is None and self.ash_percent is None and self.gcv is None:
+            raise ValidationError("Enter at least one reading: moisture, ash or GCV.")
+
+
+class CountMethod(models.TextChoices):
+    WEIGHBRIDGE = "weighbridge", "Weighbridge"
+    QR_SCAN = "qr_scan", "QR scan and count"
+    SURVEY = "survey", "Survey or drone estimate"
+    AUDIT = "audit", "Physical audit"
+
+
+class StockCount(BaseModel):
+    """What was physically found. Compared with the book figure, not merged into it."""
+
+    batch = models.ForeignKey(Batch, on_delete=models.PROTECT, related_name="counts")
+    counted_tonnes = models.DecimalField(max_digits=10, decimal_places=3, validators=[MinValueValidator(0)])
+    method = models.CharField(max_length=12, choices=CountMethod.choices)
+    counted_on = models.DateField(default=timezone.localdate)
+    counted_by = models.CharField(max_length=100, blank=True)
+    ledger_seq = models.PositiveBigIntegerField(null=True, blank=True, editable=False)
+
+    class Meta:
+        ordering = ["-counted_on", "-created_at"]
+
+    def __str__(self):
+        return f"{self.batch.code} counted {self.counted_tonnes} t on {self.counted_on}"
+
+
+class Reservation(BaseModel):
+    """Stock set aside for a plant. Deactivate it to release the stock."""
+
+    batch = models.ForeignKey(Batch, on_delete=models.PROTECT, related_name="reservations")
+    factory = models.ForeignKey(Factory, on_delete=models.PROTECT, related_name="reservations")
+    tonnes = models.DecimalField(max_digits=10, decimal_places=3, validators=[POSITIVE_TONNES])
+    note = models.CharField(max_length=200, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.tonnes} t of {self.batch.code} for {self.factory.name}"

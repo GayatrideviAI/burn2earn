@@ -4,7 +4,7 @@ from functools import wraps
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 from apps.farms.models import Farmer
 from apps.network.models import MitraOperatingStatus
@@ -22,6 +22,8 @@ def mitra_required(view):
     @login_required
     def wrapper(request, *args, **kwargs):
         mitra = get_mitra(request.user)
+        if mitra is None and getattr(request.user, "customer_member", None) is not None:
+            return redirect("customers:dashboard")
         if mitra is None:
             return render(request, "field/forbidden.html", {"reason": "no_mitra"}, status=403)
         if mitra.operating_status in (MitraOperatingStatus.SUSPENDED, MitraOperatingStatus.EXITED):
