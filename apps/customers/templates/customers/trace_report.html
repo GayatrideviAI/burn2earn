@@ -1,0 +1,22 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<form method="get" style="margin-bottom:16px">
+  <label>Farmer code <input name="farmer" value="{{ code }}" placeholder="FRM-000001"></label> <button>Trace</button>
+</form>
+{% if searched and not farmer %}<p>No farmer has the code {{ code }}.</p>{% endif %}
+{% if farmer %}
+<h2>{{ farmer.code }} {{ farmer.name }}, {{ farmer.village.name }}</h2>
+<p>{{ total|floatformat:"2" }} t of this farmer's residue is attributed to {{ rows|length }} delivered load{{ rows|length|pluralize }}.
+Loads are not tagged farmer by farmer: each delivery is shared out by tonnes handed over at the supplying Grid up to the delivery date.</p>
+<table>
+<thead><tr><th>Load</th><th>Delivered</th><th>Customer</th><th>Order</th><th>Farmer's share</th><th>In yards</th></tr></thead>
+<tbody>
+{% for r in rows %}
+<tr><td>{{ r.dispatch.code }}</td><td>{{ r.dispatch.delivered_date|default:"" }}</td><td>{{ r.dispatch.factory.buyer.company_name }}</td>
+<td>{{ r.dispatch.purchase_order.code|default:"-" }}</td><td>{{ r.tonnes|floatformat:"2" }} t</td>
+<td>{% for b, t, o in r.batches %}{{ b.code }} in {{ b.pile.yard.name }}/{{ b.pile.label }}: {{ t|floatformat:"2" }} t ({{ o.consumed|floatformat:"1" }} t of the batch burned){% if not forloop.last %}<br>{% endif %}{% empty %}not recorded in a yard yet{% endfor %}</td></tr>
+{% empty %}<tr><td colspan="6">None of this farmer's residue has been delivered yet.</td></tr>
+{% endfor %}
+</tbody></table>
+{% endif %}
+{% endblock %}

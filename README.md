@@ -235,3 +235,18 @@ at the supplying Grid, in proportion to tonnes handed over up to the delivery da
 (never name or mobile). Treat it as a fair attribution, not lot-level proof.
 
 Try it: `docker compose exec web python manage.py load_demo_deliveries` (loads the demo network and customer too if missing), then log in at `/customer/`.
+
+## From delivery to yard: the chain from farmer to customer
+
+A delivered load can be put into the customer's yards as one or more **batches** that remember which load they came from. In Admin, add a Batch and pick
+the delivered load (*Source dispatch*). The weight available is what was weighed at the buyer's gate, and a load cannot be received for more than that.
+The Grid and a source note are filled in for you, and the load's code is written into the ledger entry for the receipt.
+
+**What the customer sees:** on each batch, a *Chain of custody*: farmers (code and village), the Mitra and Grid, the dispatch with its loading and gate
+weights, the purchase order and contract, the yard and pile, and what has happened since (burned, lost by cause, still on the books). On each purchase order,
+every load shows which batches it went into, or "n t not in a yard" when part of a delivered load is unaccounted for (this also appears in "what to do next").
+
+**For staff:** `/admin/reports/trace/` follows one farmer's residue by farmer code, load by load, to the customer, the yard batch and how much of that batch was burned.
+As before, farmers are credited in proportion to what each handed over at the supplying Grid, so this is an attribution, not lot-level proof.
+
+Try it: `docker compose exec web python manage.py load_demo_deliveries` (the first two demo loads go into yards, the third is left unreceived).

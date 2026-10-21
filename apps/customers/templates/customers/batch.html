@@ -14,6 +14,23 @@
   <div><dt>Available to use</dt><dd>{{ v.available|floatformat:"1g" }} t</dd></div>
 </dl>
 
+<section class="card"><h2>Chain of custody</h2>
+  {% if origin.dispatch %}
+  <ol class="chain">
+    <li><b>Farmers</b> handed over the residue
+      {% if origin.farmers %}<div class="small muted">{{ origin.farmers|length }} farmer{{ origin.farmers|length|pluralize }}, shared out by what each handed over at the Grid. Codes and villages only.</div>
+      <div class="scroll"><table><thead><tr><th>Farmer</th><th>Village</th><th class="r">In this batch</th></tr></thead><tbody>
+        {% for f, t in origin.farmers %}<tr><td class="mono">{{ f.code }}</td><td>{{ f.village.name }}</td><td class="r">{{ t|floatformat:"2g" }} t</td></tr>{% endfor %}
+      </tbody></table></div>{% else %}<div class="small muted">No farmer pickups are recorded for this load.</div>{% endif %}</li>
+    <li><b>Biomass Mitra</b> {% if origin.mitra %}{{ origin.mitra.name }} <span class="mono">{{ origin.mitra.code }}</span>{% else %}not recorded{% endif %} collected and processed it at {{ origin.dispatch.grid.name }} <span class="mono">{{ origin.dispatch.grid.code }}</span></li>
+    <li><b>Dispatch {{ origin.dispatch.code }}</b> left with {{ origin.dispatch.quantity_tonnes|floatformat:"1g" }} t{% if origin.dispatch.vehicle_ref %} on {{ origin.dispatch.vehicle_ref }}{% endif %}, weighed {{ origin.dispatch.current_quantity_tonnes|floatformat:"1g" }} t at your gate.</li>
+    {% if origin.order %}<li><b>Against</b> <a href="{% url 'customers:order' origin.order.pk %}">{{ origin.order.code }}</a> under <a href="{% url 'customers:contract' origin.contract.pk %}">{{ origin.contract.code }}</a></li>{% endif %}
+    <li><b>Yard batch {{ batch.code }}</b>: {{ batch.intake_tonnes|floatformat:"1g" }} t ({% widthratio origin.share 1 100 %}% of that load) received {{ batch.received_on|date:"d M Y" }} into {{ batch.pile.yard.name }}, pile {{ batch.pile.label }}</li>
+    <li><b>Since then</b>: {{ origin.consumed|floatformat:"1g" }} t burned at the plant, {{ origin.lost|floatformat:"1g" }} t lost{% for cause, t in origin.lost_by_cause.items %} ({{ cause|lower }}: {{ t|floatformat:"1g" }} t){% endfor %}, {{ v.book|floatformat:"1g" }} t still on the books.</li>
+  </ol>
+  {% else %}<p class="muted">This batch is not linked to a delivered load, so it cannot be traced back to farmers.</p>{% endif %}
+</section>
+
 <section class="card"><h2>Movements</h2>
   <div class="scroll"><table><thead><tr><th>When</th><th>What</th><th class="r">Change</th><th>Note</th><th class="r">Ledger</th></tr></thead><tbody>
   {% for t in transactions %}<tr><td>{{ t.occurred_at|date:"d M Y H:i" }}</td><td>{{ t.get_kind_display }}{% if t.loss_cause %} ({{ t.get_loss_cause_display }}){% endif %}</td>

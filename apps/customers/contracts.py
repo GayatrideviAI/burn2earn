@@ -163,6 +163,24 @@ class Provenance:
         return sorted(self.farmers.items(), key=lambda kv: -kv[1])
 
 
+def attribution(dispatch):
+    """Share one delivered dispatch out among farmers. Returns ({farmer: tonnes}, unattributed_tonnes)."""
+    from apps.farms.models import Farmer
+
+    qty = dispatch.current_quantity_tonnes
+    until = delivered_on(dispatch) or date.today()
+    rows = list(
+        CollectionRecord.objects.filter(
+            grid=dispatch.grid, biomass_type=dispatch.product.biomass_type, status=Status.ACTIVE, collected_on__lte=until
+        ).values("farmer").annotate(t=Sum("quantity_tonnes"))
+    )
+    total = sum((r["t"] for r in rows), ZERO)
+    if total == 0:
+        return {}, qty
+    farmers = Farmer.objects.select_related("village").in_bulk([r["farmer"] for r in rows])
+    return {farmers[r["farmer"]]: qty * r["t"] / total for r in rows}, ZERO
+
+
 def provenance(dispatches):
     result = Provenance()
     for d in dispatches:
@@ -174,24 +192,87 @@ def provenance(dispatches):
         if mitra is not None:
             result.mitras[mitra] = result.mitras.get(mitra, ZERO) + qty
         result.grids[d.grid] = result.grids.get(d.grid, ZERO) + qty
-        until = delivered_on(d) or date.today()
-        rows = (
-            CollectionRecord.objects.filter(
-                grid=d.grid, biomass_type=d.product.biomass_type, status=Status.ACTIVE, collected_on__lte=until
-            )
-            .values("farmer").annotate(t=Sum("quantity_tonnes"))
-        )
-        total = sum((r["t"] for r in rows), ZERO)
-        if total == 0:
-            result.unattributed += qty
-            continue
-        from apps.farms.models import Farmer
-
-        farmers = Farmer.objects.in_bulk([r["farmer"] for r in rows])
-        for r in rows:
-            f = farmers[r["farmer"]]
-            result.farmers[f] = result.farmers.get(f, ZERO) + qty * r["t"] / total
+        shares, unattributed = attribution(d)
+        result.unattributed += unattributed
+        for farmer, t in shares.items():
+            result.farmers[farmer] = result.farmers.get(farmer, ZERO) + t
     return result
+
+
+# ---- from delivery to yard, and the full chain ------------------------------------------------
+
+
+def dispatch_receipts(dispatch):
+    """What was put into yards from a delivered load: (received_tonnes, batches, still_to_receive)."""
+    from .models import Batch, unreceived_tonnes
+
+    batches = list(Batch.objects.filter(source_dispatch=dispatch, status=Status.ACTIVE).select_related("pile__yard"))
+    return sum((b.intake_tonnes for b in batches), ZERO), batches, unreceived_tonnes(dispatch)
+
+
+@dataclass
+class Origin:
+    batch: object
+    dispatch: object = None
+    order: object = None
+    contract: object = None
+    mitra: object = None
+    share: Decimal = ZERO  # this batch's part of the delivered load, 0 to 1
+    farmers: list = field(default_factory=list)  # (farmer, tonnes attributed to this batch)
+    unattributed: Decimal = ZERO
+    consumed: Decimal = ZERO
+    lost: Decimal = ZERO
+    lost_by_cause: dict = field(default_factory=dict)
+
+
+def batch_origin(batch):
+    """Everything between the farmer and this yard batch, and what has happened to it since."""
+    from .models import InventoryTransaction, TransactionKind
+
+    o = Origin(batch=batch)
+    for t in InventoryTransaction.objects.filter(batch=batch, status=Status.ACTIVE):
+        if t.kind == TransactionKind.CONSUMPTION:
+            o.consumed += -t.tonnes_change
+        elif t.kind == TransactionKind.LOSS:
+            o.lost += -t.tonnes_change
+            o.lost_by_cause[t.get_loss_cause_display()] = o.lost_by_cause.get(t.get_loss_cause_display(), ZERO) - t.tonnes_change
+    d = batch.source_dispatch if batch.source_dispatch_id else None
+    if d is None:
+        return o
+    o.dispatch, o.order = d, d.purchase_order
+    o.contract = d.purchase_order.line.contract if d.purchase_order_id else None
+    o.mitra = d.created_by_mitra or d.grid.current_mitra
+    if d.current_quantity_tonnes:
+        o.share = batch.intake_tonnes / d.current_quantity_tonnes
+    shares, unattributed = attribution(d)
+    o.farmers = sorted(((f, t * o.share) for f, t in shares.items()), key=lambda kv: -kv[1])
+    o.unattributed = unattributed * o.share
+    return o
+
+
+def farmer_trace(farmer):
+    """For staff: where a farmer's residue went. Returns a list of rows, one per delivered load it is attributed to."""
+    from .models import Batch
+
+    grid_types = set(
+        CollectionRecord.objects.filter(farmer=farmer, status=Status.ACTIVE).values_list("grid", "biomass_type")
+    )
+    rows = []
+    for grid_id, type_id in grid_types:
+        for d in live_dispatches(grid_id=grid_id, product__biomass_type_id=type_id, stage=DispatchStage.DELIVERED).select_related(
+            "factory__buyer", "purchase_order", "grid"
+        ):
+            shares, _ = attribution(d)
+            mine = shares.get(farmer)
+            if not mine:
+                continue
+            d.delivered_date = delivered_on(d)
+            rows.append({"dispatch": d, "tonnes": mine, "batches": [
+                (b, mine * b.intake_tonnes / d.current_quantity_tonnes, batch_origin(b))
+                for b in Batch.objects.filter(source_dispatch=d, status=Status.ACTIVE).select_related("pile__yard")
+            ]})
+    rows.sort(key=lambda r: delivered_on(r["dispatch"]) or date.min)
+    return rows
 
 
 # ---- alerts ------------------------------------------------------------------------------------
@@ -207,6 +288,10 @@ def supply_actions(buyer, today=None):
         p = order_progress(order)
         if p.overdue(today):
             out.append(("bad", "Delivery late", f"{order.code} ({order.line.product}) was due by {order.deliver_by:%d %b}; {p.remaining:.1f} t still to come.", order))
+    for d in live_dispatches(purchase_order__line__contract__customer=buyer, stage=DispatchStage.DELIVERED).select_related("purchase_order"):
+        left = dispatch_receipts(d)[2]
+        if left > Decimal("0.05"):
+            out.append(("warn", "Not in a yard yet", f"{d.code}: {left:.1f} t was delivered to your gate but is not recorded in any yard.", d.purchase_order))
     for contract in Contract.objects.filter(customer=buyer, status=Status.ACTIVE, end_date__gte=today):
         cp = contract_progress(contract, today)
         if cp.at_risk:
