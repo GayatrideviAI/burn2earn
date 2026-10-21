@@ -12,6 +12,7 @@ urlpatterns = [
     path("admin/reports/trace/", trace_report, name="trace_report"),
     path("admin/", admin.site.urls),
     path("mitra/", include("apps.field.urls")),
+    path("i18n/", include("django.conf.urls.i18n")),
     path("customer/", include("apps.customers.urls")),
     path("", RedirectView.as_view(pattern_name="field:dashboard", permanent=False)),
 ]

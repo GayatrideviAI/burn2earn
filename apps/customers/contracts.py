@@ -14,6 +14,8 @@ from datetime import date
 from decimal import Decimal
 
 from django.db.models import Sum
+from django.utils.formats import date_format
+from django.utils.translation import gettext as _
 
 from apps.core.models import Status
 from apps.operations.models import CollectionRecord
@@ -262,7 +264,7 @@ def farmer_trace(farmer):
         for d in live_dispatches(grid_id=grid_id, product__biomass_type_id=type_id, stage=DispatchStage.DELIVERED).select_related(
             "factory__buyer", "purchase_order", "grid"
         ):
-            shares, _ = attribution(d)
+            shares, _unused = attribution(d)
             mine = shares.get(farmer)
             if not mine:
                 continue
@@ -287,13 +289,13 @@ def supply_actions(buyer, today=None):
     for order in PurchaseOrder.objects.filter(line__contract__customer=buyer, status=Status.ACTIVE, state=OrderState.OPEN).select_related("line__product", "factory"):
         p = order_progress(order)
         if p.overdue(today):
-            out.append(("bad", "Delivery late", f"{order.code} ({order.line.product}) was due by {order.deliver_by:%d %b}; {p.remaining:.1f} t still to come.", order))
+            out.append(("bad", _("Delivery late"), _("%(code)s (%(product)s) was due by %(date)s; %(left)s t still to come.") % {"code": order.code, "product": order.line.product, "date": date_format(order.deliver_by, "d M"), "left": f"{p.remaining:.1f}"}, order))
     for d in live_dispatches(purchase_order__line__contract__customer=buyer, stage=DispatchStage.DELIVERED).select_related("purchase_order"):
         left = dispatch_receipts(d)[2]
         if left > Decimal("0.05"):
-            out.append(("warn", "Not in a yard yet", f"{d.code}: {left:.1f} t was delivered to your gate but is not recorded in any yard.", d.purchase_order))
+            out.append(("warn", _("Not in a yard yet"), _("%(code)s: %(left)s t was delivered to your gate but is not recorded in any yard.") % {"code": d.code, "left": f"{left:.1f}"}, d.purchase_order))
     for contract in Contract.objects.filter(customer=buyer, status=Status.ACTIVE, end_date__gte=today):
         cp = contract_progress(contract, today)
         if cp.at_risk:
-            out.append(("warn", "Contract behind", f"{contract.code} has had {cp.percent}% delivered with {int(cp.elapsed * 100)}% of the period gone.", contract))
+            out.append(("warn", _("Contract behind"), _("%(code)s has had %(percent)s%% delivered with %(elapsed)s%% of the period gone.") % {"code": contract.code, "percent": cp.percent, "elapsed": int(cp.elapsed * 100)}, contract))
     return out

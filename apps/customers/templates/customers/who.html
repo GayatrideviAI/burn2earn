@@ -1,17 +1,17 @@
-<section class="card">
-  <h2>Where the delivered biomass came from</h2>
+{% load i18n customers_i18n %}<section class="card">
+  <h2>{% trans "Where the delivered biomass came from" %}</h2>
   {% if who.delivered %}
-  <p class="small muted">{{ who.delivered|floatformat:"1g" }} t delivered. Farmers are shared out in proportion to the tonnes each handed over at the supplying Grid (the lots are not tagged farmer by farmer), so read this as a fair attribution, not lot-level proof. Only farmer codes and villages are shown.</p>
+  <p class="small muted">{% blocktrans trimmed with t=who.delivered|tn:"1g" %}{{ t }} delivered. Farmers are shared out in proportion to the tonnes each handed over at the supplying Grid (the lots are not tagged farmer by farmer), so read this as a fair attribution, not lot-level proof. Only farmer codes and villages are shown.{% endblocktrans %}</p>
   <div class="two">
-    <div><h3>Biomass Mitras</h3><ul class="plain">
-      {% for m, t in who.mitras.items %}<li>{{ m.name }} <span class="mono">{{ m.code }}</span> · <b>{{ t|floatformat:"1g" }} t</b></li>{% empty %}<li class="muted">No Mitra recorded.</li>{% endfor %}
+    <div><h3>{% trans "Biomass Mitras" %}</h3><ul class="plain">
+      {% for m, t in who.mitras.items %}<li>{{ m.name }} <span class="mono">{{ m.code }}</span> · <b>{{ t|tn:"1g" }}</b></li>{% empty %}<li class="muted">{% trans "No Mitra recorded." %}</li>{% endfor %}
     </ul>
-    <h3 style="margin-top:12px">Grids</h3><ul class="plain">{% for g, t in who.grids.items %}<li>{{ g.name }} <span class="mono">{{ g.code }}</span> · {{ t|floatformat:"1g" }} t</li>{% endfor %}</ul></div>
-    <div><h3>Farmers ({{ who.farmers|length }})</h3>
-    <div class="scroll"><table><thead><tr><th>Farmer</th><th>Village</th><th class="r">Attributed</th></tr></thead><tbody>
-      {% for f, t in who.farmer_rows %}<tr><td class="mono">{{ f.code }}</td><td>{{ f.village.name }}</td><td class="r">{{ t|floatformat:"2g" }} t</td></tr>{% endfor %}
+    <h3 style="margin-top:12px">{% trans "Grids" %}</h3><ul class="plain">{% for g, t in who.grids.items %}<li>{{ g.name }} <span class="mono">{{ g.code }}</span> · {{ t|tn:"1g" }}</li>{% endfor %}</ul></div>
+    <div><h3>{% blocktrans trimmed with n=who.farmers|length %}Farmers ({{ n }}){% endblocktrans %}</h3>
+    <div class="scroll"><table><thead><tr><th>{% trans "Farmer" %}</th><th>{% trans "Village" %}</th><th class="r">{% trans "Attributed" %}</th></tr></thead><tbody>
+      {% for f, t in who.farmer_rows %}<tr><td class="mono">{{ f.code }}</td><td>{{ f.village.name }}</td><td class="r">{{ t|tn:"2g" }}</td></tr>{% endfor %}
     </tbody></table></div>
-    {% if who.unattributed %}<p class="small muted">{{ who.unattributed|floatformat:"1g" }} t could not be attributed because no farmer pickups are recorded for it.</p>{% endif %}</div>
+    {% if who.unattributed %}<p class="small muted">{% blocktrans trimmed with t=who.unattributed|tn:"1g" %}{{ t }} could not be attributed because no farmer pickups are recorded for it.{% endblocktrans %}</p>{% endif %}</div>
   </div>
-  {% else %}<p class="muted">Nothing delivered yet.</p>{% endif %}
+  {% else %}<p class="muted">{% trans "Nothing delivered yet." %}</p>{% endif %}
 </section>

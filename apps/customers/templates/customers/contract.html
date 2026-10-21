@@ -1,33 +1,34 @@
 {% extends "customers/base.html" %}
+{% load i18n customers_i18n %}
 {% block title %}{{ c.code }}{% endblock %}
 {% block content %}
-<p><a href="{% url 'customers:contracts' %}">← All contracts</a></p>
+<p><a href="{% url 'customers:contracts' %}">← {% trans "All contracts" %}</a></p>
 <h1>{{ c.code }} <span class="muted">{{ c.reference }}</span></h1>
 <dl class="facts">
-  <div><dt>Period</dt><dd>{{ c.start_date|date:"d M Y" }} to {{ c.end_date|date:"d M Y" }}</dd></div>
-  <div><dt>Delivered</dt><dd>{{ p.delivered|floatformat:"1g" }} of {{ p.contracted|floatformat:"1g" }} t ({{ p.percent }}%)</dd></div>
-  <div><dt>Spoilage, rain and fire risk</dt><dd>{{ c.get_risk_bearer_display }}</dd></div>
-  <div><dt>Penalties</dt><dd>{{ c.penalties|default:"None recorded" }}</dd></div>
+  <div><dt>{% trans "Period" %}</dt><dd>{{ c.start_date|date:"d M Y" }} {% trans "to" %} {{ c.end_date|date:"d M Y" }}</dd></div>
+  <div><dt>{% trans "Delivered" %}</dt><dd>{% blocktrans trimmed with d=p.delivered|floatformat:"1g" c=p.contracted|tn:"1g" pc=p.percent %}{{ d }} of {{ c }} ({{ pc }}%){% endblocktrans %}</dd></div>
+  <div><dt>{% trans "Spoilage, rain and fire risk" %}</dt><dd>{{ c.get_risk_bearer_display }}</dd></div>
+  <div><dt>{% trans "Penalties" %}</dt><dd>{% if c.penalties %}{{ c.penalties }}{% else %}{% trans "None recorded" %}{% endif %}</dd></div>
 </dl>
 
 {% for l in p.lines %}
 <section class="card">
-  <h2>{{ l.line.product }} <span class="muted small">{{ l.line.contracted_tonnes|floatformat:"1g" }} t{% if l.line.price_per_tonne %} at ₹{{ l.line.price_per_tonne|floatformat:"0g" }}/t{% endif %}</span></h2>
-  <p class="small">{{ l.delivered|floatformat:"1g" }} t delivered ({{ l.percent }}%), {{ l.on_the_way|floatformat:"1g" }} t on the way, {{ l.ordered|floatformat:"1g" }} t ordered, {{ l.not_yet_ordered|floatformat:"1g" }} t not yet ordered.</p>
-  <div class="scroll"><table><thead><tr><th>Month</th><th class="r">Planned</th><th class="r">Delivered</th><th class="r">Difference</th></tr></thead><tbody>
-  {% for month, planned, got, diff in l.months %}<tr><td>{{ month|date:"M Y" }}</td><td class="r">{{ planned|floatformat:"1g" }} t</td><td class="r">{{ got|floatformat:"1g" }} t</td>
-    <td class="r">{% if planned or got %}{% if diff < 0 %}<span class="tag warn">{{ diff|floatformat:"1g" }} t</span>{% else %}+{{ diff|floatformat:"1g" }} t{% endif %}{% endif %}</td></tr>{% endfor %}
+  <h2>{{ l.line.product }} <span class="muted small">{{ l.line.contracted_tonnes|tn:"1g" }}{% if l.line.price_per_tonne %} {% blocktrans trimmed with pr=l.line.price_per_tonne|floatformat:"0g" %}at ₹{{ pr }}/t{% endblocktrans %}{% endif %}</span></h2>
+  <p class="small">{% blocktrans trimmed with d=l.delivered|tn:"1g" pc=l.percent w=l.on_the_way|tn:"1g" o=l.ordered|tn:"1g" n=l.not_yet_ordered|tn:"1g" %}{{ d }} delivered ({{ pc }}%), {{ w }} on the way, {{ o }} ordered, {{ n }} not yet ordered.{% endblocktrans %}</p>
+  <div class="scroll"><table><thead><tr><th>{% trans "Month" %}</th><th class="r">{% trans "Planned" %}</th><th class="r">{% trans "Delivered" %}</th><th class="r">{% trans "Difference" %}</th></tr></thead><tbody>
+  {% for month, planned, got, diff in l.months %}<tr><td>{{ month|date:"M Y" }}</td><td class="r">{{ planned|tn:"1g" }}</td><td class="r">{{ got|tn:"1g" }}</td>
+    <td class="r">{% if planned or got %}{% if diff < 0 %}<span class="tag warn">{{ diff|tn:"1g" }}</span>{% else %}+{{ diff|tn:"1g" }}{% endif %}{% endif %}</td></tr>{% endfor %}
   </tbody></table></div>
 </section>
 {% endfor %}
 
-<section class="card"><h2>Purchase orders</h2>
-  <div class="scroll"><table><thead><tr><th>Order</th><th>Plant</th><th>Window</th><th class="r">Ordered</th><th class="r">On the way</th><th class="r">Delivered</th><th></th></tr></thead><tbody>
+<section class="card"><h2>{% trans "Purchase orders" %}</h2>
+  <div class="scroll"><table><thead><tr><th>{% trans "Order" %}</th><th>{% trans "Plant" %}</th><th>{% trans "Window" %}</th><th class="r">{% trans "Ordered" %}</th><th class="r">{% trans "On the way" %}</th><th class="r">{% trans "Delivered" %}</th><th></th></tr></thead><tbody>
   {% for o in orders %}<tr><td><a href="{% url 'customers:order' o.order.pk %}">{{ o.order.code }}</a> <span class="muted small">{{ o.order.customer_po_number }}</span></td><td>{{ o.order.factory.name }}</td>
-    <td>{{ o.order.deliver_from|date:"d M" }} to {{ o.order.deliver_by|date:"d M" }}</td>
-    <td class="r">{{ o.ordered|floatformat:"1g" }} t</td><td class="r">{{ o.on_the_way|floatformat:"1g" }} t</td><td class="r">{{ o.delivered|floatformat:"1g" }} t</td>
-    <td>{% if o.order.state == 'cancelled' %}<span class="tag mute">Cancelled</span>{% elif o.overdue %}<span class="tag bad">Late</span>{% elif o.remaining == 0 %}<span class="tag good">Complete</span>{% else %}<span class="tag mute">{{ o.percent }}%</span>{% endif %}</td></tr>
-  {% empty %}<tr><td colspan="7" class="muted">No purchase orders yet.</td></tr>{% endfor %}
+    <td>{{ o.order.deliver_from|date:"d M" }} {% trans "to" %} {{ o.order.deliver_by|date:"d M" }}</td>
+    <td class="r">{{ o.ordered|tn:"1g" }}</td><td class="r">{{ o.on_the_way|tn:"1g" }}</td><td class="r">{{ o.delivered|tn:"1g" }}</td>
+    <td>{% if o.order.state == 'cancelled' %}<span class="tag mute">{% trans "Cancelled" %}</span>{% elif o.overdue %}<span class="tag bad">{% trans "Late" %}</span>{% elif o.remaining == 0 %}<span class="tag good">{% trans "Complete" %}</span>{% else %}<span class="tag mute">{{ o.percent }}%</span>{% endif %}</td></tr>
+  {% empty %}<tr><td colspan="7" class="muted">{% trans "No purchase orders yet." %}</td></tr>{% endfor %}
   </tbody></table></div></section>
 
 {% include "customers/who.html" %}

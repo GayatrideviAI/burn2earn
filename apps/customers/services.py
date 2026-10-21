@@ -9,6 +9,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import Sum
 from django.utils import timezone
+from django.utils.translation import gettext as _
 
 from apps.core.models import Status
 from apps.ledger import chain
@@ -351,20 +352,21 @@ def summary(buyer, today=None):
 def build_actions(s, limit):
     actions = []
     for v in s.rows:
-        where = f"{v.batch.pile.yard.name}, pile {v.batch.pile.label}"
+        c = v.batch.code
+        where = _("%(yard)s, pile %(pile)s") % {"yard": v.batch.pile.yard.name, "pile": v.batch.pile.label}
         if v.confidence == "Overdue":
             days = (date.today() - v.last_count.counted_on).days
-            actions.append(("warn", "Verification overdue", f"{v.batch.code} ({where}) was last counted {days} days ago.", v.batch))
+            actions.append(("warn", _("Verification overdue"), _("%(code)s (%(where)s) was last counted %(days)s days ago.") % {"code": c, "where": where, "days": days}, v.batch))
         elif v.physical is None:
-            actions.append(("warn", "Not counted yet", f"{v.batch.code} ({where}) has never been physically counted, so it is not usable stock yet.", v.batch))
+            actions.append(("warn", _("Not counted yet"), _("%(code)s (%(where)s) has never been physically counted, so it is not usable stock yet.") % {"code": c, "where": where}, v.batch))
         if v.quality == "no_reading":
-            actions.append(("warn", "Check moisture", f"{v.batch.code} ({where}) has no measured moisture reading.", v.batch))
+            actions.append(("warn", _("Check moisture"), _("%(code)s (%(where)s) has no measured moisture reading.") % {"code": c, "where": where}, v.batch))
         elif v.quality == "over_limit":
-            actions.append(("bad", "Over moisture limit", f"{v.batch.code} ({where}) is at {v.moisture}%, above your {limit}% limit.", v.batch))
+            actions.append(("bad", _("Over moisture limit"), _("%(code)s (%(where)s) is at %(moisture)s%%, above your %(limit)s%% limit.") % {"code": c, "where": where, "moisture": v.moisture, "limit": limit}, v.batch))
         gap = v.gap
         if gap is not None and v.book and abs(gap) / v.book > Decimal("0.005"):
-            actions.append(("warn", "Reconcile", f"{v.batch.code} ({where}): books say {v.book} t, counted {v.physical} t.", v.batch))
+            actions.append(("warn", _("Reconcile"), _("%(code)s (%(where)s): books say %(book)s t, counted %(counted)s t.") % {"code": c, "where": where, "book": v.book, "counted": v.physical}, v.batch))
     if s.fuel_cover_days is not None and s.fuel_cover_days < lead_time_days():
-        actions.append(("bad", "Low fuel cover", f"{s.fuel_cover_days} days of cover is less than the {lead_time_days()}-day replenishment lead time.", None))
+        actions.append(("bad", _("Low fuel cover"), _("%(days)s days of cover is less than the %(lead)s-day replenishment lead time.") % {"days": s.fuel_cover_days, "lead": lead_time_days()}, None))
     order = {"bad": 0, "warn": 1}
     return sorted(actions, key=lambda a: order.get(a[0], 2))

@@ -30,3 +30,11 @@ input { font:inherit; padding:7px 9px; border:1px solid var(--line); border-radi
 .nav { display:flex; gap:14px; } .nav a { text-decoration:none; font-weight:500; }
 .bar2 { position:relative; height:12px; background:#e5eaef; border-radius:6px; margin:8px 0; } .bar2 i { display:block; height:100%; background:var(--accent); border-radius:6px; } .bar2 u { position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--ink); }
 .chain { margin:0; padding-left:20px; } .chain li { padding:6px 0; }
+
+/* Hindi and Punjabi: fall back to fonts that carry Devanagari and Gurmukhi, and give the taller scripts room. */
+html[lang="hi"] body { font-family: system-ui, "Noto Sans Devanagari", "Mangal", "Nirmala UI", sans-serif; line-height: 1.6; }
+html[lang="pa"] body { font-family: system-ui, "Noto Sans Gurmukhi", "Raavi", "Nirmala UI", sans-serif; line-height: 1.6; }
+.bar { flex-wrap: wrap; }
+.lang { display: flex; gap: 10px; margin-left: auto !important; }
+.lang .link { padding: 2px 4px; color: var(--muted); }
+.lang .link.on { color: var(--accent); font-weight: 600; text-decoration: underline; }
