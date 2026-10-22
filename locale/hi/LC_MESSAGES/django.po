@@ -130,7 +130,7 @@ msgstr "ढेर का तापमान और जोखिम"
 msgid "Temperature over time"
 msgstr "समय के साथ तापमान"
 
-#: apps/customers/templates/customers/batch.html:40
+#: apps/customers/templates/customers/batch.html:40 apps/yardops/static/yardops/app.js:457 apps/yardops/static/yardops/app.js:488
 msgid "No temperature readings yet."
 msgstr "अभी तक तापमान की कोई रीडिंग नहीं।"
 
@@ -361,7 +361,7 @@ msgstr "अनुबंध और आपूर्ति"
 msgid "What was contracted, what has reached your gate, and what is still to come."
 msgstr "क्या तय हुआ था, आपके गेट तक क्या पहुँचा, और अभी क्या आना बाकी है।"
 
-#: apps/customers/templates/customers/contracts.html:8 apps/yardops/risk.py:30
+#: apps/customers/templates/customers/contracts.html:8 apps/yardops/risk.py:30 apps/yardops/static/yardops/app.js:46
 msgid "Needs attention"
 msgstr "ध्यान देने की ज़रूरत"
 
@@ -451,16 +451,16 @@ msgstr "पहले इस्तेमाल करें"
 msgid "Piles ranked by risk, then by age, rather than simply oldest first. Shipping and burning the riskiest stock first saves tonnes."
 msgstr "Piles ranked by risk, then by age, rather than simply oldest first. Shipping and burning the riskiest stock first saves tonnes."
 
-#: apps/customers/templates/customers/dashboard.html:44 apps/customers/templates/customers/yard.html:10 apps/yardops/templates/yardops/home.html:31
+#: apps/customers/templates/customers/dashboard.html:44 apps/customers/templates/customers/yard.html:10 apps/yardops/templates/yardops/home.html:32
 #. A heap of stored biomass inside a yard.
 msgid "Pile"
 msgstr "ढेर"
 
-#: apps/customers/templates/customers/dashboard.html:44 apps/yardops/templates/yardops/home.html:31
+#: apps/customers/templates/customers/dashboard.html:44 apps/yardops/templates/yardops/home.html:32
 msgid "Risk"
 msgstr "जोखिम"
 
-#: apps/customers/templates/customers/dashboard.html:44 apps/yardops/templates/yardops/home.html:31
+#: apps/customers/templates/customers/dashboard.html:44 apps/yardops/templates/yardops/home.html:32
 msgid "Last temperature"
 msgstr "आख़िरी तापमान"
 
@@ -468,7 +468,7 @@ msgstr "आख़िरी तापमान"
 msgid "Oldest stock"
 msgstr "सबसे पुराना स्टॉक"
 
-#: apps/customers/templates/customers/dashboard.html:48 apps/yardops/templates/yardops/home.html:37
+#: apps/customers/templates/customers/dashboard.html:48 apps/yardops/templates/yardops/home.html:38
 msgid "none yet"
 msgstr "अभी नहीं"
 
@@ -659,7 +659,7 @@ msgstr "%(t)s could not be attributed because no farmer pickups are recorded for
 msgid "All yards"
 msgstr "सभी यार्ड"
 
-#: apps/customers/templates/customers/yard.html:10 apps/yardops/forms.py:27
+#: apps/customers/templates/customers/yard.html:10 apps/yardops/forms.py:27 apps/yardops/static/yardops/app.js:562
 msgid "Batch"
 msgstr "बैच"
 
@@ -844,62 +844,62 @@ msgstr "खुला"
 msgid "Fulfilled"
 msgstr "पूरा हुआ"
 
-#: apps/customers/services.py:356
+#: apps/customers/services.py:358
 #, python-format
 msgid "%(yard)s, pile %(pile)s"
 msgstr "%(yard)s, ढेर %(pile)s"
 
-#: apps/customers/services.py:359
+#: apps/customers/services.py:361
 msgid "Verification overdue"
 msgstr "जाँच में देरी"
 
-#: apps/customers/services.py:359
+#: apps/customers/services.py:361
 #, python-format
 msgid "%(code)s (%(where)s) was last counted %(days)s days ago."
 msgstr "%(code)s (%(where)s) की आखिरी गिनती %(days)s दिन पहले हुई थी।"
 
-#: apps/customers/services.py:361
+#: apps/customers/services.py:363
 msgid "Not counted yet"
 msgstr "अभी गिनती नहीं हुई"
 
-#: apps/customers/services.py:361
+#: apps/customers/services.py:363
 #, python-format
 msgid "%(code)s (%(where)s) has never been physically counted, so it is not usable stock yet."
 msgstr "%(code)s (%(where)s) की कभी भौतिक गिनती नहीं हुई, इसलिए यह अभी उपयोग योग्य स्टॉक नहीं है।"
 
-#: apps/customers/services.py:363
+#: apps/customers/services.py:365
 msgid "Check moisture"
 msgstr "नमी जाँचें"
 
-#: apps/customers/services.py:363
+#: apps/customers/services.py:365
 #, python-format
 msgid "%(code)s (%(where)s) has no measured moisture reading."
 msgstr "%(code)s (%(where)s) की नमी की कोई नापी हुई रीडिंग नहीं है।"
 
-#: apps/customers/services.py:365
+#: apps/customers/services.py:367
 msgid "Over moisture limit"
 msgstr "नमी सीमा से अधिक"
 
-#: apps/customers/services.py:365
+#: apps/customers/services.py:367
 #, python-format
 msgid "%(code)s (%(where)s) is at %(moisture)s%%, above your %(limit)s%% limit."
 msgstr "%(code)s (%(where)s) में नमी %(moisture)s%% है, जो आपकी %(limit)s%% सीमा से अधिक है।"
 
-#: apps/customers/services.py:368
+#: apps/customers/services.py:370
 #. Action title: the records and the physical count do not match, someone should check.
 msgid "Reconcile"
 msgstr "Reconcile"
 
-#: apps/customers/services.py:368
+#: apps/customers/services.py:370
 #, python-format
 msgid "%(code)s (%(where)s): books say %(book)s t, counted %(counted)s t."
 msgstr "%(code)s (%(where)s): रिकॉर्ड में %(book)s टन, गिनती में %(counted)s टन।"
 
-#: apps/customers/services.py:370
+#: apps/customers/services.py:372
 msgid "Low fuel cover"
 msgstr "Low fuel cover"
 
-#: apps/customers/services.py:370
+#: apps/customers/services.py:372
 #, python-format
 msgid "%(days)s days of cover is less than the %(lead)s-day replenishment lead time."
 msgstr "%(days)s days of cover is less than the %(lead)s-day replenishment lead time."
@@ -1056,7 +1056,7 @@ msgstr "हाल में जोड़े गए"
 msgid "No farmers yet."
 msgstr "अभी कोई किसान नहीं।"
 
-#: apps/field/templates/field/dashboard.html:3 apps/field/static/field/app.js:360
+#: apps/field/templates/field/dashboard.html:3 apps/field/static/field/app.js:360 apps/yardops/static/yardops/app.js:436
 #, python-format
 msgid "Hello, %(name)s"
 msgstr "नमस्ते, %(name)s"
@@ -1458,7 +1458,7 @@ msgstr "बनी मात्रा (टन, मोटा अंदाज़ा
 msgid "Residue used up (tonnes, if known)"
 msgstr "इस्तेमाल हुआ अवशेष (टन, अगर पता हो)"
 
-#: apps/field/forms.py:132 apps/field/static/field/app.js:537
+#: apps/field/forms.py:132 apps/field/static/field/app.js:537 apps/yardops/api.py:206
 msgid "The date cannot be in the future."
 msgstr "तारीख आने वाले समय की नहीं हो सकती।"
 
@@ -1543,7 +1543,7 @@ msgstr "%(tonnes)s टन बताए गए (%(code)s)।"
 msgid "Dispatch %(code)s created. The Hub will confirm each step."
 msgstr "Dispatch %(code)s created. The Hub will confirm each step."
 
-#: apps/field/api.py:52
+#: apps/field/api.py:52 apps/yardops/api.py:49
 #, python-format
 msgid "%(what)s is not a valid id."
 msgstr "%(what)s सही आईडी नहीं है।"
@@ -1573,23 +1573,23 @@ msgstr "खेत नहीं मिला। हो सकता है इस
 msgid "This id is already used by someone else's record."
 msgstr "This id is already used by someone else's record."
 
-#: apps/field/api.py:246
+#: apps/field/api.py:246 apps/yardops/api.py:297
 msgid "The change id"
 msgstr "The change id"
 
-#: apps/field/api.py:249
+#: apps/field/api.py:249 apps/yardops/api.py:300
 msgid "Unknown kind of change."
 msgstr "Unknown kind of change."
 
-#: apps/field/api.py:253
+#: apps/field/api.py:253 apps/yardops/api.py:304
 msgid "The change has no data."
 msgstr "The change has no data."
 
-#: apps/field/api.py:265
+#: apps/field/api.py:265 apps/yardops/api.py:320
 msgid "The record could not be saved because some details are not allowed."
 msgstr "कुछ जानकारी मान्य न होने के कारण रिकॉर्ड सहेजा नहीं जा सका।"
 
-#: apps/field/api.py:278
+#: apps/field/api.py:278 apps/yardops/api.py:333
 #, python-format
 msgid "Send up to %(max)s changes as a list."
 msgstr "Send up to %(max)s changes as a list."
@@ -1627,22 +1627,22 @@ msgstr "%(farmer)s से %(tonnes)s टन का उठान"
 msgid "Output of %(tonnes)s t"
 msgstr "%(tonnes)s टन का उत्पादन"
 
-#: apps/field/static/field/app.js:280
+#: apps/field/static/field/app.js:280 apps/yardops/static/yardops/app.js:339
 #. Phone has a signal.
 msgid "Online"
 msgstr "ऑनलाइन"
 
-#: apps/field/static/field/app.js:280
+#: apps/field/static/field/app.js:280 apps/yardops/static/yardops/app.js:339
 #. Phone has no signal; everything is saved on the phone.
 msgid "Offline"
 msgstr "ऑफ़लाइन"
 
-#: apps/field/static/field/app.js:281
+#: apps/field/static/field/app.js:281 apps/yardops/static/yardops/app.js:340
 #, python-format
 msgid "%(n)s waiting"
 msgstr "%(n)s इंतज़ार में"
 
-#: apps/field/static/field/app.js:282
+#: apps/field/static/field/app.js:282 apps/yardops/static/yardops/app.js:341
 #, python-format
 msgid "%(n)s need attention"
 msgstr "%(n)s पर ध्यान चाहिए"
@@ -1661,11 +1661,11 @@ msgstr "इस फ़ोन में सहेजा गया, अभी भ�
 msgid "Connect to the internet once so your farmers and lists can be downloaded."
 msgstr "एक बार इंटरनेट से जुड़ें ताकि आपके किसान और सूचियाँ डाउनलोड हो सकें।"
 
-#: apps/field/static/field/app.js:371 apps/field/static/field/app.js:548
+#: apps/field/static/field/app.js:371 apps/field/static/field/app.js:548 apps/yardops/static/yardops/app.js:438
 msgid "Please log in again to send your changes."
 msgstr "बदलाव भेजने के लिए कृपया फिर से लॉग इन करें।"
 
-#: apps/field/static/field/app.js:372
+#: apps/field/static/field/app.js:372 apps/yardops/static/yardops/app.js:459
 msgid "Everything you enter is saved on this phone first. It is sent when there is a signal."
 msgstr "आप जो भी दर्ज करते हैं वह पहले इस फ़ोन में सहेजा जाता है। सिग्नल मिलने पर वह भेज दिया जाता है।"
 
@@ -1707,11 +1707,11 @@ msgstr "%(name)s के पास पहले से यही मोबाइ�
 msgid "Farmer not found."
 msgstr "किसान नहीं मिला।"
 
-#: apps/field/static/field/app.js:437
+#: apps/field/static/field/app.js:437 apps/yardops/static/yardops/app.js:467
 msgid "Back"
 msgstr "वापस"
 
-#: apps/field/static/field/app.js:446 apps/field/static/field/app.js:558
+#: apps/field/static/field/app.js:446 apps/field/static/field/app.js:558 apps/yardops/static/yardops/app.js:621
 #. Saved on this phone, will be sent when there is a signal.
 msgid "Waiting to send"
 msgstr "भेजने के इंतज़ार में"
@@ -1760,7 +1760,7 @@ msgstr "टिप्पणियाँ (वैकल्पिक)"
 msgid "Choose the residue type."
 msgstr "अवशेष का प्रकार चुनें।"
 
-#: apps/field/static/field/app.js:516 apps/field/static/field/app.js:535
+#: apps/field/static/field/app.js:516 apps/field/static/field/app.js:535 apps/yardops/static/yardops/app.js:568
 msgid "Enter the quantity in tonnes."
 msgstr "मात्रा टन में लिखें।"
 
@@ -1780,55 +1780,55 @@ msgstr "चुनें कि क्या बना।"
 msgid "Residue used must be a number."
 msgstr "इस्तेमाल हुआ अवशेष एक संख्या होनी चाहिए।"
 
-#: apps/field/static/field/app.js:544
+#: apps/field/static/field/app.js:544 apps/yardops/static/yardops/app.js:607
 msgid "Sending…"
 msgstr "भेज रहे हैं…"
 
-#: apps/field/static/field/app.js:544
+#: apps/field/static/field/app.js:544 apps/yardops/static/yardops/app.js:607
 msgid "Send now"
 msgstr "अभी भेजें"
 
-#: apps/field/static/field/app.js:549
+#: apps/field/static/field/app.js:549 apps/yardops/static/yardops/app.js:612
 msgid "You are online."
 msgstr "आप ऑनलाइन हैं।"
 
-#: apps/field/static/field/app.js:549
+#: apps/field/static/field/app.js:549 apps/yardops/static/yardops/app.js:612
 msgid "No signal. Changes stay on this phone."
 msgstr "सिग्नल नहीं है। बदलाव इसी फ़ोन में रहेंगे।"
 
-#: apps/field/static/field/app.js:552
+#: apps/field/static/field/app.js:552 apps/yardops/static/yardops/app.js:615
 msgid "Discard"
 msgstr "हटाएँ"
 
-#: apps/field/static/field/app.js:554
+#: apps/field/static/field/app.js:554 apps/yardops/static/yardops/app.js:617
 msgid "Discard this change? It will not be saved on the server."
 msgstr "यह बदलाव हटाएँ? यह सर्वर पर सहेजा नहीं जाएगा।"
 
-#: apps/field/static/field/app.js:556
+#: apps/field/static/field/app.js:556 apps/yardops/static/yardops/app.js:619
 msgid "Try again"
 msgstr "फिर कोशिश करें"
 
-#: apps/field/static/field/app.js:561
+#: apps/field/static/field/app.js:561 apps/yardops/static/yardops/app.js:624
 msgid "Nothing waiting. All changes are sent."
 msgstr "कुछ इंतज़ार में नहीं। सभी बदलाव भेजे जा चुके हैं।"
 
-#: apps/field/static/field/app.js:562
+#: apps/field/static/field/app.js:562 apps/yardops/static/yardops/app.js:625
 msgid "Sent recently"
 msgstr "हाल में भेजे गए"
 
-#: apps/field/static/field/app.js:564
+#: apps/field/static/field/app.js:564 apps/yardops/static/yardops/app.js:627
 msgid "Sent."
 msgstr "भेजा गया।"
 
-#: apps/field/static/field/app.js:564
+#: apps/field/static/field/app.js:564 apps/yardops/static/yardops/app.js:627
 msgid "Sent"
 msgstr "भेजा गया"
 
-#: apps/field/static/field/app.js:565
+#: apps/field/static/field/app.js:565 apps/yardops/static/yardops/app.js:628
 msgid "Nothing yet."
 msgstr "अभी कुछ नहीं।"
 
-#: apps/field/static/field/app.js:589
+#: apps/field/static/field/app.js:589 apps/yardops/static/yardops/app.js:652
 msgid "Home"
 msgstr "होम"
 
@@ -1844,40 +1844,44 @@ msgstr "यह लॉगिन किसी यार्ड के लिए न
 msgid "Ask Regenerix to link your login to your yard."
 msgstr "अपने लॉगिन को अपने यार्ड से जोड़ने के लिए Regenerix से कहें।"
 
-#: apps/yardops/templates/yardops/home.html:3 apps/yardops/templates/yardops/home.html:5
+#: apps/yardops/templates/yardops/home.html:3 apps/yardops/templates/yardops/home.html:5 apps/yardops/static/yardops/app.js:429
 msgid "Yard check"
 msgstr "यार्ड जाँच"
 
-#: apps/yardops/templates/yardops/home.html:9
+#: apps/yardops/templates/yardops/home.html:6
+msgid "Open the phone app that works without a signal"
+msgstr "बिना सिग्नल के चलने वाला फ़ोन ऐप खोलें"
+
+#: apps/yardops/templates/yardops/home.html:10 apps/yardops/static/yardops/app.js:433 apps/yardops/static/yardops/app.js:440
 msgid "Alerts"
 msgstr "चेतावनियाँ"
 
-#: apps/yardops/templates/yardops/home.html:16
+#: apps/yardops/templates/yardops/home.html:17
 msgid "Not acknowledged yet"
 msgstr "अभी स्वीकार नहीं किया गया"
 
-#: apps/yardops/templates/yardops/home.html:18
+#: apps/yardops/templates/yardops/home.html:19 apps/yardops/static/yardops/app.js:442
 msgid "I have seen this"
 msgstr "मैंने यह देख लिया"
 
-#: apps/yardops/templates/yardops/home.html:38
+#: apps/yardops/templates/yardops/home.html:39
 msgid "Log"
 msgstr "दर्ज करें"
 
-#: apps/yardops/templates/yardops/home.html:42
+#: apps/yardops/templates/yardops/home.html:43 apps/yardops/static/yardops/app.js:458
 msgid "No piles with stock in this yard."
 msgstr "इस यार्ड में स्टॉक वाला कोई ढेर नहीं।"
 
-#: apps/yardops/templates/yardops/home.html:45
+#: apps/yardops/templates/yardops/home.html:46
 msgid "No yards are linked to your login yet."
 msgstr "आपके लॉगिन से अभी कोई यार्ड नहीं जुड़ा है।"
 
-#: apps/yardops/templates/yardops/home.html:15
+#: apps/yardops/templates/yardops/home.html:16
 #, python-format
 msgid "Raised %(d)s"
 msgstr "%(d)s को उठाई गई"
 
-#: apps/yardops/templates/yardops/home.html:16
+#: apps/yardops/templates/yardops/home.html:17
 #, python-format
 msgid "acknowledged after %(m)s min"
 msgstr "%(m)s मिनट बाद स्वीकार किया"
@@ -1886,11 +1890,11 @@ msgstr "%(m)s मिनट बाद स्वीकार किया"
 msgid "Yard log in"
 msgstr "यार्ड लॉग इन"
 
-#: apps/yardops/templates/yardops/pile.html:5
+#: apps/yardops/templates/yardops/pile.html:5 apps/yardops/static/yardops/app.js:452
 msgid "All piles"
 msgstr "सभी ढेर"
 
-#: apps/yardops/templates/yardops/pile.html:12
+#: apps/yardops/templates/yardops/pile.html:12 apps/yardops/static/yardops/app.js:476
 msgid "Why this is flagged"
 msgstr "इसे क्यों चिह्नित किया गया"
 
@@ -1898,92 +1902,92 @@ msgstr "इसे क्यों चिह्नित किया गया"
 msgid "There is no stock in this pile."
 msgstr "इस ढेर में कोई स्टॉक नहीं है।"
 
-#: apps/yardops/templates/yardops/pile.html:20
+#: apps/yardops/templates/yardops/pile.html:20 apps/yardops/static/yardops/app.js:477
 msgid "Nothing is flagged on this pile."
 msgstr "इस ढेर पर कुछ चिह्नित नहीं है।"
 
-#: apps/yardops/templates/yardops/pile.html:24
+#: apps/yardops/templates/yardops/pile.html:24 apps/yardops/static/yardops/app.js:480 apps/yardops/static/yardops/app.js:517
 msgid "Log a temperature"
 msgstr "तापमान दर्ज करें"
 
-#: apps/yardops/templates/yardops/pile.html:27
+#: apps/yardops/templates/yardops/pile.html:27 apps/yardops/static/yardops/app.js:521
 msgid "Save temperature"
 msgstr "तापमान सहेजें"
 
-#: apps/yardops/templates/yardops/pile.html:28
+#: apps/yardops/templates/yardops/pile.html:28 apps/yardops/static/yardops/app.js:481 apps/yardops/static/yardops/app.js:537
 msgid "Log an inspection"
 msgstr "निरीक्षण दर्ज करें"
 
-#: apps/yardops/templates/yardops/pile.html:31
+#: apps/yardops/templates/yardops/pile.html:31 apps/yardops/static/yardops/app.js:543
 msgid "Save inspection"
 msgstr "निरीक्षण सहेजें"
 
-#: apps/yardops/templates/yardops/pile.html:36
+#: apps/yardops/templates/yardops/pile.html:36 apps/yardops/static/yardops/app.js:482 apps/yardops/static/yardops/app.js:561
 msgid "Count the stock"
 msgstr "स्टॉक गिनें"
 
-#: apps/yardops/templates/yardops/pile.html:39
+#: apps/yardops/templates/yardops/pile.html:39 apps/yardops/static/yardops/app.js:566
 msgid "Save count"
 msgstr "गिनती सहेजें"
 
-#: apps/yardops/templates/yardops/pile.html:40
+#: apps/yardops/templates/yardops/pile.html:40 apps/yardops/static/yardops/app.js:483 apps/yardops/static/yardops/app.js:578
 msgid "Log a moisture reading"
 msgstr "नमी की रीडिंग दर्ज करें"
 
-#: apps/yardops/templates/yardops/pile.html:43
+#: apps/yardops/templates/yardops/pile.html:43 apps/yardops/static/yardops/app.js:582
 msgid "Save moisture"
 msgstr "नमी सहेजें"
 
-#: apps/yardops/templates/yardops/pile.html:45
+#: apps/yardops/templates/yardops/pile.html:45 apps/yardops/static/yardops/app.js:491
 msgid "Batches in this pile"
 msgstr "इस ढेर के बैच"
 
-#: apps/yardops/templates/yardops/pile.html:50
+#: apps/yardops/templates/yardops/pile.html:50 apps/yardops/static/yardops/app.js:485
 msgid "Recent temperatures"
 msgstr "हाल के तापमान"
 
-#: apps/yardops/templates/yardops/pile.html:54
+#: apps/yardops/templates/yardops/pile.html:54 apps/yardops/static/yardops/app.js:489
 msgid "Recent inspections"
 msgstr "हाल के निरीक्षण"
 
-#: apps/yardops/templates/yardops/pile.html:56
+#: apps/yardops/templates/yardops/pile.html:56 apps/yardops/static/yardops/app.js:502
 msgid "wet"
 msgstr "गीला"
 
-#: apps/yardops/templates/yardops/pile.html:56
+#: apps/yardops/templates/yardops/pile.html:56 apps/yardops/static/yardops/app.js:503
 msgid "mould"
 msgstr "फफूँद"
 
-#: apps/yardops/templates/yardops/pile.html:56
+#: apps/yardops/templates/yardops/pile.html:56 apps/yardops/static/yardops/app.js:504
 msgid "steam or smell"
 msgstr "भाप या गंध"
 
-#: apps/yardops/templates/yardops/pile.html:56
+#: apps/yardops/templates/yardops/pile.html:56 apps/yardops/static/yardops/app.js:505
 msgid "cover missing"
 msgstr "ढक्कन/तिरपाल नहीं"
 
-#: apps/yardops/templates/yardops/pile.html:57
+#: apps/yardops/templates/yardops/pile.html:57 apps/yardops/static/yardops/app.js:506
 msgid "all clear"
 msgstr "सब ठीक"
 
-#: apps/yardops/templates/yardops/pile.html:58
+#: apps/yardops/templates/yardops/pile.html:58 apps/yardops/static/yardops/app.js:490
 msgid "No inspections yet."
 msgstr "अभी तक कोई निरीक्षण नहीं।"
 
-#: apps/yardops/templates/yardops/pile.html:61
+#: apps/yardops/templates/yardops/pile.html:61 apps/yardops/static/yardops/app.js:484 apps/yardops/static/yardops/app.js:593
 msgid "Pile size and cover"
 msgstr "ढेर का आकार और ढकाव"
 
-#: apps/yardops/templates/yardops/pile.html:64
+#: apps/yardops/templates/yardops/pile.html:64 apps/yardops/static/yardops/app.js:598
 msgid "Save pile details"
 msgstr "ढेर का ब्योरा सहेजें"
 
-#: apps/yardops/templates/yardops/pile.html:8
+#: apps/yardops/templates/yardops/pile.html:8 apps/yardops/static/yardops/app.js:496
 #, python-format
 msgid "%(h)s m high"
 msgstr "%(h)s मी. ऊँचा"
 
-#: apps/yardops/templates/yardops/pile.html:46
+#: apps/yardops/templates/yardops/pile.html:46 apps/yardops/static/yardops/app.js:493
 #, python-format
 msgid "%(t)s on the books, received %(d)s"
 msgstr "बही में %(t)s, %(d)s को मिला"
@@ -1993,127 +1997,127 @@ msgstr "बही में %(t)s, %(d)s को मिला"
 msgid "%(d)s cm deep"
 msgstr "%(d)s सेमी गहरा"
 
-#: apps/yardops/forms.py:9
+#: apps/yardops/forms.py:9 apps/yardops/static/yardops/app.js:518
 msgid "Temperature (°C)"
 msgstr "तापमान (°C)"
 
-#: apps/yardops/forms.py:12
+#: apps/yardops/forms.py:12 apps/yardops/static/yardops/app.js:519
 msgid "Where in the stack"
 msgstr "ढेर में कहाँ"
 
-#: apps/yardops/forms.py:12
+#: apps/yardops/forms.py:12 apps/yardops/static/yardops/app.js:519
 msgid "For example north face, 1 m deep"
 msgstr "उदाहरण: उत्तर की ओर, 1 मी. गहरा"
 
-#: apps/yardops/forms.py:13
+#: apps/yardops/forms.py:13 apps/yardops/static/yardops/app.js:520
 msgid "Probe depth (cm)"
 msgstr "प्रोब की गहराई (सेमी)"
 
-#: apps/yardops/forms.py:17
+#: apps/yardops/forms.py:17 apps/yardops/static/yardops/app.js:538
 msgid "The stack looks wet"
 msgstr "ढेर गीला दिखता है"
 
-#: apps/yardops/forms.py:18
+#: apps/yardops/forms.py:18 apps/yardops/static/yardops/app.js:539
 msgid "Mould is visible"
 msgstr "फफूँद दिख रही है"
 
-#: apps/yardops/forms.py:19
+#: apps/yardops/forms.py:19 apps/yardops/static/yardops/app.js:540
 msgid "Steam, or a burnt or musty smell"
 msgstr "भाप, या जलने या सीलन की गंध"
 
-#: apps/yardops/forms.py:20
+#: apps/yardops/forms.py:20 apps/yardops/static/yardops/app.js:541
 msgid "Cover is in place and secure"
 msgstr "ढकाव अपनी जगह पर और कसा हुआ है"
 
-#: apps/yardops/forms.py:33
+#: apps/yardops/forms.py:33 apps/yardops/static/yardops/app.js:563
 msgid "Counted (tonnes)"
 msgstr "गिनती (टन)"
 
-#: apps/yardops/forms.py:36
+#: apps/yardops/forms.py:36 apps/yardops/static/yardops/app.js:564
 msgid "How it was counted"
 msgstr "कैसे गिना गया"
 
-#: apps/yardops/forms.py:41
+#: apps/yardops/forms.py:41 apps/yardops/static/yardops/app.js:580
 msgid "Moisture (%)"
 msgstr "नमी (%)"
 
-#: apps/yardops/forms.py:44
+#: apps/yardops/forms.py:44 apps/yardops/static/yardops/app.js:581
 msgid "Method"
 msgstr "तरीका"
 
-#: apps/yardops/forms.py:48
+#: apps/yardops/forms.py:48 apps/yardops/static/yardops/app.js:594
 msgid "Length (m)"
 msgstr "लंबाई (मी.)"
 
-#: apps/yardops/forms.py:49
+#: apps/yardops/forms.py:49 apps/yardops/static/yardops/app.js:595
 msgid "Width (m)"
 msgstr "चौड़ाई (मी.)"
 
-#: apps/yardops/forms.py:50
+#: apps/yardops/forms.py:50 apps/yardops/static/yardops/app.js:596
 msgid "Height (m)"
 msgstr "ऊँचाई (मी.)"
 
-#: apps/yardops/forms.py:51
+#: apps/yardops/forms.py:51 apps/yardops/static/yardops/app.js:597
 msgid "Cover"
 msgstr "ढकाव"
 
-#: apps/yardops/forms.py:51
+#: apps/yardops/forms.py:51 apps/yardops/static/yardops/app.js:597
 msgid "For example tarp, shed, none"
 msgstr "उदाहरण: तिरपाल, शेड, कुछ नहीं"
 
-#: apps/yardops/views.py:63
+#: apps/yardops/views.py:69
 msgid "Temperature saved."
 msgstr "तापमान सहेजा गया।"
 
-#: apps/yardops/views.py:69
+#: apps/yardops/views.py:75
 msgid "Inspection saved."
 msgstr "निरीक्षण सहेजा गया।"
 
-#: apps/yardops/views.py:72
+#: apps/yardops/views.py:78
 msgid "Count saved."
 msgstr "गिनती सहेजी गई।"
 
-#: apps/yardops/views.py:75
+#: apps/yardops/views.py:81
 msgid "Moisture saved."
 msgstr "नमी सहेजी गई।"
 
-#: apps/yardops/views.py:78
+#: apps/yardops/views.py:84
 msgid "Pile details saved."
 msgstr "ढेर का ब्योरा सहेजा गया।"
 
-#: apps/yardops/views.py:103
+#: apps/yardops/views.py:109
 msgid "Alert acknowledged."
 msgstr "चेतावनी स्वीकार की गई।"
 
-#: apps/yardops/risk.py:29
+#: apps/yardops/risk.py:29 apps/yardops/static/yardops/app.js:46
 msgid "Normal"
 msgstr "सामान्य"
 
-#: apps/yardops/risk.py:31 apps/yardops/models.py:94
+#: apps/yardops/risk.py:31 apps/yardops/models.py:94 apps/yardops/static/yardops/app.js:46
 msgid "Watch closely"
 msgstr "ध्यान से देखें"
 
-#: apps/yardops/risk.py:32 apps/yardops/models.py:95
+#: apps/yardops/risk.py:32 apps/yardops/models.py:95 apps/yardops/static/yardops/app.js:46
 msgid "Check twice a day"
 msgstr "दिन में दो बार जाँचें"
 
-#: apps/yardops/risk.py:33 apps/yardops/models.py:96
+#: apps/yardops/risk.py:33 apps/yardops/models.py:96 apps/yardops/static/yardops/app.js:46
 msgid "Fire likely"
 msgstr "आग की आशंका"
 
-#: apps/yardops/risk.py:38
+#: apps/yardops/risk.py:38 apps/yardops/static/yardops/app.js:51
 msgid "Probe the stack today and look it over."
 msgstr "आज ढेर में प्रोब डालें और उसे देखें।"
 
-#: apps/yardops/risk.py:39
+#: apps/yardops/risk.py:39 apps/yardops/static/yardops/app.js:52
 msgid "Inspect the stack today and probe it twice a day."
 msgstr "Inspect the stack today and probe it twice a day."
 
-#: apps/yardops/risk.py:40
+#: apps/yardops/risk.py:40 apps/yardops/static/yardops/app.js:53
 msgid "Check twice a day and open up the stack. Keep the fire service number ready."
 msgstr "Check twice a day and open up the stack. Keep the fire service number ready."
 
-#: apps/yardops/risk.py:41
+#: apps/yardops/risk.py:41 apps/yardops/static/yardops/app.js:54
 msgid "Fire is likely. Call the fire service before disturbing the stack."
 msgstr "Fire is likely. Call the fire service before disturbing the stack."
 
@@ -2122,17 +2126,17 @@ msgstr "Fire is likely. Call the fire service before disturbing the stack."
 msgid "At this rate it reaches %(limit)s °C in about %(days)s days (an estimate from the last readings)."
 msgstr "At this rate it reaches %(limit)s °C in about %(days)s days (an estimate from the last readings)."
 
-#: apps/yardops/risk.py:120
+#: apps/yardops/risk.py:120 apps/yardops/static/yardops/app.js:137
 #, python-format
 msgid "%(n)s days ago"
 msgstr "%(n)s दिन पहले"
 
-#: apps/yardops/risk.py:122
+#: apps/yardops/risk.py:122 apps/yardops/static/yardops/app.js:139
 #, python-format
 msgid "%(n)s hours ago"
 msgstr "%(n)s घंटे पहले"
 
-#: apps/yardops/risk.py:122
+#: apps/yardops/risk.py:122 apps/yardops/static/yardops/app.js:139
 msgid "just now"
 msgstr "अभी-अभी"
 
@@ -2186,23 +2190,23 @@ msgstr "Stacked damp: %(m)s%% moisture at intake, above %(limit)s%%."
 msgid "The stack is %(h)s m high, above the %(limit)s m limit."
 msgstr "ढेर %(h)s मी. ऊँचा है, जो %(limit)s मी. की सीमा से ऊपर है।"
 
-#: apps/yardops/services.py:21
+#: apps/yardops/services.py:25
 msgid "This pile is no longer in use."
 msgstr "यह ढेर अब इस्तेमाल में नहीं है।"
 
-#: apps/yardops/services.py:33
+#: apps/yardops/services.py:38 apps/yardops/api.py:188
 msgid "The reading time cannot be in the future."
 msgstr "रीडिंग का समय भविष्य में नहीं हो सकता।"
 
-#: apps/yardops/services.py:94
+#: apps/yardops/services.py:100
 msgid "Back below the alert level."
 msgstr "Back below the alert level."
 
-#: apps/yardops/services.py:101
+#: apps/yardops/services.py:107
 msgid "Replaced by an alert at a different level."
 msgstr "Replaced by an alert at a different level."
 
-#: apps/yardops/services.py:121
+#: apps/yardops/services.py:128
 msgid "This alert is already closed."
 msgstr "यह चेतावनी पहले ही बंद हो चुकी है।"
 
@@ -2213,3 +2217,135 @@ msgstr "हाथ से प्रोब"
 #: apps/yardops/models.py:48
 msgid "Fixed sensor"
 msgstr "लगा हुआ सेंसर"
+
+#: apps/yardops/api.py:58
+#, python-format
+msgid "%(what)s is not a valid date and time."
+msgstr "%(what)s मान्य तारीख़ और समय नहीं है।"
+
+#: apps/yardops/api.py:64
+msgid "The pile"
+msgstr "ढेर"
+
+#: apps/yardops/api.py:66
+msgid "The pile was not found in your yards."
+msgstr "यह ढेर आपके यार्ड में नहीं मिला।"
+
+#: apps/yardops/api.py:71
+msgid "The batch"
+msgstr "बैच"
+
+#: apps/yardops/api.py:73
+msgid "The batch was not found in your yards."
+msgstr "यह बैच आपके यार्ड में नहीं मिला।"
+
+#: apps/yardops/api.py:171 apps/yardops/api.py:235
+msgid "The reading time"
+msgstr "रीडिंग का समय"
+
+#: apps/yardops/api.py:186
+msgid "The inspection time"
+msgstr "निरीक्षण का समय"
+
+#: apps/yardops/api.py:204
+#, python-format
+msgid "%(what)s is not a valid date."
+msgstr "%(what)s मान्य तारीख़ नहीं है।"
+
+#: apps/yardops/api.py:217
+msgid "The count date"
+msgstr "गिनती की तारीख़"
+
+#: apps/yardops/api.py:262
+msgid "The alert"
+msgstr "चेतावनी"
+
+#: apps/yardops/api.py:265
+msgid "The alert was not found in your yards."
+msgstr "यह चेतावनी आपके यार्ड में नहीं मिली।"
+
+#: apps/yardops/api.py:269
+msgid "This alert had already closed before your acknowledgement arrived."
+msgstr "आपके स्वीकार करने से पहले ही यह चेतावनी बंद हो चुकी थी।"
+
+#: apps/yardops/api.py:270
+msgid "The time"
+msgstr "समय"
+
+#: apps/yardops/static/yardops/app.js:145 apps/yardops/static/yardops/app.js:147
+msgid "a pile"
+msgstr "एक ढेर"
+
+#: apps/yardops/static/yardops/app.js:152
+#, python-format
+msgid "%(temp)s °C in pile %(pile)s"
+msgstr "ढेर %(pile)s में %(temp)s °C"
+
+#: apps/yardops/static/yardops/app.js:153
+#, python-format
+msgid "Inspection of pile %(pile)s"
+msgstr "ढेर %(pile)s का निरीक्षण"
+
+#: apps/yardops/static/yardops/app.js:154
+#, python-format
+msgid "Count of %(tonnes)s t in pile %(pile)s"
+msgstr "ढेर %(pile)s में %(tonnes)s टन की गिनती"
+
+#: apps/yardops/static/yardops/app.js:155
+#, python-format
+msgid "Moisture %(percent)s in pile %(pile)s"
+msgstr "ढेर %(pile)s में नमी %(percent)s"
+
+#: apps/yardops/static/yardops/app.js:156
+#, python-format
+msgid "Size of pile %(pile)s"
+msgstr "ढेर %(pile)s का आकार"
+
+#: apps/yardops/static/yardops/app.js:157
+msgid "Alert seen"
+msgstr "चेतावनी देख ली"
+
+#: apps/yardops/static/yardops/app.js:429
+msgid "Connect to the internet once so your piles can be downloaded."
+msgstr "अपने ढेर डाउनलोड करने के लिए एक बार इंटरनेट से जुड़ें।"
+
+#: apps/yardops/static/yardops/app.js:432
+msgid "Piles"
+msgstr "ढेर"
+
+#: apps/yardops/static/yardops/app.js:447 apps/yardops/static/yardops/app.js:456 apps/yardops/static/yardops/app.js:471
+#, python-format
+msgid "Pile %(pile)s"
+msgstr "ढेर %(pile)s"
+
+#: apps/yardops/static/yardops/app.js:467 apps/yardops/static/yardops/app.js:516 apps/yardops/static/yardops/app.js:536
+msgid "Pile not found."
+msgstr "ढेर नहीं मिला।"
+
+#: apps/yardops/static/yardops/app.js:474
+msgid "Raised on this phone from what you just entered. The server will confirm it when it is sent."
+msgstr "Raised on this phone from what you just entered. The server will confirm it when it is sent."
+
+#: apps/yardops/static/yardops/app.js:522
+msgid "Enter a temperature between -20 and 200 °C."
+msgstr "-20 से 200 °C के बीच तापमान लिखें।"
+
+#: apps/yardops/static/yardops/app.js:523
+msgid "Probe depth must be a whole number of centimetres, up to 500."
+msgstr "प्रोब की गहराई सेंटीमीटर में पूरी संख्या होनी चाहिए, 500 तक।"
+
+#: apps/yardops/static/yardops/app.js:527 apps/yardops/static/yardops/app.js:547 apps/yardops/static/yardops/app.js:571
+msgid "Saved on this phone."
+msgstr "इस फ़ोन में सहेजा गया।"
+
+#: apps/yardops/static/yardops/app.js:567 apps/yardops/static/yardops/app.js:583
+msgid "Choose the batch."
+msgstr "बैच चुनें।"
+
+#: apps/yardops/static/yardops/app.js:584
+msgid "Enter a moisture between 0 and 100."
+msgstr "0 से 100 के बीच नमी लिखें।"
+
+#: apps/yardops/static/yardops/app.js:600
+msgid "Sizes must be numbers above zero."
+msgstr "आकार शून्य से बड़ी संख्या होने चाहिए।"

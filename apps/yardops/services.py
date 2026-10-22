@@ -16,20 +16,25 @@ from . import risk
 from .models import AlertLevel, HeatReading, PileInspection, ReadingMethod, RiskAlert
 
 
+FUTURE_GRACE = timedelta(minutes=5)  # phone clocks drift a little
+FUTURE_GRACE_DAYS = timedelta(days=1)
+
+
 def _check_pile(pile):
     if pile.status != Status.ACTIVE:
         raise ValidationError(_("This pile is no longer in use."))
 
 
 @transaction.atomic
-def record_heat(pile, temperature_c, *, taken_at=None, depth_cm=None, spot="", method=ReadingMethod.MANUAL_PROBE, taken_by=""):
+def record_heat(pile, temperature_c, *, taken_at=None, depth_cm=None, spot="", method=ReadingMethod.MANUAL_PROBE, taken_by="", pk=None):
     _check_pile(pile)
+    extra = {"id": pk} if pk else {}  # the phone app chooses the id so a retry cannot save twice
     reading = HeatReading(
-        pile=pile, taken_at=taken_at or timezone.now(), temperature_c=Decimal(temperature_c), depth_cm=depth_cm,
+        **extra, pile=pile, taken_at=taken_at or timezone.now(), temperature_c=Decimal(temperature_c), depth_cm=depth_cm,
         spot=spot.strip(), method=method, taken_by=taken_by,
     )
     reading.full_clean(exclude=["created_by", "updated_by"])
-    if reading.taken_at > timezone.now() + timedelta(minutes=5):
+    if reading.taken_at > timezone.now() + FUTURE_GRACE:
         raise ValidationError(_("The reading time cannot be in the future."))
     reading.save()
     entry = chain.append(
@@ -46,10 +51,11 @@ def record_heat(pile, temperature_c, *, taken_at=None, depth_cm=None, spot="", m
 
 @transaction.atomic
 def record_inspection(pile, *, looks_wet=False, mould=False, steam_or_smell=False, cover_in_place=True, notes="",
-                      inspected_at=None, inspected_by=""):
+                      inspected_at=None, inspected_by="", pk=None):
     _check_pile(pile)
+    extra = {"id": pk} if pk else {}
     inspection = PileInspection(
-        pile=pile, inspected_at=inspected_at or timezone.now(), looks_wet=looks_wet, mould=mould,
+        **extra, pile=pile, inspected_at=inspected_at or timezone.now(), looks_wet=looks_wet, mould=mould,
         steam_or_smell=steam_or_smell, cover_in_place=cover_in_place, notes=notes, inspected_by=inspected_by,
     )
     inspection.save()
@@ -114,13 +120,15 @@ def _resolve(alert, now, note):
 
 
 @transaction.atomic
-def acknowledge(alert, user, note=""):
+def acknowledge(alert, user, note="", at=None):
+    """`at` is when the person pressed the button, which may be earlier than now if their phone was offline."""
     if alert.acknowledged_at is not None:
         return alert
     if alert.resolved_at is not None:
         raise ValidationError(_("This alert is already closed."))
     alert.acknowledged_by = user
-    alert.acknowledged_at = timezone.now()
+    now = timezone.now()
+    alert.acknowledged_at = min(max(at or now, alert.raised_at), now)
     if note:
         alert.note = (alert.note + "\n" + note).strip() if alert.note else note
     alert.save(update_fields=["acknowledged_by", "acknowledged_at", "note", "updated_at"])
@@ -147,9 +155,9 @@ def overdue(alert, now=None):
 
 
 # Counts and moisture readings use the customer stock services, so they feed the same numbers.
-def record_count(batch, tonnes, method, *, counted_by=""):
-    return stock.record_count(batch, tonnes, method, counted_by=counted_by)
+def record_count(batch, tonnes, method, *, counted_by="", counted_on=None, pk=None):
+    return stock.record_count(batch, tonnes, method, counted_by=counted_by, counted_on=counted_on, pk=pk)
 
 
-def record_moisture(batch, percent, *, method="handheld meter", tested_by=""):
-    return stock.record_quality(batch, moisture_percent=percent, method=method, tested_by=tested_by)
+def record_moisture(batch, percent, *, method="handheld meter", tested_by="", observed_at=None, pk=None):
+    return stock.record_quality(batch, moisture_percent=percent, method=method, tested_by=tested_by, observed_at=observed_at, pk=pk)

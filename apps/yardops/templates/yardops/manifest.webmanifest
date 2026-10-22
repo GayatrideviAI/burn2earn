@@ -1,0 +1,10 @@
+{% load static %}{
+  "name": "Regenerix Yard",
+  "short_name": "Yard",
+  "start_url": "{% url 'yardops:app' %}",
+  "scope": "{% url 'yardops:home' %}",
+  "display": "standalone",
+  "background_color": "#f3f6f1",
+  "theme_color": "#1f6b3a",
+  "icons": [{"src": "{% static 'field/icon.svg' %}", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}]
+}
