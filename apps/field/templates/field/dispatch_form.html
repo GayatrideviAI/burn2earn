@@ -1,13 +1,14 @@
 {% extends "field/base.html" %}
-{% block title %}New dispatch{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "New dispatch" %}{% endblock %}
 {% block content %}
 <div class="panel">
-<h1>Send product to a buyer</h1>
-<p class="muted">Only product you have reported as made and not already sent can be dispatched.</p>
+<h1>{% trans "Send product to a buyer" %}</h1>
+<p class="muted">{% trans "Only product you have reported as made and not already sent can be dispatched." %}</p>
 <form method="post">{% csrf_token %}
   {% include "field/form_fields.html" %}
-  <button class="primary">Create dispatch</button>
-  <a class="button" href="{% url 'field:dispatch_list' %}">Cancel</a>
+  <button class="primary">{% trans "Create dispatch" %}</button>
+  <a class="button" href="{% url 'field:dispatch_list' %}">{% trans "Cancel" %}</a>
 </form>
 </div>
 {% endblock %}

@@ -1,29 +1,30 @@
 {% extends "field/base.html" %}
-{% block hero %}<section class="hero small"><div><h1>Hello, {{ mitra.name }}</h1><p>{% if grid %}Grid {{ grid.code }}{% else %}No Grid assigned yet{% endif %}</p></div></section>{% endblock %}
+{% load i18n customers_i18n %}
+{% block hero %}<section class="hero small"><div><h1>{% blocktrans trimmed with name=mitra.name %}Hello, {{ name }}{% endblocktrans %}</h1><p>{% if grid %}{% blocktrans trimmed with code=grid.code %}Grid {{ code }}{% endblocktrans %}{% else %}{% trans "No Grid assigned yet" %}{% endif %}</p></div></section>{% endblock %}
 {% block content %}
 <div class="stats">
-  <div><strong>{{ farmer_count }}</strong><span>Farmers</span></div>
-  <div><strong>{{ plot_count }}</strong><span>Plots</span></div>
+  <div><strong>{{ farmer_count }}</strong><span>{% trans "Farmers" %}</span></div>
+  <div><strong>{{ plot_count }}</strong><span>{% trans "Plots" %}</span></div>
 </div>
 {% if estimate %}
 <section class="card">
-  <h3>Expected biomass, {{ year }}</h3>
-  <p><strong>{{ estimate.total.tonnes }} tonnes</strong> from {{ estimate.total.plots }} plot{{ estimate.total.plots|pluralize }} in your Grid, after expected losses</p>
-  <ul class="list">{% for row in estimate.crops %}<li>{{ row.label }}: {{ row.tonnes }} tonnes <small>{{ row.acres }} acres</small></li>{% endfor %}</ul>
-  {% if estimate.crops_without_figure %}<p class="muted">Not counted yet (no figure): {{ estimate.crops_without_figure|join:", " }}</p>{% endif %}
+  <h3>{% blocktrans trimmed with y=year %}Expected biomass, {{ y }}{% endblocktrans %}</h3>
+  <p>{% blocktrans trimmed with t=estimate.total.tonnes n=estimate.total.plots %}<strong>{{ t }} tonnes</strong> from {{ n }} plot(s) in your Grid, after expected losses{% endblocktrans %}</p>
+  <ul class="list">{% for row in estimate.crops %}<li>{% blocktrans trimmed with label=row.label t=row.tonnes %}{{ label }}: {{ t }} tonnes{% endblocktrans %} <small>{% blocktrans trimmed with a=row.acres %}{{ a }} acres{% endblocktrans %}</small></li>{% endfor %}</ul>
+  {% if estimate.crops_without_figure %}<p class="muted">{% trans "Not counted yet (no figure):" %} {{ estimate.crops_without_figure|join:", " }}</p>{% endif %}
 </section>
 {% endif %}
 {% if stock %}
 <section class="card">
-  <h3>Stock at your site</h3>
-  <p><strong>{{ stock.on_hand_tonnes }} tonnes</strong> on hand · {{ stock.collected_tonnes }} t collected · {{ stock.processed_tonnes }} t made</p>
-  <a class="button" href="{% url 'field:stock' %}">See details</a>
+  <h3>{% trans "Stock at your site" %}</h3>
+  <p>{% blocktrans trimmed with h=stock.on_hand_tonnes c=stock.collected_tonnes|tonnes_t p=stock.processed_tonnes|tonnes_t %}<strong>{{ h }} tonnes</strong> on hand · {{ c }} collected · {{ p }} made{% endblocktrans %}</p>
+  <a class="button" href="{% url 'field:stock' %}">{% trans "See details" %}</a>
 </section>
 {% endif %}
-<p><a class="button primary" href="{% url 'field:farmer_new' %}">Register a farmer</a></p>
-<h2>Recently added</h2>
+<p><a class="button primary" href="{% url 'field:farmer_new' %}">{% trans "Register a farmer" %}</a></p>
+<h2>{% trans "Recently added" %}</h2>
 <ul class="list">
   {% for farmer in recent %}<li><a href="{% url 'field:farmer_detail' farmer.pk %}">{{ farmer.name }} <small>{{ farmer.code }}</small></a></li>
-  {% empty %}<li class="muted">No farmers yet.</li>{% endfor %}
+  {% empty %}<li class="muted">{% trans "No farmers yet." %}</li>{% endfor %}
 </ul>
 {% endblock %}

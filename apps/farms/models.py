@@ -4,6 +4,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models, transaction
 from django.db.models import F, Q
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from apps.core.codes import next_code
 from apps.core.geo import area_acres
@@ -21,10 +22,10 @@ class Farmer(BaseModel):
     """A person who supplies crop residue. Registered by a Mitra, never self-registered."""
 
     class Language(models.TextChoices):
-        HINDI = "hi", "Hindi"
-        ENGLISH = "en", "English"
-        PUNJABI = "pa", "Punjabi"
-        OTHER = "other", "Other"
+        HINDI = "hi", _("Hindi")
+        ENGLISH = "en", _("English")
+        PUNJABI = "pa", _("Punjabi")
+        OTHER = "other", _("Other")
 
     # Personal data is kept out of the audit log; it only records that these changed.
     audit_redacted_fields = ("name", "mobile")
@@ -112,15 +113,15 @@ class FarmPlot(BaseModel):
     """A piece of land. One farmer can have many plots, in many GeoCells."""
 
     class Ownership(models.TextChoices):
-        OWNED = "owned", "Owned"
-        LEASED = "leased", "Leased"
-        SHARECROPPED = "sharecropped", "Sharecropped"
+        OWNED = "owned", _("Owned")
+        LEASED = "leased", _("Leased")
+        SHARECROPPED = "sharecropped", _("Sharecropped")
 
     class Irrigation(models.TextChoices):
-        CANAL = "canal", "Canal"
-        TUBEWELL = "tubewell", "Tubewell"
-        RAINFED = "rainfed", "Rain-fed"
-        OTHER = "other", "Other"
+        CANAL = "canal", _("Canal")
+        TUBEWELL = "tubewell", _("Tubewell")
+        RAINFED = "rainfed", _("Rain-fed")
+        OTHER = "other", _("Other")
 
     farmer = models.ForeignKey(Farmer, on_delete=models.PROTECT, related_name="plots")
     location = gis_models.PointField(srid=4326)

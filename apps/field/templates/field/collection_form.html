@@ -1,12 +1,13 @@
 {% extends "field/base.html" %}
-{% block title %}Log a pickup{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Log a pickup" %}{% endblock %}
 {% block content %}
 <div class="panel">
-<h1>Log a pickup from {{ farmer.name }}</h1>
+<h1>{% blocktrans trimmed with name=farmer.name %}Log a pickup from {{ name }}{% endblocktrans %}</h1>
 <form method="post">{% csrf_token %}
   {% include "field/form_fields.html" %}
-  <button class="primary">Save pickup</button>
-  <a class="button" href="{% url 'field:farmer_detail' farmer.pk %}">Cancel</a>
+  <button class="primary">{% trans "Save pickup" %}</button>
+  <a class="button" href="{% url 'field:farmer_detail' farmer.pk %}">{% trans "Cancel" %}</a>
 </form>
 </div>
 {% endblock %}

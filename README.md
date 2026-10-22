@@ -251,15 +251,15 @@ As before, farmers are credited in proportion to what each handed over at the su
 
 Try it: `docker compose exec web python manage.py load_demo_deliveries` (the first two demo loads go into yards, the third is left unreceived).
 
-## Hindi and Punjabi for the customer pages
+## Hindi and Punjabi (customer pages and Mitra app)
 
-The customer pages (`/customer/`) can be shown in English, हिन्दी and ਪੰਜਾਬੀ. A switch in the top bar changes the language and the choice is remembered in the browser. This covers every page the customer sees, the "what to do next" and "needs attention" alert texts, stage and type labels, and the unit (t for tonnes). The Mitra app and the admin are not translated yet.
+The customer pages (`/customer/`), the Mitra pages (`/mitra/`) and the offline Mitra phone app can be shown in English, हिन्दी and ਪੰਜਾਬੀ. A switch in the top bar changes the language and the choice is remembered on the device. This covers every page, form label, confirmation and error message, alert text, stage and type label, and the unit (t for tonnes). The offline phone app carries its own translation table, so switching language works with no signal. The admin is not translated. Farmer-facing data that comes from the database (crop, village, product and biomass names) is shown as entered.
 
-**The first draft has not been checked by anyone who speaks the local dialects.** About 25 phrases still show the English word in both languages (yellow in the sheet), where I was not sure of the wording.
+**The first draft has not been checked by anyone who speaks the local dialects.** About 45 phrases still show the English word in both languages (yellow in the sheet), where I was not sure of the wording.
 
 How the field check works:
 
-1. Open `locale/translations.xlsx`. Column A is the English, B is Hindi, C is Punjabi. Yellow cells are blank. Fix or fill in B and C, use the Status and Comments columns, and leave column A alone.
+1. Open `locale/translations.xlsx`. Column A is the English, B is Hindi, C is Punjabi, and the App column says whether a phrase is in the customer app, the Mitra app or both. Yellow cells still show English. Fix or fill in B and C, use the Status and Comments columns, and leave column A alone.
 2. Keep every `%(name)s` exactly as written; the page puts a number or name there.
 3. Put the returned sheet at `locale/translations.xlsx` and run:
 
@@ -280,4 +280,4 @@ Other commands, all `python manage.py translations <action>`:
 
 No gettext programs are needed: the tooling is plain Python (`apps/customers/i18n_tools.py`). A test fails if a new phrase is marked but not extracted, or if the `.mo` files are out of date.
 
-When adding a customer-facing word: in a template use `{% trans "Text" %}` or `{% blocktrans trimmed with x=value %}... {{ x }} ...{% endblocktrans %}` (no plurals, no filters inside); in Python use `gettext` (`_`) at request time and `gettext_lazy` for model choices. Weights go through the `|tn` filter so the unit is translated. Then run `extract`, `export`.
+When adding a customer-facing word: in a template use `{% trans "Text" %}` or `{% blocktrans trimmed with x=value %}... {{ x }} ...{% endblocktrans %}` (no plurals, no filters inside); in Python use `gettext` (`_`) at request time and `gettext_lazy` for model choices and form labels; in the phone app (`apps/field/static/field/app.js`) use `t("Text %(name)s", {name: value})`. Weights go through the `|tn` filter so the unit is translated. Then run `extract`, `export`.

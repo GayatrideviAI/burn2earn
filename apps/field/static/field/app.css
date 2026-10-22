@@ -38,3 +38,10 @@ button.small { padding: 5px 10px; font-size: .85rem; }
 .msg.warning { background: #fff2d4; border-color: var(--gold); }
 .msg.error { background: #fadada; border-color: #c0392b; }
 .err { color: #b02a2a; }
+
+/* Language buttons, and fonts that carry Devanagari and Gurmukhi. */
+.langs { display: flex; gap: 8px; margin-left: auto; margin-right: 10px; }
+.langs button { background: none; border: 0; color: #fff; opacity: .75; padding: 2px 4px; font-size: .85rem; cursor: pointer; }
+.langs button.on { opacity: 1; font-weight: 700; text-decoration: underline; }
+html[lang="hi"] body { font-family: system-ui, "Noto Sans Devanagari", "Mangal", "Nirmala UI", sans-serif; line-height: 1.6; }
+html[lang="pa"] body { font-family: system-ui, "Noto Sans Gurmukhi", "Raavi", "Nirmala UI", sans-serif; line-height: 1.6; }

@@ -1,11 +1,12 @@
 {% extends "field/base.html" %}
-{% block title %}Add a crop{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Add a crop" %}{% endblock %}
 {% block content %}
-<h1>Add a crop</h1>
-<p class="muted">{{ farmer.name }} · {{ plot.area_acres }} acres</p>
+<h1>{% trans "Add a crop" %}</h1>
+<p class="muted">{% blocktrans trimmed with name=farmer.name a=plot.area_acres %}{{ name }} · {{ a }} acres{% endblocktrans %}</p>
 <form method="post">{% csrf_token %}
   {% include "field/form_fields.html" %}
-  <button class="primary">Save crop</button>
-  <a class="button" href="{% url 'field:farmer_detail' farmer.pk %}">Cancel</a>
+  <button class="primary">{% trans "Save crop" %}</button>
+  <a class="button" href="{% url 'field:farmer_detail' farmer.pk %}">{% trans "Cancel" %}</a>
 </form>
 {% endblock %}

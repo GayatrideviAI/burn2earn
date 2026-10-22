@@ -1,13 +1,14 @@
 {% extends "field/base.html" %}
-{% block title %}Report output{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Report output" %}{% endblock %}
 {% block content %}
 <div class="panel">
-<h1>Report what you made</h1>
-<p class="muted">Pellets, briquettes and other products. This goes up to your Grid and its Hub.</p>
+<h1>{% trans "Report what you made" %}</h1>
+<p class="muted">{% trans "Pellets, briquettes and other products. This goes up to your Grid and its Hub." %}</p>
 <form method="post">{% csrf_token %}
   {% include "field/form_fields.html" %}
-  <button class="primary">Report output</button>
-  <a class="button" href="{% url 'field:stock' %}">Cancel</a>
+  <button class="primary">{% trans "Report output" %}</button>
+  <a class="button" href="{% url 'field:stock' %}">{% trans "Cancel" %}</a>
 </form>
 </div>
 {% endblock %}

@@ -1,24 +1,31 @@
 {% extends "field/base.html" %}
-{% block title %}Add a plot{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Add a plot" %}{% endblock %}
 {% block hero %}<section class="hero banner field"></section>{% endblock %}
 {% block content %}
-<h1>Add a plot for {{ farmer.name }}</h1>
+<h1>{% blocktrans trimmed with name=farmer.name %}Add a plot for {{ name }}{% endblocktrans %}</h1>
 <form method="post">{% csrf_token %}
-  <p><button type="button" id="locate">Use my location</button> <small id="locate-status" class="muted"></small></p>
+  <p><button type="button" id="locate">{% trans "Use my location" %}</button> <small id="locate-status" class="muted"></small></p>
   {% include "field/form_fields.html" %}
-  <button class="primary">Save plot</button>
-  <a class="button" href="{% url 'field:farmer_detail' farmer.pk %}">Cancel</a>
+  <button class="primary">{% trans "Save plot" %}</button>
+  <a class="button" href="{% url 'field:farmer_detail' farmer.pk %}">{% trans "Cancel" %}</a>
 </form>
 <script>
+var L = {
+  none: "{% filter escapejs %}{% trans "Location is not available on this device." %}{% endfilter %}",
+  finding: "{% filter escapejs %}{% trans "Finding location…" %}{% endfilter %}",
+  done: "{% filter escapejs %}{% trans "Done. Stand at the plot for the best accuracy." %}{% endfilter %}",
+  failed: "{% filter escapejs %}{% trans "Could not get location. Type it in instead." %}{% endfilter %}"
+};
 document.getElementById("locate").addEventListener("click", function () {
   var status = document.getElementById("locate-status");
-  if (!navigator.geolocation) { status.textContent = "Location is not available on this device."; return; }
-  status.textContent = "Finding location…";
+  if (!navigator.geolocation) { status.textContent = L.none; return; }
+  status.textContent = L.finding;
   navigator.geolocation.getCurrentPosition(function (pos) {
     document.getElementById("id_latitude").value = pos.coords.latitude.toFixed(6);
     document.getElementById("id_longitude").value = pos.coords.longitude.toFixed(6);
-    status.textContent = "Done. Stand at the plot for the best accuracy.";
-  }, function () { status.textContent = "Could not get location. Type it in instead."; });
+    status.textContent = L.done;
+  }, function () { status.textContent = L.failed; });
 });
 </script>
 {% endblock %}
