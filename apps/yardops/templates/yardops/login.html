@@ -1,0 +1,13 @@
+{% extends "yardops/base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Log in" %}{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>{% trans "Yard log in" %}</h1>
+  <form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="hidden" name="next" value="{{ next }}">
+    <button class="btn" type="submit">{% trans "Log in" %}</button>
+  </form>
+</section>
+{% endblock %}

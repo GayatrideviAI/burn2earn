@@ -18,11 +18,15 @@
 
 <section class="card">
   <h2>{% trans "What to do next" %}</h2>
-  {% if s.actions or supply %}
+  {% if s.actions or supply or heat_actions %}
   <ul class="actions">
     {% for level, title, text, obj in supply %}
     <li><span class="tag {{ level }}">{{ title }}</span>
       <span><a href="{% if obj.line_id %}{% url 'customers:order' obj.pk %}{% else %}{% url 'customers:contract' obj.pk %}{% endif %}">{{ text }}</a></span></li>
+    {% endfor %}
+    {% for level, title, text, batch in heat_actions %}
+    <li><span class="tag {{ level }}">{{ title }}</span>
+      <span>{% if batch %}<a href="{% url 'customers:batch' batch.pk %}">{{ text }}</a>{% else %}{{ text }}{% endif %}</span></li>
     {% endfor %}
     {% for level, title, text, batch in s.actions %}
     <li><span class="tag {{ level }}">{{ title }}</span>
@@ -31,6 +35,23 @@
   </ul>
   {% else %}<p class="muted">{% trans "Nothing needs attention right now." %}</p>{% endif %}
 </section>
+
+{% if use_first %}
+<section class="card">
+  <h2>{% trans "Use first" %}</h2>
+  <p class="muted small">{% trans "Piles ranked by risk, then by age, rather than simply oldest first. Shipping and burning the riskiest stock first saves tonnes." %}</p>
+  <div class="scroll"><table>
+    <thead><tr><th>{% trans "Pile" %}</th><th>{% trans "Risk" %}</th><th>{% trans "Last temperature" %}</th><th>{% trans "Oldest stock" %}</th></tr></thead>
+    <tbody>
+    {% for a in use_first %}
+      <tr><td>{{ a.pile }}</td><td><span class="tag {{ a.tag }}">{{ a.label }}</span></td>
+        <td>{% if a.latest %}{{ a.latest.temperature_c|floatformat:"-1" }} °C <span class="muted small">{{ a.latest.taken_at|timesince }}</span>{% else %}<span class="muted">{% trans "none yet" %}</span>{% endif %}</td>
+        <td>{{ a.oldest_received|date:"d M Y" }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</section>
+{% endif %}
 
 <section class="card">
   <h2>{% trans "Stock by yard" %}</h2>

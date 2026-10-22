@@ -9,6 +9,7 @@ class Role(models.TextChoices):
     MITRA = "mitra", "Biomass Mitra"
     FARMER = "farmer", "Farmer"
     BUYER = "buyer", "Buyer"
+    YARD = "yard", "Yard operator"
 
 
 class UserManager(DjangoUserManager):

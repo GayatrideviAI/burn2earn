@@ -1,0 +1,65 @@
+{% extends "yardops/base.html" %}
+{% load i18n customers_i18n %}
+{% block title %}{{ pile.label }}{% endblock %}
+{% block content %}
+<p><a href="{% url 'yardops:home' %}">← {% trans "All piles" %}</a></p>
+<h1>{{ pile.yard.name }} / {{ pile.label }} <span class="tag {{ a.tag }}">{{ a.label }}</span></h1>
+<p class="muted">{{ pile.get_form_display }} · {{ pile.get_exposure_display }}{% if pile.cover_type %} · {{ pile.cover_type }}{% endif %}
+  {% if pile.height_m %} · {% blocktrans trimmed with h=pile.height_m|floatformat:"-1" %}{{ h }} m high{% endblocktrans %}{% endif %}</p>
+
+{% if a.reasons %}
+<section class="card">
+  <h2>{% trans "Why this is flagged" %}</h2>
+  <ul class="plain">{% for r in a.reasons %}<li>{{ r.text }}</li>{% endfor %}</ul>
+  {% if a.action %}<p><b>{{ a.action }}</b></p>{% endif %}
+  {% if a.projection %}<p class="muted small">{{ a.projection }}</p>{% endif %}
+</section>
+{% elif not a.has_stock %}
+<p class="muted">{% trans "There is no stock in this pile." %}</p>
+{% else %}
+<p class="muted">{% trans "Nothing is flagged on this pile." %}</p>
+{% endif %}
+
+<div class="two">
+<section class="card"><h2>{% trans "Log a temperature" %}</h2>
+  <form method="post">{% csrf_token %}<input type="hidden" name="action" value="heat">
+    {{ forms.heat.as_p }}
+    <button class="btn">{% trans "Save temperature" %}</button></form></section>
+<section class="card"><h2>{% trans "Log an inspection" %}</h2>
+  <form method="post">{% csrf_token %}<input type="hidden" name="action" value="inspect">
+    {{ forms.inspect.as_p }}
+    <button class="btn">{% trans "Save inspection" %}</button></form></section>
+</div>
+
+{% if batches %}
+<div class="two">
+<section class="card"><h2>{% trans "Count the stock" %}</h2>
+  <form method="post">{% csrf_token %}<input type="hidden" name="action" value="count">
+    {{ forms.count.as_p }}
+    <button class="btn">{% trans "Save count" %}</button></form></section>
+<section class="card"><h2>{% trans "Log a moisture reading" %}</h2>
+  <form method="post">{% csrf_token %}<input type="hidden" name="action" value="moisture">
+    {{ forms.moisture.as_p }}
+    <button class="btn">{% trans "Save moisture" %}</button></form></section>
+</div>
+<section class="card"><h2>{% trans "Batches in this pile" %}</h2>
+  <ul class="plain">{% for b, tonnes in batches %}<li><span class="mono">{{ b.code }}</span> {{ b.biomass_type.name }} · {% blocktrans trimmed with t=tonnes|tn:"1g" d=b.received_on|date:"d M Y" %}{{ t }} on the books, received {{ d }}{% endblocktrans %}</li>{% endfor %}</ul>
+</section>
+{% endif %}
+
+<section class="card"><h2>{% trans "Recent temperatures" %}</h2>
+  <ul class="plain">{% for r in readings %}<li>{{ r.taken_at|date:"d M H:i" }} · <b>{{ r.temperature_c|floatformat:"-1" }} °C</b>{% if r.spot %} · {{ r.spot }}{% endif %}{% if r.depth_cm %} · {% blocktrans trimmed with d=r.depth_cm %}{{ d }} cm deep{% endblocktrans %}{% endif %} <span class="muted small">{{ r.taken_by }}</span></li>{% empty %}<li class="muted">{% trans "No readings yet." %}</li>{% endfor %}</ul>
+</section>
+
+<section class="card"><h2>{% trans "Recent inspections" %}</h2>
+  <ul class="plain">{% for i in inspections %}<li>{{ i.inspected_at|date:"d M H:i" }} ·
+    {% if i.looks_wet %}<span class="tag warn">{% trans "wet" %}</span> {% endif %}{% if i.mould %}<span class="tag warn">{% trans "mould" %}</span> {% endif %}{% if i.steam_or_smell %}<span class="tag bad">{% trans "steam or smell" %}</span> {% endif %}{% if not i.cover_in_place %}<span class="tag warn">{% trans "cover missing" %}</span> {% endif %}
+    {% if not i.looks_wet and not i.mould and not i.steam_or_smell and i.cover_in_place %}<span class="tag good">{% trans "all clear" %}</span>{% endif %}
+    {{ i.notes }} <span class="muted small">{{ i.inspected_by }}</span></li>{% empty %}<li class="muted">{% trans "No inspections yet." %}</li>{% endfor %}</ul>
+</section>
+
+<section class="card"><h2>{% trans "Pile size and cover" %}</h2>
+  <form method="post">{% csrf_token %}<input type="hidden" name="action" value="size">
+    {{ forms.size.as_p }}
+    <button class="btn">{% trans "Save pile details" %}</button></form></section>
+{% endblock %}

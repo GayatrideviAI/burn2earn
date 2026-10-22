@@ -251,6 +251,26 @@ As before, farmers are credited in proportion to what each handed over at the su
 
 Try it: `docker compose exec web python manage.py load_demo_deliveries` (the first two demo loads go into yards, the third is left unreceived).
 
+## Yard measurement and fire/spoilage risk
+
+A new **Yard operator** login (`/yard/`) is for the person who walks the stockyard. In Admin, add a Yard operator, link them to a user with the role
+"Yard operator" and tick the yards they look after. They can log a **temperature probe reading** (with the spot and depth), a **walk-round inspection**
+(wet, mould, steam or smell, cover in place), a **stock count**, a **moisture reading**, and the **size and cover** of a pile. Everything goes through the
+same services as the rest of the system and is written to the ledger.
+
+Each pile gets a risk level from plain rules, not a trained model: Normal, Needs attention, Watch closely, Check twice a day, Fire likely. The rules look at the
+hottest spot, how fast the temperature is rising (with an estimate of days until the 65 °C step), how old the last reading is (a pile nobody has probed is never
+shown as safe), the last inspection, damp stock at intake and stack height. Every flag lists its reasons. Piles at Watch or above raise an **alert**, which
+escalates, closes itself when the pile cools, and records who acknowledged it and how quickly. Customers see the risk on their overview, yard and batch pages,
+plus a **Use first** list that ranks piles by risk and then age.
+
+**The thresholds are assumptions.** They live in `config/settings.py` (`YARD_*`) and must be validated with a fire-safety partner for baled paddy straw before
+anyone relies on them. A probe only shows the temperature at its own spot, so this is an early-warning aid, not a guarantee. A trained model should wait for real yard data.
+
+Try it: `docker compose exec web python manage.py load_demo_yard` then log in at `/yard/` as `yard1` / `yard-demo-123`.
+
+**Not built yet:** the offline phone app for yard operators (next step), weather and rain risk, WhatsApp/SMS alerts.
+
 ## Hindi and Punjabi (customer pages and Mitra app)
 
 The customer pages (`/customer/`), the Mitra pages (`/mitra/`) and the offline Mitra phone app can be shown in English, हिन्दी and ਪੰਜਾਬੀ. A switch in the top bar changes the language and the choice is remembered on the device. This covers every page, form label, confirmation and error message, alert text, stage and type label, and the unit (t for tonnes). The offline phone app carries its own translation table, so switching language works with no signal. The admin is not translated. Farmer-facing data that comes from the database (crop, village, product and biomass names) is shown as entered.
