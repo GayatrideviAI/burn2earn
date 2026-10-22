@@ -12,6 +12,7 @@ from django.contrib.gis.geos import Point
 from django.db import DataError, IntegrityError, transaction
 from django.http import JsonResponse
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.utils.dateparse import parse_datetime
 from django.views.decorators.http import require_GET, require_POST
 
@@ -37,7 +38,7 @@ class OperationError(Exception):
 
 def _errors(form):
     return "; ".join(
-        f"{(form.fields[name].label if name in form.fields else name)}: {' '.join(errs)}"
+        f"{(form.fields[name].label if name in form.fields else name)}: {' '.join(str(e) for e in errs)}"
         if name != "__all__"
         else " ".join(errs)
         for name, errs in form.errors.items()
@@ -48,7 +49,7 @@ def _uuid(value, what):
     try:
         return uuid.UUID(str(value))
     except ValueError:
-        raise OperationError(f"{what} is not a valid id.")
+        raise OperationError(_("%(what)s is not a valid id.") % {"what": what})
 
 
 @mitra_required
@@ -137,15 +138,15 @@ def _farmer_create(mitra, op_id, data):
         consented_at=consented_at,
     )
     if duplicates:
-        return "flagged", f"Saved. Another farmer has this mobile number ({', '.join(duplicates)}); an Admin will review."
+        return "flagged", _("Saved. Another farmer has this mobile number (%(codes)s); an Admin will review.") % {"codes": ", ".join(duplicates)}
     return "ok", ""
 
 
 def _farmer_for(mitra, value):
     try:
-        return farmers_visible_to(mitra).get(pk=_uuid(value, "The farmer"))
+        return farmers_visible_to(mitra).get(pk=_uuid(value, _("The farmer")))
     except Farmer.DoesNotExist:
-        raise OperationError("The farmer was not found. Their registration may have failed.")
+        raise OperationError(_("The farmer was not found. Their registration may have failed."))
 
 
 def _plot_create(mitra, op_id, data):
@@ -169,16 +170,16 @@ def _plot_create(mitra, op_id, data):
 
 def _season_create(mitra, op_id, data):
     try:
-        plot = FarmPlot.objects.get(pk=_uuid(data.get("plot_id"), "The plot"))
+        plot = FarmPlot.objects.get(pk=_uuid(data.get("plot_id"), _("The plot")))
     except FarmPlot.DoesNotExist:
-        raise OperationError("The plot was not found. Its creation may have failed.")
+        raise OperationError(_("The plot was not found. Its creation may have failed."))
     _farmer_for(mitra, plot.farmer_id)
     form = SeasonForm({**data, "season": data.get("season_id"), "crop": data.get("crop_id")})
     if not form.is_valid():
         raise OperationError(_errors(form))
     c = form.cleaned_data
     if PlotSeason.objects.filter(plot=plot, season=c["season"], year=c["year"], crop=c["crop"]).exists():
-        raise OperationError("This crop is already recorded for that season and year.")
+        raise OperationError(_("This crop is already recorded for that season and year."))
     PlotSeason.objects.create(id=op_id, plot=plot, **c)
     return "ok", ""
 
@@ -193,7 +194,7 @@ def _collection_create(mitra, op_id, data):
     try:
         log_collection(mitra=mitra, farmer=farmer, pk=op_id, **form.cleaned_data)
     except NoGridAssigned:
-        raise OperationError("You have no Grid assigned yet, so a pickup cannot be recorded.")
+        raise OperationError(_("You have no Grid assigned yet, so a pickup cannot be recorded."))
     except ValidationError as error:
         raise OperationError("; ".join(error.messages))
     return "ok", ""
@@ -206,7 +207,7 @@ def _output_create(mitra, op_id, data):
     try:
         submit_output(mitra=mitra, pk=op_id, **form.cleaned_data)
     except NoGridAssigned:
-        raise OperationError("You have no Grid assigned yet, so output cannot be reported.")
+        raise OperationError(_("You have no Grid assigned yet, so output cannot be reported."))
     except ValidationError as error:
         raise OperationError("; ".join(error.messages))
     return "ok", ""
@@ -230,11 +231,11 @@ def _already_saved(mitra, model, owner_field, op_id):
     if existing is None:
         return False
     if owner_field and getattr(existing, f"{owner_field}_id") != mitra.pk:
-        raise OperationError("This id is already used by someone else's record.")
+        raise OperationError(_("This id is already used by someone else's record."))
     if model is FarmPlot and not farmers_visible_to(mitra).filter(pk=existing.farmer_id).exists():
-        raise OperationError("This id is already used by someone else's record.")
+        raise OperationError(_("This id is already used by someone else's record."))
     if model is PlotSeason and not farmers_visible_to(mitra).filter(pk=existing.plot.farmer_id).exists():
-        raise OperationError("This id is already used by someone else's record.")
+        raise OperationError(_("This id is already used by someone else's record."))
     return True
 
 
@@ -242,14 +243,14 @@ def apply_operation(mitra, operation):
     """Apply one change. Returns {"id", "status", "message"}; status is ok, exists, flagged or error."""
     op_id = operation.get("id")
     try:
-        op_id = _uuid(op_id, "The change id")
+        op_id = _uuid(op_id, _("The change id"))
         handler = HANDLERS.get(operation.get("type"))
         if handler is None:
-            raise OperationError("Unknown kind of change.")
+            raise OperationError(_("Unknown kind of change."))
         model, owner_field, function = handler
         data = operation.get("data")
         if not isinstance(data, dict):
-            raise OperationError("The change has no data.")
+            raise OperationError(_("The change has no data."))
         if _already_saved(mitra, model, owner_field, op_id):
             return {"id": str(op_id), "status": "exists", "message": ""}
         with transaction.atomic():
@@ -261,7 +262,7 @@ def apply_operation(mitra, operation):
         return {
             "id": str(operation.get("id")),
             "status": "error",
-            "message": "The record could not be saved because some details are not allowed.",
+            "message": _("The record could not be saved because some details are not allowed."),
         }
 
 
@@ -274,6 +275,6 @@ def sync(request):
         if not isinstance(operations, list) or len(operations) > MAX_OPERATIONS:
             raise ValueError
     except (ValueError, KeyError, TypeError):
-        return JsonResponse({"error": f"Send up to {MAX_OPERATIONS} changes as a list."}, status=400)
+        return JsonResponse({"error": _("Send up to %(max)s changes as a list.") % {"max": MAX_OPERATIONS}}, status=400)
     results = [apply_operation(request.mitra, op if isinstance(op, dict) else {}) for op in operations]
     return JsonResponse({"results": results, "server_time": timezone.now().isoformat()})

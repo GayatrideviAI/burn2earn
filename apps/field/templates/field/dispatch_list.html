@@ -1,20 +1,21 @@
 {% extends "field/base.html" %}
-{% block title %}Dispatch{% endblock %}
+{% load i18n customers_i18n %}
+{% block title %}{% trans "Dispatch" %}{% endblock %}
 {% block content %}
-<h1>Dispatch</h1>
+<h1>{% trans "Dispatch" %}</h1>
 {% if not grid %}
-<p class="muted">You have no Grid assigned yet.</p>
+<p class="muted">{% trans "You have no Grid assigned yet." %}</p>
 {% else %}
-<p><a class="button primary" href="{% url 'field:dispatch_new' %}">Send product to a buyer</a></p>
+<p><a class="button primary" href="{% url 'field:dispatch_new' %}">{% trans "Send product to a buyer" %}</a></p>
 {% for d, entries in rows %}
 <section class="card">
   <h3>{{ d.code }} · {{ d.get_stage_display }}</h3>
-  <p class="muted">{{ d.product }} to {{ d.factory.name }} ({{ d.factory.buyer.company_name }})<br>
-    Loaded {{ d.quantity_tonnes }} t{% if d.current_quantity_tonnes != d.quantity_tonnes %} · last weighed {{ d.current_quantity_tonnes }} t (lost {{ d.loss_tonnes }} t){% endif %}</p>
+  <p class="muted">{% blocktrans trimmed with product=d.product factory=d.factory.name company=d.factory.buyer.company_name %}{{ product }} to {{ factory }} ({{ company }}){% endblocktrans %}<br>
+    {% blocktrans trimmed with q=d.quantity_tonnes|tonnes_t %}Loaded {{ q }}{% endblocktrans %}{% if d.current_quantity_tonnes != d.quantity_tonnes %} · {% blocktrans trimmed with w=d.current_quantity_tonnes|tonnes_t l=d.loss_tonnes|tonnes_t %}last weighed {{ w }} (lost {{ l }}){% endblocktrans %}{% endif %}</p>
   <ul class="list">
-    {% for e in entries %}<li>{{ e.created_at|date:"d M H:i" }} · {{ e.entry_type }}<small>ledger #{{ e.seq }}</small></li>{% endfor %}
+    {% for e in entries %}<li>{{ e.created_at|date:"d M H:i" }} · {{ e.entry_type }}<small>{% blocktrans trimmed with n=e.seq %}ledger #{{ n }}{% endblocktrans %}</small></li>{% endfor %}
   </ul>
 </section>
-{% empty %}<p class="muted">Nothing dispatched yet.</p>{% endfor %}
+{% empty %}<p class="muted">{% trans "Nothing dispatched yet." %}</p>{% endfor %}
 {% endif %}
 {% endblock %}

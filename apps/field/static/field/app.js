@@ -7,6 +7,19 @@
 (function () {
   "use strict";
 
+  // ---------------------------------------------------------------- language
+  // Every sentence the Mitra reads goes through t(). The catalogue is sent with the page, so the
+  // translations work with no signal. A phrase with no translation shows in English.
+  var LANG = "en";
+  var CATALOG = (typeof window !== "undefined" && window.MITRA && window.MITRA.catalog) || {};
+
+  function t(text, vars) {
+    var table = CATALOG[LANG];
+    var out = (table && table[text]) || text;
+    if (vars) out = out.replace(/%\((\w+)\)s/g, function (m, k) { return vars[k] != null ? vars[k] : m; });
+    return out;
+  }
+
   // ---------------------------------------------------------------- small helpers
   function uuid() {
     if (typeof crypto !== "undefined" && crypto.randomUUID) return crypto.randomUUID();
@@ -38,7 +51,7 @@
       if (op.type === "farmer.create") {
         var village = byId(villages, d.village_id);
         farmers.push({
-          id: op.id, code: "Not sent yet", name: d.name, mobile: d.mobile,
+          id: op.id, code: t("Not sent yet"), name: d.name, mobile: d.mobile,
           village_id: d.village_id, village: village ? village.name : "", plots: [], pending: true,
         });
       } else if (op.type === "plot.create") {
@@ -64,14 +77,14 @@
     var d = op.data, s = snapshot || {};
     var farmer = function (id) {
       var f = byId((s.farmers) || [], id);
-      return f ? f.name : "a farmer";
+      return f ? f.name : t("a farmer");
     };
     switch (op.type) {
-      case "farmer.create": return "Register farmer " + d.name;
-      case "plot.create": return "Add a " + d.area_acres + " acre plot for " + farmer(d.farmer_id);
-      case "season.create": return "Add a crop (" + d.year + ")";
-      case "collection.create": return "Pickup of " + d.quantity_tonnes + " t from " + farmer(d.farmer_id);
-      case "output.create": return "Output of " + d.quantity_tonnes + " t";
+      case "farmer.create": return t("Register farmer %(name)s", { name: d.name });
+      case "plot.create": return t("Add a %(area)s acre plot for %(farmer)s", { area: d.area_acres, farmer: farmer(d.farmer_id) });
+      case "season.create": return t("Add a crop (%(year)s)", { year: d.year });
+      case "collection.create": return t("Pickup of %(tonnes)s t from %(farmer)s", { tonnes: d.quantity_tonnes, farmer: farmer(d.farmer_id) });
+      case "output.create": return t("Output of %(tonnes)s t", { tonnes: d.quantity_tonnes });
       default: return op.type;
     }
   }
@@ -91,6 +104,38 @@
 
   // ---------------------------------------------------------------- storage
   var cfg = window.MITRA;
+
+  // ---------------------------------------------------------------- language choice
+  // Remembered on the phone, and also in the cookie the server pages use, so both agree.
+  function knownLanguage(code) {
+    return (cfg.languages || []).some(function (l) { return l[0] === code; }) ? code : null;
+  }
+  function chosenLanguage() {
+    var stored = null;
+    try { stored = localStorage.getItem("mitra_lang"); } catch (e) { /* private mode */ }
+    var cookie = document.cookie.match(/(?:^|; )django_language=([^;]+)/);
+    return knownLanguage(stored) || knownLanguage(cookie && cookie[1]) || knownLanguage(cfg.serverLanguage) || "en";
+  }
+  function setLanguage(code) {
+    LANG = code;
+    try { localStorage.setItem("mitra_lang", code); } catch (e) { /* private mode */ }
+    document.cookie = "django_language=" + code + "; path=/; max-age=31536000; SameSite=Lax";
+    document.documentElement.lang = code;
+    refreshStatus();
+    render();
+  }
+  function drawLangs() {
+    var box = document.getElementById("langs");
+    if (!box) return;
+    box.textContent = "";
+    (cfg.languages || []).forEach(function (l) {
+      var b = h("button", { type: "button", class: "link" + (l[0] === LANG ? " on" : ""), lang: l[0] }, l[1]);
+      b.addEventListener("click", function () { setLanguage(l[0]); });
+      box.appendChild(b);
+    });
+  }
+  LANG = chosenLanguage();
+  document.documentElement.lang = LANG;
   var dbPromise = new Promise(function (resolve, reject) {
     var request = indexedDB.open("mitra-app", 1);
     request.onupgradeneeded = function () {
@@ -232,7 +277,10 @@
       var waiting = rows.filter(function (op) { return !op.error; }).length;
       var errors = rows.length - waiting;
       net.className = "net " + (navigator.onLine ? "on" : "off");
-      net.textContent = (navigator.onLine ? "Online" : "Offline") + (waiting ? " · " + waiting + " waiting" : "") + (errors ? " · " + errors + " need attention" : "");
+      var bits = [navigator.onLine ? t("Online") : t("Offline")];
+      if (waiting) bits.push(t("%(n)s waiting", { n: waiting }));
+      if (errors) bits.push(t("%(n)s need attention", { n: errors }));
+      net.textContent = bits.join(" · ");
     });
   }
 
@@ -279,7 +327,7 @@
     f.appendChild(error);
     fields.forEach(function (x) { f.appendChild(x); });
     f.appendChild(button);
-    if (cancelHref) f.appendChild(link("Cancel", cancelHref, "button"));
+    if (cancelHref) f.appendChild(link(t("Cancel"), cancelHref, "button"));
     f.addEventListener("submit", function (e) {
       e.preventDefault();
       var values = {};
@@ -309,19 +357,19 @@
     var plots = farmers.reduce(function (n, f) { return n + f.plots.length; }, 0);
     var waiting = state.queue.filter(function (op) { return !op.error; }).length;
     return [
-      h("h1", {}, "Hello, " + (state.snapshot ? state.snapshot.mitra.name : "Mitra")),
-      state.snapshot && state.snapshot.grid ? h("p", { class: "muted" }, "Grid " + state.snapshot.grid.code) : null,
+      h("h1", {}, t("Hello, %(name)s", { name: state.snapshot ? state.snapshot.mitra.name : "Mitra" })),
+      state.snapshot && state.snapshot.grid ? h("p", { class: "muted" }, t("Grid %(code)s", { code: state.snapshot.grid.code })) : null,
       h("div", { class: "stats" },
-        h("div", {}, h("strong", {}, farmers.length), h("span", {}, "Farmers")),
-        h("div", {}, h("strong", {}, plots), h("span", {}, "Plots")),
-        h("div", {}, h("strong", {}, waiting), h("span", {}, "To send"))),
+        h("div", {}, h("strong", {}, farmers.length), h("span", {}, t("Farmers"))),
+        h("div", {}, h("strong", {}, plots), h("span", {}, t("Plots"))),
+        h("div", {}, h("strong", {}, waiting), h("span", {}, t("To send")))),
       totals.pickups || totals.outputs
-        ? h("p", { class: "muted" }, "Saved on this phone, not sent yet: " + totals.pickups + " pickup(s), " + totals.pickupTonnes.toFixed(2) + " t; " + totals.outputs + " output report(s), " + totals.outputTonnes.toFixed(2) + " t.")
+        ? h("p", { class: "muted" }, t("Saved on this phone, not sent yet: %(pickups)s pickup(s), %(pt)s t; %(outputs)s output report(s), %(ot)s t.", { pickups: totals.pickups, pt: totals.pickupTonnes.toFixed(2), outputs: totals.outputs, ot: totals.outputTonnes.toFixed(2) }))
         : null,
-      h("p", {}, link("Register a farmer", "#/farmer/new", "button primary"), " ", link("Report output", "#/output", "button")),
-      !state.snapshot ? h("p", { class: "msg warning" }, "Connect to the internet once so your farmers and lists can be downloaded.") : null,
-      state.needLogin ? h("p", { class: "msg warning" }, ["Please log in again to send your changes. ", h("a", { href: cfg.loginUrl + "?next=" + encodeURIComponent(location.pathname) }, "Log in")]) : null,
-      h("p", { class: "muted" }, "Everything you enter is saved on this phone first. It is sent when there is a signal."),
+      h("p", {}, link(t("Register a farmer"), "#/farmer/new", "button primary"), " ", link(t("Report output"), "#/output", "button")),
+      !state.snapshot ? h("p", { class: "msg warning" }, t("Connect to the internet once so your farmers and lists can be downloaded.")) : null,
+      state.needLogin ? h("p", { class: "msg warning" }, [t("Please log in again to send your changes.") + " ", h("a", { href: cfg.loginUrl + "?next=" + encodeURIComponent(location.pathname) }, t("Log in"))]) : null,
+      h("p", { class: "muted" }, t("Everything you enter is saved on this phone first. It is sent when there is a signal.")),
     ];
   };
 
@@ -330,14 +378,14 @@
     var farmers = applyOps(state.snapshot, state.queue).filter(function (f) {
       return !q || (f.name + " " + f.mobile + " " + f.code).toLowerCase().indexOf(q) >= 0;
     });
-    var box = h("input", { type: "search", placeholder: "Name, mobile or code", value: state.search || "", id: "q" });
+    var box = h("input", { type: "search", placeholder: t("Name, mobile or code"), value: state.search || "", id: "q" });
     box.addEventListener("input", function () {
       state.search = box.value;
       var list = document.getElementById("farmer-list");
       var next = views.farmerList();
       list.replaceWith(next);
     });
-    return [h("h1", {}, "Farmers"), h("div", { class: "search" }, box), h("p", {}, link("Register a farmer", "#/farmer/new", "button primary")), views.farmerList()];
+    return [h("h1", {}, t("Farmers")), h("div", { class: "search" }, box), h("p", {}, link(t("Register a farmer"), "#/farmer/new", "button primary")), views.farmerList()];
   };
 
   views.farmerList = function () {
@@ -349,30 +397,30 @@
       farmers.length
         ? farmers.map(function (f) {
             return h("li", {}, h("a", { href: "#/farmer/" + f.id }, f.name,
-              h("small", {}, f.code + " · " + f.village + " · " + f.plots.length + " plot(s)" + (f.pending ? " · waiting to send" : ""))));
+              h("small", {}, f.code + " · " + f.village + " · " + t("%(n)s plot(s)", { n: f.plots.length }) + (f.pending ? " · " + t("waiting to send") : ""))));
           })
-        : h("li", { class: "muted" }, "No farmers found."));
+        : h("li", { class: "muted" }, t("No farmers found.")));
   };
 
   views.farmerNew = function () {
     var snap = state.snapshot;
-    if (!snap) return [h("h1", {}, "Register a farmer"), h("p", { class: "msg warning" }, "Connect to the internet once to download the village list.")];
+    if (!snap) return [h("h1", {}, t("Register a farmer")), h("p", { class: "msg warning" }, t("Connect to the internet once to download the village list."))];
     var consent = h("input", { type: "checkbox", name: "consent", id: "f_consent" });
-    return [h("h1", {}, "Register a farmer"), form([
-      row("Name", input("name")),
-      row("Mobile number", input("mobile", "tel", { inputmode: "tel", autocomplete: "off" })),
-      row("Village", select("village_id", optionsOf(snap.villages), "Choose a village")),
-      row("Preferred language", select("preferred_language", [{ value: "hi", label: "Hindi" }, { value: "en", label: "English" }, { value: "pa", label: "Punjabi" }, { value: "other", label: "Other" }], "Not stated")),
-      h("div", { class: "field" }, consent, h("label", { for: "f_consent", class: "inline" }, "The farmer has been told how their information will be used and agrees.")),
-    ], "Save farmer", function (v) {
-      if (!v.name) return "Enter the farmer's name.";
-      if (!/^\+?\d{10,15}$/.test(v.mobile.replace(/\s/g, ""))) return "Enter a mobile number with 10 to 15 digits.";
-      if (!v.village_id) return "Choose the farmer's village.";
-      if (!v.consent) return "Consent is needed before a farmer can be registered.";
+    return [h("h1", {}, t("Register a farmer")), form([
+      row(t("Name"), input("name")),
+      row(t("Mobile number"), input("mobile", "tel", { inputmode: "tel", autocomplete: "off" })),
+      row(t("Village"), select("village_id", optionsOf(snap.villages), t("Choose a village"))),
+      row(t("Preferred language"), select("preferred_language", [{ value: "hi", label: t("Hindi") }, { value: "en", label: t("English") }, { value: "pa", label: t("Punjabi") }, { value: "other", label: t("Other") }], t("Not stated"))),
+      h("div", { class: "field" }, consent, h("label", { for: "f_consent", class: "inline" }, t("The farmer has been told how their information will be used and agrees."))),
+    ], t("Save farmer"), function (v) {
+      if (!v.name) return t("Enter the farmer's name.");
+      if (!/^\+?\d{10,15}$/.test(v.mobile.replace(/\s/g, ""))) return t("Enter a mobile number with 10 to 15 digits.");
+      if (!v.village_id) return t("Choose the farmer's village.");
+      if (!v.consent) return t("Consent is needed before a farmer can be registered.");
       var duplicate = applyOps(snap, state.queue).filter(function (f) { return f.mobile === v.mobile.replace(/\s/g, ""); })[0];
       if (duplicate && !state.confirmDuplicate) {
         state.confirmDuplicate = true;
-        return duplicate.name + " already has this mobile number. Families often share a phone. Press Save farmer again to register anyway.";
+        return t("%(name)s already has this mobile number. Families often share a phone. Press Save farmer again to register anyway.", { name: duplicate.name });
       }
       state.confirmDuplicate = false;
       addChange("farmer.create", {
@@ -386,49 +434,49 @@
 
   views.farmer = function (id) {
     var f = farmerFor(id);
-    if (!f) return [h("p", {}, "Farmer not found."), link("Back", "#/farmers", "button")];
+    if (!f) return [h("p", {}, t("Farmer not found.")), link(t("Back"), "#/farmers", "button")];
     return [
       h("h1", {}, f.name),
-      h("p", { class: "muted" }, f.code + " · " + f.mobile + " · " + f.village + (f.pending ? " · waiting to send" : "")),
-      h("p", {}, link("Log a pickup", "#/pickup/" + f.id, "button primary"), " ", link("Add a plot", "#/plot/" + f.id, "button")),
-      h("h2", {}, "Land"),
+      h("p", { class: "muted" }, f.code + " · " + f.mobile + " · " + f.village + (f.pending ? " · " + t("waiting to send") : "")),
+      h("p", {}, link(t("Log a pickup"), "#/pickup/" + f.id, "button primary"), " ", link(t("Add a plot"), "#/plot/" + f.id, "button")),
+      h("h2", {}, t("Land")),
       f.plots.length ? f.plots.map(function (p) {
         return h("section", { class: "card" },
-          h("h3", {}, p.area_acres + " acres"),
-          h("p", { class: "muted" }, (p.cell ? "GeoCell " + p.cell : p.pending ? "Waiting to send" : "Outside every GeoCell")),
+          h("h3", {}, t("%(a)s acres", { a: p.area_acres })),
+          h("p", { class: "muted" }, (p.cell ? t("GeoCell %(code)s", { code: p.cell }) : p.pending ? t("Waiting to send") : t("Outside every GeoCell"))),
           h("ul", { class: "list" }, p.seasons.length
-            ? p.seasons.map(function (s) { return h("li", {}, s.season + " " + s.year + ": " + s.crop + (s.variety ? " (" + s.variety + ")" : "") + (s.pending ? " · waiting to send" : "")); })
-            : h("li", { class: "muted" }, "No crops recorded.")),
-          link("Add crop", "#/crop/" + f.id + "/" + p.id, "button"));
-      }) : h("p", { class: "muted" }, "No land added yet."),
+            ? p.seasons.map(function (s) { return h("li", {}, s.season + " " + s.year + ": " + s.crop + (s.variety ? " (" + s.variety + ")" : "") + (s.pending ? " · " + t("waiting to send") : "")); })
+            : h("li", { class: "muted" }, t("No crops recorded."))),
+          link(t("Add crop"), "#/crop/" + f.id + "/" + p.id, "button"));
+      }) : h("p", { class: "muted" }, t("No land added yet.")),
     ];
   };
 
   views.plot = function (id) {
     var f = farmerFor(id);
-    if (!f) return [h("p", {}, "Farmer not found.")];
+    if (!f) return [h("p", {}, t("Farmer not found."))];
     var status = h("small", { class: "muted", id: "gps" }, "");
     var lat = input("latitude", "text", { inputmode: "decimal" }), lon = input("longitude", "text", { inputmode: "decimal" });
-    var gps = h("button", { type: "button", id: "locate" }, "Use my location");
+    var gps = h("button", { type: "button", id: "locate" }, t("Use my location"));
     gps.addEventListener("click", function () {
-      if (!navigator.geolocation) { status.textContent = "Location is not available on this device."; return; }
-      status.textContent = "Finding location…";
+      if (!navigator.geolocation) { status.textContent = t("Location is not available on this device."); return; }
+      status.textContent = t("Finding location…");
       navigator.geolocation.getCurrentPosition(function (pos) {
         lat.value = pos.coords.latitude.toFixed(6);
         lon.value = pos.coords.longitude.toFixed(6);
-        status.textContent = "Done. Stand at the plot for the best accuracy.";
-      }, function () { status.textContent = "Could not get location. Type it in instead."; });
+        status.textContent = t("Done. Stand at the plot for the best accuracy.");
+      }, function () { status.textContent = t("Could not get location. Type it in instead."); });
     });
-    return [h("h1", {}, "Add a plot for " + f.name), h("p", {}, gps, " ", status), form([
-      row("Latitude", lat), row("Longitude", lon),
-      row("Area (acres)", input("area_acres", "text", { inputmode: "decimal" })),
-      row("Ownership", select("ownership", [{ value: "owned", label: "Owned" }, { value: "leased", label: "Leased" }, { value: "sharecropped", label: "Sharecropped" }], "Not stated")),
-      row("Irrigation", select("irrigation", [{ value: "canal", label: "Canal" }, { value: "tubewell", label: "Tubewell" }, { value: "rainfed", label: "Rain-fed" }, { value: "other", label: "Other" }], "Not stated")),
-    ], "Save plot", function (v) {
+    return [h("h1", {}, t("Add a plot for %(name)s", { name: f.name })), h("p", {}, gps, " ", status), form([
+      row(t("Latitude"), lat), row(t("Longitude"), lon),
+      row(t("Area (acres)"), input("area_acres", "text", { inputmode: "decimal" })),
+      row(t("Ownership"), select("ownership", [{ value: "owned", label: t("Owned") }, { value: "leased", label: t("Leased") }, { value: "sharecropped", label: t("Sharecropped") }], t("Not stated"))),
+      row(t("Irrigation"), select("irrigation", [{ value: "canal", label: t("Canal") }, { value: "tubewell", label: t("Tubewell") }, { value: "rainfed", label: t("Rain-fed") }, { value: "other", label: t("Other") }], t("Not stated"))),
+    ], t("Save plot"), function (v) {
       var la = Number(v.latitude), lo = Number(v.longitude);
-      if (v.latitude === "" || !(la >= 6 && la <= 38)) return "Latitude should be between 6 and 38 for India.";
-      if (v.longitude === "" || !(lo >= 68 && lo <= 98)) return "Longitude should be between 68 and 98 for India.";
-      if (!positive(v.area_acres)) return "Enter the area in acres.";
+      if (v.latitude === "" || !(la >= 6 && la <= 38)) return t("Latitude should be between 6 and 38 for India.");
+      if (v.longitude === "" || !(lo >= 68 && lo <= 98)) return t("Longitude should be between 68 and 98 for India.");
+      if (!positive(v.area_acres)) return t("Enter the area in acres.");
       addChange("plot.create", { farmer_id: f.id, latitude: v.latitude, longitude: v.longitude, area_acres: v.area_acres, ownership: v.ownership, irrigation: v.irrigation })
         .then(function () { location.hash = "#/farmer/" + f.id; });
     }, "#/farmer/" + f.id)];
@@ -436,18 +484,18 @@
 
   views.crop = function (farmerId, plotId) {
     var f = farmerFor(farmerId), snap = state.snapshot;
-    if (!f || !snap) return [h("p", {}, "Not found.")];
-    return [h("h1", {}, "Add a crop"), form([
-      row("Season", select("season_id", optionsOf(snap.seasons), "Choose")),
-      row("Year", input("year", "number", { value: new Date().getFullYear() })),
-      row("Crop", select("crop_id", optionsOf(snap.crops), "Choose")),
-      row("Variety (optional)", input("variety")),
-      row("Sowing date (optional)", input("sowing_date", "date")),
-      row("Expected harvest date (optional)", input("expected_harvest_date", "date")),
-    ], "Save crop", function (v) {
-      if (!v.season_id || !v.crop_id) return "Choose the season and the crop.";
-      if (!(Number(v.year) >= 2000 && Number(v.year) <= 2100)) return "Enter a year between 2000 and 2100.";
-      if (v.sowing_date && v.expected_harvest_date && v.expected_harvest_date < v.sowing_date) return "The harvest date cannot be before the sowing date.";
+    if (!f || !snap) return [h("p", {}, t("Not found."))];
+    return [h("h1", {}, t("Add a crop")), form([
+      row(t("Season"), select("season_id", optionsOf(snap.seasons), t("Choose"))),
+      row(t("Year"), input("year", "number", { value: new Date().getFullYear() })),
+      row(t("Crop"), select("crop_id", optionsOf(snap.crops), t("Choose"))),
+      row(t("Variety (optional)"), input("variety")),
+      row(t("Sowing date (optional)"), input("sowing_date", "date")),
+      row(t("Expected harvest date (optional)"), input("expected_harvest_date", "date")),
+    ], t("Save crop"), function (v) {
+      if (!v.season_id || !v.crop_id) return t("Choose the season and the crop.");
+      if (!(Number(v.year) >= 2000 && Number(v.year) <= 2100)) return t("Enter a year between 2000 and 2100.");
+      if (v.sowing_date && v.expected_harvest_date && v.expected_harvest_date < v.sowing_date) return t("The harvest date cannot be before the sowing date.");
       addChange("season.create", { plot_id: plotId, season_id: v.season_id, crop_id: v.crop_id, year: Number(v.year), variety: v.variety, sowing_date: v.sowing_date, expected_harvest_date: v.expected_harvest_date })
         .then(function () { location.hash = "#/farmer/" + f.id; });
     }, "#/farmer/" + f.id)];
@@ -455,19 +503,19 @@
 
   views.pickup = function (id) {
     var f = farmerFor(id), snap = state.snapshot;
-    if (!f || !snap) return [h("p", {}, "Not found.")];
-    return [h("h1", {}, "Log a pickup from " + f.name), form([
-      row("Plot (optional)", select("plot_id", f.plots.map(function (p) { return { value: p.id, label: p.area_acres + " acres" }; }), "Not stated")),
-      row("Residue", select("biomass_type_id", optionsOf(snap.biomass_types), "Choose")),
-      row("Quantity picked up (tonnes)", input("quantity_tonnes", "text", { inputmode: "decimal" })),
-      row("Price paid to the farmer (₹, total)", input("price_paid", "text", { inputmode: "decimal" })),
-      row("Date", input("collected_on", "date", { value: today() })),
-      row("Notes (optional)", input("notes")),
-    ], "Save pickup", function (v) {
-      if (!v.biomass_type_id) return "Choose the residue type.";
-      if (!positive(v.quantity_tonnes)) return "Enter the quantity in tonnes.";
-      if (v.price_paid === "" || !(Number(v.price_paid) >= 0)) return "Enter the price paid (0 if nothing was paid).";
-      if (!v.collected_on || !notFuture(v.collected_on)) return "The pickup date cannot be in the future.";
+    if (!f || !snap) return [h("p", {}, t("Not found."))];
+    return [h("h1", {}, t("Log a pickup from %(name)s", { name: f.name })), form([
+      row(t("Plot (optional)"), select("plot_id", f.plots.map(function (p) { return { value: p.id, label: t("%(a)s acres", { a: p.area_acres }) }; }), t("Not stated"))),
+      row(t("Residue"), select("biomass_type_id", optionsOf(snap.biomass_types), t("Choose"))),
+      row(t("Quantity picked up (tonnes)"), input("quantity_tonnes", "text", { inputmode: "decimal" })),
+      row(t("Price paid to the farmer (₹, total)"), input("price_paid", "text", { inputmode: "decimal" })),
+      row(t("Date"), input("collected_on", "date", { value: today() })),
+      row(t("Notes (optional)"), input("notes")),
+    ], t("Save pickup"), function (v) {
+      if (!v.biomass_type_id) return t("Choose the residue type.");
+      if (!positive(v.quantity_tonnes)) return t("Enter the quantity in tonnes.");
+      if (v.price_paid === "" || !(Number(v.price_paid) >= 0)) return t("Enter the price paid (0 if nothing was paid).");
+      if (!v.collected_on || !notFuture(v.collected_on)) return t("The pickup date cannot be in the future.");
       addChange("collection.create", { farmer_id: f.id, plot_id: v.plot_id, biomass_type_id: v.biomass_type_id, quantity_tonnes: v.quantity_tonnes, price_paid: v.price_paid, collected_on: v.collected_on, notes: v.notes })
         .then(function () { location.hash = "#/farmer/" + f.id; });
     }, "#/farmer/" + f.id)];
@@ -475,46 +523,46 @@
 
   views.output = function () {
     var snap = state.snapshot;
-    if (!snap) return [h("p", { class: "msg warning" }, "Connect to the internet once to download the product list.")];
-    return [h("h1", {}, "Report what you made"), h("p", { class: "muted" }, "Pellets, briquettes and other products. This goes up to your Grid and its Hub."), form([
-      row("What was made", select("product_id", optionsOf(snap.products), "Choose")),
-      row("Quantity made (tonnes, rough is fine)", input("quantity_tonnes", "text", { inputmode: "decimal" })),
-      row("Residue used up (tonnes, if known)", input("biomass_used_tonnes", "text", { inputmode: "decimal" })),
-      row("Date", input("produced_on", "date", { value: today() })),
-      row("Notes (optional)", input("notes")),
-    ], "Report output", function (v) {
-      if (!v.product_id) return "Choose what was made.";
-      if (!positive(v.quantity_tonnes)) return "Enter the quantity in tonnes.";
-      if (v.biomass_used_tonnes !== "" && !(Number(v.biomass_used_tonnes) >= 0)) return "Residue used must be a number.";
-      if (!v.produced_on || !notFuture(v.produced_on)) return "The date cannot be in the future.";
+    if (!snap) return [h("p", { class: "msg warning" }, t("Connect to the internet once to download the product list."))];
+    return [h("h1", {}, t("Report what you made")), h("p", { class: "muted" }, t("Pellets, briquettes and other products. This goes up to your Grid and its Hub.")), form([
+      row(t("What was made"), select("product_id", optionsOf(snap.products), t("Choose"))),
+      row(t("Quantity made (tonnes, rough is fine)"), input("quantity_tonnes", "text", { inputmode: "decimal" })),
+      row(t("Residue used up (tonnes, if known)"), input("biomass_used_tonnes", "text", { inputmode: "decimal" })),
+      row(t("Date"), input("produced_on", "date", { value: today() })),
+      row(t("Notes (optional)"), input("notes")),
+    ], t("Report output"), function (v) {
+      if (!v.product_id) return t("Choose what was made.");
+      if (!positive(v.quantity_tonnes)) return t("Enter the quantity in tonnes.");
+      if (v.biomass_used_tonnes !== "" && !(Number(v.biomass_used_tonnes) >= 0)) return t("Residue used must be a number.");
+      if (!v.produced_on || !notFuture(v.produced_on)) return t("The date cannot be in the future.");
       addChange("output.create", { product_id: v.product_id, quantity_tonnes: v.quantity_tonnes, biomass_used_tonnes: v.biomass_used_tonnes, produced_on: v.produced_on, notes: v.notes })
         .then(function () { location.hash = "#/sync"; });
     }, "#/")];
   };
 
   views.sync = function () {
-    var button = h("button", { class: "primary", id: "sync-now" }, state.syncing ? "Sending…" : "Send now");
+    var button = h("button", { class: "primary", id: "sync-now" }, state.syncing ? t("Sending…") : t("Send now"));
     button.addEventListener("click", function () { syncNow(); });
     return [
-      h("h1", {}, "To send"),
-      state.needLogin ? h("p", { class: "msg warning" }, ["Please log in again to send your changes. ", h("a", { href: cfg.loginUrl + "?next=" + encodeURIComponent(location.pathname) }, "Log in")]) : null,
-      h("p", {}, button, " ", h("small", { class: "muted" }, navigator.onLine ? "You are online." : "No signal. Changes stay on this phone.")),
+      h("h1", {}, t("To send")),
+      state.needLogin ? h("p", { class: "msg warning" }, [t("Please log in again to send your changes.") + " ", h("a", { href: cfg.loginUrl + "?next=" + encodeURIComponent(location.pathname) }, t("Log in"))]) : null,
+      h("p", {}, button, " ", h("small", { class: "muted" }, navigator.onLine ? t("You are online.") : t("No signal. Changes stay on this phone."))),
       h("ul", { class: "list", id: "queue" }, state.queue.length
         ? state.queue.map(function (op) {
-            var discard = h("button", { type: "button", class: "small" }, "Discard");
+            var discard = h("button", { type: "button", class: "small" }, t("Discard"));
             discard.addEventListener("click", function () {
-              if (confirm("Discard this change? It will not be saved on the server.")) queueDelete(op.id).then(function () { refreshStatus().then(render); });
+              if (confirm(t("Discard this change? It will not be saved on the server."))) queueDelete(op.id).then(function () { refreshStatus().then(render); });
             });
-            var retry = h("button", { type: "button", class: "small" }, "Try again");
+            var retry = h("button", { type: "button", class: "small" }, t("Try again"));
             retry.addEventListener("click", function () { delete op.error; queuePut(op).then(function () { refreshStatus(); syncNow(); }); });
-            return h("li", {}, describe(op, state.snapshot), h("small", { class: op.error ? "err" : "" }, op.error ? op.error : "Waiting to send"),
+            return h("li", {}, describe(op, state.snapshot), h("small", { class: op.error ? "err" : "" }, op.error ? op.error : t("Waiting to send")),
               op.error ? h("span", {}, retry, " ", discard) : null);
           })
-        : h("li", { class: "muted" }, "Nothing waiting. All changes are sent.")),
-      h("h2", {}, "Sent recently"),
+        : h("li", { class: "muted" }, t("Nothing waiting. All changes are sent."))),
+      h("h2", {}, t("Sent recently")),
       h("ul", { class: "list", id: "history" }, state.history.length
-        ? state.history.map(function (e) { return h("li", {}, e.text, h("small", {}, (e.status === "flagged" ? "Sent. " + e.message : "Sent") + " · " + new Date(e.at).toLocaleString())); })
-        : h("li", { class: "muted" }, "Nothing yet.")),
+        ? state.history.map(function (e) { return h("li", {}, e.text, h("small", {}, (e.status === "flagged" ? t("Sent.") + " " + e.message : t("Sent")) + " · " + new Date(e.at).toLocaleString())); })
+        : h("li", { class: "muted" }, t("Nothing yet."))),
     ];
   };
 
@@ -533,11 +581,12 @@
       case "sync": out = views.sync(); break;
       default: out = views.home();
     }
+    drawLangs();
     main.textContent = "";
     append(main, out);
     var tabs = document.getElementById("tabs");
     tabs.textContent = "";
-    [["#/", "Home"], ["#/farmers", "Farmers"], ["#/output", "Output"], ["#/sync", "To send (" + state.queue.length + ")"]].forEach(function (t) {
+    [["#/", t("Home")], ["#/farmers", t("Farmers")], ["#/output", t("Output")], ["#/sync", t("To send") + " (" + state.queue.length + ")"]].forEach(function (t) {
       tabs.appendChild(h("a", { href: t[0], class: (location.hash || "#/") === t[0] ? "active" : "" }, t[1]));
     });
   }

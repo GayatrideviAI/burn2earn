@@ -1,18 +1,19 @@
 {% extends "field/base.html" %}
-{% block title %}Register a farmer{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Register a farmer" %}{% endblock %}
 {% block hero %}<section class="hero banner farmer"></section>{% endblock %}
 {% block content %}
-<h1>Register a farmer</h1>
+<h1>{% trans "Register a farmer" %}</h1>
 {% if duplicates %}
 <div class="msg warning">
-  <p>A farmer with this mobile number already exists. Families often share a phone, so this may be fine.</p>
+  <p>{% trans "A farmer with this mobile number already exists. Families often share a phone, so this may be fine." %}</p>
   <ul>{% for d in duplicates %}<li>{{ d.name }} ({{ d.code }}), {{ d.village.name }}</li>{% endfor %}</ul>
 </div>
 {% endif %}
 <form method="post">{% csrf_token %}
   {% include "field/form_fields.html" %}
   {% if duplicates %}<input type="hidden" name="confirm_duplicate" value="1">{% endif %}
-  <button class="primary">{% if duplicates %}Register anyway{% else %}Register{% endif %}</button>
-  <a class="button" href="{% url 'field:farmer_list' %}">Cancel</a>
+  <button class="primary">{% if duplicates %}{% trans "Register anyway" %}{% else %}{% trans "Register" %}{% endif %}</button>
+  <a class="button" href="{% url 'field:farmer_list' %}">{% trans "Cancel" %}</a>
 </form>
 {% endblock %}

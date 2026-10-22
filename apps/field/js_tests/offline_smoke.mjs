@@ -29,7 +29,10 @@ const snapshot = {
 function template(file, extra = {}) {
   let text = fs.readFileSync(path.join(fieldDir, "templates/field", file), "utf8");
   text = text
-    .replace(/{% load static %}/g, "")
+    .replace(/{% load static( i18n)? %}/g, "")
+    .replace("{% get_current_language as LANGUAGE_CODE %}", "")
+    .replace(/{{ LANGUAGE_CODE }}/g, "en")
+    .replace("{{ catalog_json|safe }}", JSON.stringify({ hi: { "Farmers": "किसान", "Hello, %(name)s": "नमस्ते, %(name)s" } }))
     .replace(/{% static 'field\/([^']+)' %}/g, "/static/field/$1")
     .replace("{% url 'field:app' %}", "/mitra/app/")
     .replace("{% url 'field:manifest' %}", "/mitra/manifest.webmanifest")
@@ -170,6 +173,17 @@ await page.waitForSelector("text=Name: not allowed", { timeout: 10000 }).catch((
 check("a rejected change shows its reason", await page.locator("text=Name: not allowed").count() > 0);
 check("it can be discarded", await page.locator("button:has-text('Discard')").count() > 0);
 check("sent items appear in history", await page.locator("#history li").count() >= 4);
+
+// language: switch to Hindi with no network; phrases with a translation change, others stay English
+await context.setOffline(true);
+await page.goto(base + "/mitra/app/#/farmers");
+await page.click("#langs button[lang=hi]");
+check("Hindi heading shows with no network", await page.locator("h1:has-text('किसान')").count() > 0);
+check("a phrase with no translation stays English", await page.locator("a:has-text('Register a farmer')").count() > 0);
+check("the choice is remembered", (await page.evaluate(() => localStorage.getItem("mitra_lang"))) === "hi");
+await page.click("#langs button[lang=en]");
+check("English comes back", await page.locator("h1:has-text('Farmers')").count() > 0);
+await context.setOffline(false);
 
 await browser.close();
 server.close();

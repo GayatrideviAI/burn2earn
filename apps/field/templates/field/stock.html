@@ -1,46 +1,46 @@
 {% extends "field/base.html" %}
-{% block title %}Stock{% endblock %}
+{% load i18n customers_i18n %}
+{% block title %}{% trans "Stock" %}{% endblock %}
 {% block content %}
-<h1>Stock at your site</h1>
+<h1>{% trans "Stock at your site" %}</h1>
 {% if not grid %}
-<p class="muted">You have no Grid assigned yet.</p>
+<p class="muted">{% trans "You have no Grid assigned yet." %}</p>
 {% else %}
-<p class="muted">Grid {{ grid.code }}</p>
+<p class="muted">{% blocktrans trimmed with code=grid.code %}Grid {{ code }}{% endblocktrans %}</p>
 <div class="stats">
-  <div><strong>{{ all_time.on_hand_tonnes }}</strong><span>Tonnes on hand</span></div>
-  <div><strong>{{ all_time.collected_tonnes }}</strong><span>Collected</span></div>
-  <div><strong>{{ all_time.processed_tonnes }}</strong><span>Made</span></div>
+  <div><strong>{{ all_time.on_hand_tonnes }}</strong><span>{% trans "Tonnes on hand" %}</span></div>
+  <div><strong>{{ all_time.collected_tonnes }}</strong><span>{% trans "Collected" %}</span></div>
+  <div><strong>{{ all_time.processed_tonnes }}</strong><span>{% trans "Made" %}</span></div>
 </div>
-<p class="muted">On hand = collected minus the residue you reported as used when reporting output.</p>
+<p class="muted">{% trans "On hand = collected minus the residue you reported as used when reporting output." %}</p>
 
 <section class="card">
-  <h3>{{ year }} so far</h3>
-  <p>Collected {{ this_year.collected_tonnes }} t from {{ this_year.collections }} pickup{{ this_year.collections|pluralize }},
-     paid ₹{{ this_year.paid }}{% if this_year.average_rate %} (about ₹{{ this_year.average_rate }} per tonne){% endif %}.</p>
-  {% if expected %}<p>Expected for the year: {{ expected }} t{% if share is not None %} · {{ share }}% collected{% endif %}.</p>{% endif %}
-  <ul class="list">{% for name, tonnes in this_year.by_biomass %}<li>{{ name }}: {{ tonnes }} t</li>{% endfor %}</ul>
+  <h3>{% blocktrans trimmed with y=year %}{{ y }} so far{% endblocktrans %}</h3>
+  <p>{% blocktrans trimmed with c=this_year.collected_tonnes|tonnes_t n=this_year.collections p=this_year.paid %}Collected {{ c }} from {{ n }} pickup(s), paid ₹{{ p }}{% endblocktrans %}{% if this_year.average_rate %} {% blocktrans trimmed with r=this_year.average_rate %}(about ₹{{ r }} per tonne){% endblocktrans %}{% endif %}.</p>
+  {% if expected %}<p>{% blocktrans trimmed with e=expected|tonnes_t %}Expected for the year: {{ e }}{% endblocktrans %}{% if share is not None %} · {% blocktrans trimmed with s=share %}{{ s }}% collected{% endblocktrans %}{% endif %}.</p>{% endif %}
+  <ul class="list">{% for name, tonnes in this_year.by_biomass %}<li>{{ name }}: {{ tonnes|tonnes_t }}</li>{% endfor %}</ul>
 </section>
 
 <p>
-  <a class="button primary" href="{% url 'field:output_new' %}">Report output</a>
-  <a class="button" href="{% url 'field:farmer_list' %}">Log a pickup (choose farmer)</a>
+  <a class="button primary" href="{% url 'field:output_new' %}">{% trans "Report output" %}</a>
+  <a class="button" href="{% url 'field:farmer_list' %}">{% trans "Log a pickup (choose farmer)" %}</a>
 </p>
 
-<h2>Made</h2>
+<h2>{% trans "Made" %}</h2>
 <ul class="list">
-  {% for name, tonnes in all_time.by_product %}<li>{{ name }}: {{ tonnes }} t</li>{% empty %}<li class="muted">Nothing reported yet.</li>{% endfor %}
+  {% for name, tonnes in all_time.by_product %}<li>{{ name }}: {{ tonnes|tonnes_t }}</li>{% empty %}<li class="muted">{% trans "Nothing reported yet." %}</li>{% endfor %}
 </ul>
 
-<h2>Recent pickups</h2>
+<h2>{% trans "Recent pickups" %}</h2>
 <ul class="list">
-  {% for c in recent_collections %}<li>{{ c.collected_on }} · {{ c.farmer.name }}<small>{{ c.quantity_tonnes }} t of {{ c.biomass_type }} · ₹{{ c.price_paid }} (₹{{ c.rate_per_tonne }}/t)</small></li>
-  {% empty %}<li class="muted">No pickups yet.</li>{% endfor %}
+  {% for c in recent_collections %}<li>{{ c.collected_on }} · {{ c.farmer.name }}<small>{% blocktrans trimmed with q=c.quantity_tonnes|tonnes_t b=c.biomass_type p=c.price_paid r=c.rate_per_tonne %}{{ q }} of {{ b }} · ₹{{ p }} (₹{{ r }}/t){% endblocktrans %}</small></li>
+  {% empty %}<li class="muted">{% trans "No pickups yet." %}</li>{% endfor %}
 </ul>
 
-<h2>Recent output</h2>
+<h2>{% trans "Recent output" %}</h2>
 <ul class="list">
-  {% for o in recent_outputs %}<li>{{ o.produced_on }} · {{ o.product }}<small>{{ o.quantity_tonnes }} t</small></li>
-  {% empty %}<li class="muted">No output reported yet.</li>{% endfor %}
+  {% for o in recent_outputs %}<li>{{ o.produced_on }} · {{ o.product }}<small>{{ o.quantity_tonnes|tonnes_t }}</small></li>
+  {% empty %}<li class="muted">{% trans "No output reported yet." %}</li>{% endfor %}
 </ul>
 {% endif %}
 {% endblock %}

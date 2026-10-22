@@ -1,24 +1,25 @@
 {% extends "field/base.html" %}
+{% load i18n %}
 {% block title %}{{ farmer.name }}{% endblock %}
 {% block content %}
 <h1>{{ farmer.name }}</h1>
 <p class="muted">{{ farmer.code }} · {{ farmer.mobile }} · {{ farmer.village.name }}</p>
-<p><a class="button primary" href="{% url 'field:collection_new' farmer.pk %}">Log a pickup</a></p>
-<h2>Land</h2>
+<p><a class="button primary" href="{% url 'field:collection_new' farmer.pk %}">{% trans "Log a pickup" %}</a></p>
+<h2>{% trans "Land" %}</h2>
 {% for plot in plots %}
 <section class="card">
-  <h3>{{ plot.area_acres }} acres</h3>
+  <h3>{% blocktrans trimmed with a=plot.area_acres %}{{ a }} acres{% endblocktrans %}</h3>
   <p class="muted">
-    {% if plot.geocell %}GeoCell {{ plot.geocell.code }}{% else %}Outside every GeoCell{% endif %}
+    {% if plot.geocell %}{% blocktrans trimmed with code=plot.geocell.code %}GeoCell {{ code }}{% endblocktrans %}{% else %}{% trans "Outside every GeoCell" %}{% endif %}
     {% if plot.ownership %} · {{ plot.get_ownership_display }}{% endif %}
     {% if plot.irrigation %} · {{ plot.get_irrigation_display }}{% endif %}
   </p>
   <ul class="list">
     {% for s in plot.seasons.all %}<li>{{ s.season }} {{ s.year }}: {{ s.crop }}{% if s.variety %} ({{ s.variety }}){% endif %}</li>
-    {% empty %}<li class="muted">No crops recorded.</li>{% endfor %}
+    {% empty %}<li class="muted">{% trans "No crops recorded." %}</li>{% endfor %}
   </ul>
-  <a class="button" href="{% url 'field:season_new' farmer.pk plot.pk %}">Add crop</a>
+  <a class="button" href="{% url 'field:season_new' farmer.pk plot.pk %}">{% trans "Add crop" %}</a>
 </section>
-{% empty %}<p class="muted">No land added yet.</p>{% endfor %}
-<p><a class="button primary" href="{% url 'field:plot_new' farmer.pk %}">Add a plot</a></p>
+{% empty %}<p class="muted">{% trans "No land added yet." %}</p>{% endfor %}
+<p><a class="button primary" href="{% url 'field:plot_new' farmer.pk %}">{% trans "Add a plot" %}</a></p>
 {% endblock %}

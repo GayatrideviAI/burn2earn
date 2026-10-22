@@ -70,3 +70,10 @@ button.link { background: none; border: 0; padding: 0; color: #fff; box-shadow: 
 .msg.error { background: #fadada; border-color: #c0392b; }
 .err { display: block; color: #b02a2a; }
 @media (min-width: 700px) { .hero h1 { font-size: 2.3rem; } }
+
+/* Language buttons, and fonts that carry Devanagari and Gurmukhi. */
+.bar .lang { display: flex; gap: 6px; margin-left: 16px; }
+.bar .lang .link { margin-left: 0; opacity: .75; padding: 2px 4px; }
+.bar .lang .link.on { opacity: 1; font-weight: 700; text-decoration: underline; }
+html[lang="hi"] body, html[lang="hi"] h1, html[lang="hi"] h2, html[lang="hi"] h3 { font-family: system-ui, "Noto Sans Devanagari", "Mangal", "Nirmala UI", sans-serif; line-height: 1.6; }
+html[lang="pa"] body, html[lang="pa"] h1, html[lang="pa"] h2, html[lang="pa"] h3 { font-family: system-ui, "Noto Sans Gurmukhi", "Raavi", "Nirmala UI", sans-serif; line-height: 1.6; }

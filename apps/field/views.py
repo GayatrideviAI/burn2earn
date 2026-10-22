@@ -7,6 +7,7 @@ from django.contrib.gis.geos import Point
 from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.translation import gettext as _
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from apps.farms.estimates import supply_estimate
@@ -22,6 +23,7 @@ from apps.ledger.chain import entries_for
 from apps.trade.models import Dispatch
 from apps.trade.services import create_dispatch
 
+from .jscatalog import js_catalog_json
 from .forms import CollectionForm, DispatchForm, FarmerForm, OutputForm, PlotForm, SeasonForm
 
 
@@ -87,7 +89,7 @@ def farmer_new(request):
             preferred_language=data["preferred_language"],
             needs_review=bool(duplicates),
         )
-        messages.success(request, f"Registered {farmer.name} ({farmer.code}). Now add their land.")
+        messages.success(request, _("Registered %(name)s (%(code)s). Now add their land.") % {"name": farmer.name, "code": farmer.code})
         return redirect("field:farmer_detail", pk=farmer.pk)
     return render(request, "field/farmer_form.html", {"form": form, "duplicates": duplicates})
 
@@ -119,12 +121,12 @@ def plot_new(request, pk):
         if plot.outside_geocells:
             messages.warning(
                 request,
-                "Plot saved, but it is outside every GeoCell. An Admin will check the location.",
+                _("Plot saved, but it is outside every GeoCell. An Admin will check the location."),
             )
         elif plot.panchayat_differs_from_village:
-            messages.info(request, "Plot saved. It is in a different panchayat from the farmer's village.")
+            messages.info(request, _("Plot saved. It is in a different panchayat from the farmer's village."))
         else:
-            messages.success(request, "Plot saved.")
+            messages.success(request, _("Plot saved."))
         return redirect("field:farmer_detail", pk=farmer.pk)
     return render(request, "field/plot_form.html", {"form": form, "farmer": farmer})
 
@@ -140,9 +142,9 @@ def season_new(request, pk, plot_pk):
             with transaction.atomic():
                 PlotSeason.objects.create(plot=plot, **data)
         except IntegrityError:
-            form.add_error(None, "This crop is already recorded for that season and year.")
+            form.add_error(None, _("This crop is already recorded for that season and year."))
         else:
-            messages.success(request, "Crop saved.")
+            messages.success(request, _("Crop saved."))
             return redirect("field:farmer_detail", pk=farmer.pk)
     return render(request, "field/season_form.html", {"form": form, "farmer": farmer, "plot": plot})
 
@@ -155,11 +157,11 @@ def collection_new(request, pk):
         try:
             record = log_collection(mitra=request.mitra, farmer=farmer, **form.cleaned_data)
         except NoGridAssigned:
-            form.add_error(None, "You have no Grid assigned yet, so a pickup cannot be recorded.")
+            form.add_error(None, _("You have no Grid assigned yet, so a pickup cannot be recorded."))
         except ValidationError as error:
             form.add_error(None, "; ".join(error.messages))
         else:
-            messages.success(request, f"Saved {record.quantity_tonnes} tonnes ({record.code}).")
+            messages.success(request, _("Saved %(tonnes)s tonnes (%(code)s).") % {"tonnes": record.quantity_tonnes, "code": record.code})
             return redirect("field:stock")
     return render(request, "field/collection_form.html", {"form": form, "farmer": farmer})
 
@@ -171,11 +173,11 @@ def output_new(request):
         try:
             output = submit_output(mitra=request.mitra, **form.cleaned_data)
         except NoGridAssigned:
-            form.add_error(None, "You have no Grid assigned yet, so output cannot be reported.")
+            form.add_error(None, _("You have no Grid assigned yet, so output cannot be reported."))
         except ValidationError as error:
             form.add_error(None, "; ".join(error.messages))
         else:
-            messages.success(request, f"Reported {output.quantity_tonnes} tonnes ({output.code}).")
+            messages.success(request, _("Reported %(tonnes)s tonnes (%(code)s).") % {"tonnes": output.quantity_tonnes, "code": output.code})
             return redirect("field:stock")
     return render(request, "field/output_form.html", {"form": form})
 
@@ -208,7 +210,7 @@ def stock(request):
 @ensure_csrf_cookie
 def offline_app(request):
     """The page that installs the offline app. After the first visit it opens without a signal."""
-    return render(request, "field/app.html")
+    return render(request, "field/app.html", {"catalog_json": js_catalog_json()})
 
 
 def service_worker(request):
@@ -240,13 +242,13 @@ def dispatch_new(request):
     if request.method == "POST" and form.is_valid():
         grid = request.mitra.current_grid
         if grid is None:
-            form.add_error(None, "You have no Grid assigned yet.")
+            form.add_error(None, _("You have no Grid assigned yet."))
         else:
             try:
                 dispatch = create_dispatch(grid=grid, mitra=request.mitra, **form.cleaned_data)
             except ValidationError as error:
                 form.add_error(None, "; ".join(error.messages))
             else:
-                messages.success(request, f"Dispatch {dispatch.code} created. The Hub will confirm each step.")
+                messages.success(request, _("Dispatch %(code)s created. The Hub will confirm each step.") % {"code": dispatch.code})
                 return redirect("field:dispatch_list")
     return render(request, "field/dispatch_form.html", {"form": form})

@@ -11,6 +11,7 @@ Used through ``python manage.py translations <command>``.
 The .po files are the record of the translations; the .mo files are built from them.
 """
 import ast
+import json
 import re
 import struct
 from pathlib import Path
@@ -23,6 +24,29 @@ PLURAL_FORMS = {"hi": "nplurals=2; plural=(n > 1);", "pa": "nplurals=2; plural=(
 
 # Notes for the people checking the sheet, keyed by English phrase. Anything not listed has no note.
 NOTES = {
+    "Pickup": "A visit where the Mitra collects crop residue from a farmer and pays for it.",
+    "Log a pickup": "Record that residue was collected from a farmer.",
+    "Residue": "Crop residue: straw and stalks left after harvest (paddy straw, etc.).",
+    "GeoCell": "A mapped grid square used to group plots; keep the English term if farmers know it that way.",
+    "Plot": "A farmer's field, recorded with its area in acres and GPS location.",
+    "Land": "Heading for the farmer's plots.",
+    "Dispatch": "Sending finished product (pellets, briquettes) from the Grid to a buyer's factory.",
+    "Send product to a buyer": "Starts a dispatch to a buyer's factory.",
+    "Report output": "Tell the system how much pellets/briquettes were made.",
+    "Made": "Quantity of finished product made (pellets, briquettes).",
+    "Tonnes on hand": "Residue collected but not yet used up in making product.",
+    "Variety": "The crop variety, for example a paddy variety name.",
+    "Register a farmer": "Add a new farmer. Needs their consent.",
+    "The farmer has been told how their information will be used and agrees.": "Consent statement the Mitra confirms before registering; wording needs legal review.",
+    "Sharecropped": "Farmed by someone who gives part of the crop to the landowner.",
+    "Tubewell": "Irrigation from a borewell.",
+    "Rain-fed": "No irrigation; depends on rain.",
+    "Ledger": "The permanent record of each stock movement.",
+    "To send": "Changes saved on the phone that have not reached the server yet (shown as a count).",
+    "Waiting to send": "Saved on this phone, will be sent when there is a signal.",
+    "waiting to send": "Saved on this phone, will be sent when there is a signal.",
+    "Online": "Phone has a signal.",
+    "Offline": "Phone has no signal; everything is saved on the phone.",
     "t": "Short for tonne (1,000 kg), written after every weight, e.g. '12.5 t'.",
     "Grids": "A Grid is a local collection and processing point run by a Biomass Mitra.",
     "Biomass Mitra": "The local person who collects crop residue from farmers and runs a Grid. Use the word the field team uses.",
@@ -66,13 +90,19 @@ SOURCES = [
     ROOT / "apps/customers/contracts.py",
     ROOT / "apps/customers/templatetags/customers_i18n.py",
     ROOT / "apps/trade/models.py",
+    ROOT / "apps/farms/models.py",
+    ROOT / "apps/field/templates/field",
+    ROOT / "apps/field/forms.py",
+    ROOT / "apps/field/views.py",
+    ROOT / "apps/field/api.py",
+    ROOT / "apps/field/static/field/app.js",
 ]
-SKIP = {"trace_report.html"}  # staff-only page, not translated
+SKIP = {"trace_report.html", "sw.js", "manifest.webmanifest"}  # staff-only page / not shown to people
 
 TRANS_TAG = re.compile(r"""\{%\s*trans\s+(?P<q>["'])(?P<text>.*?)(?P=q)\s*(?:noop\s*)?%\}""", re.S)
 BLOCK_TAG = re.compile(r"\{%\s*blocktrans\b(?P<args>[^%]*)%\}(?P<body>.*?)\{%\s*endblocktrans\s*%\}", re.S)
 VAR = re.compile(r"\{\{\s*(\w+)\s*\}\}")
-PY_CALL = re.compile(r"""(?<![\w.])(?:_|gettext_lazy|gettext)\(\s*(?P<lit>"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')\s*\)""")
+PY_CALL = re.compile(r"""(?<![\w.])(?:_|gt|gettext_lazy|gettext)\(\s*(?P<lit>"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')\s*\)""")
 
 
 def _trim(text):
@@ -101,6 +131,29 @@ def scan_python(path):
     return [(ast.literal_eval(m.group("lit")), text.count("\n", 0, m.start()) + 1) for m in PY_CALL.finditer(text)]
 
 
+JS_CALL = re.compile(r"""(?<![\w.$])t\(\s*"((?:[^"\\\n]|\\.)*)\"""")
+
+
+def scan_js(path):
+    text = path.read_text(encoding="utf-8")
+    return [(json.loads('"' + m.group(1) + '"'), text.count("\n", 0, m.start()) + 1) for m in JS_CALL.finditer(text)]
+
+
+def section(place):
+    if "apps/field/" in place:
+        return "Mitra app"
+    if "apps/customers/" in place:
+        return "Customer app"
+    return "Shared labels"
+
+
+def sections_of(places):
+    found = {section(p) for p in places}
+    if len(found) > 1:
+        return "Both apps"
+    return found.pop()
+
+
 def collect():
     """Every phrase that needs translating: {english: [places it is used]}."""
     found = {}
@@ -109,7 +162,8 @@ def collect():
         for f in files:
             if f.name in SKIP:
                 continue
-            for msgid, line in (scan_template(f) if f.suffix == ".html" else scan_python(f)):
+            scan = scan_template if f.suffix == ".html" else scan_js if f.suffix == ".js" else scan_python
+            for msgid, line in scan(f):
                 if msgid.strip():
                     found.setdefault(msgid, []).append(f"{f.relative_to(ROOT)}:{line}")
     return found
@@ -238,7 +292,7 @@ def compile_all():
 # ---- the spreadsheet ---------------------------------------------------------------------------
 
 SHEET = LOCALE_DIR / "translations.xlsx"
-HEADERS = ["English (do not edit)", "Hindi / हिन्दी", "Punjabi / ਪੰਜਾਬੀ", "Status", "What it is / where it appears", "Your comments"]
+HEADERS = ["English (do not edit)", "Hindi / हिन्दी", "Punjabi / ਪੰਜਾਬੀ", "Status", "App", "What it is / where it appears", "Your comments"]
 
 
 def export_sheet(path=SHEET):
@@ -246,7 +300,7 @@ def export_sheet(path=SHEET):
     from openpyxl.styles import Alignment, Font, PatternFill
     from openpyxl.worksheet.datavalidation import DataValidation
 
-    found = collect()
+    found = dict(sorted(collect().items(), key=lambda kv: (sections_of(kv[1]) != "Customer app", sections_of(kv[1]))))
     hi, pa = read_po(po_path("hi")), read_po(po_path("pa"))
     wb = Workbook()
     ws = wb.active
@@ -265,12 +319,12 @@ def export_sheet(path=SHEET):
         if msgid.count("%(") or "%%" in msgid:
             where = (where + " " if where else "") + "Keep the %(name)s parts exactly as they are; they are replaced by numbers or names."
         where += (" " if where else "") + "Used in: " + places[0].split("/")[-1]
-        ws.append([msgid, h, p, status, where, ""])
+        ws.append([msgid, h, p, status, sections_of(places), where, ""])
         row = ws.max_row
         for col, is_todo in ((2, todo[0]), (3, todo[1])):
             if is_todo:
                 ws.cell(row, col).fill = blank
-    for col, width in zip("ABCDEF", (55, 45, 45, 22, 60, 30)):
+    for col, width in zip("ABCDEFG", (55, 45, 45, 22, 14, 60, 30)):
         ws.column_dimensions[col].width = width
     for row in ws.iter_rows(min_row=2):
         for c in row:

@@ -1,16 +1,17 @@
 {% extends "field/base.html" %}
-{% block title %}Farmers{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Farmers" %}{% endblock %}
 {% block content %}
-<h1>Farmers</h1>
+<h1>{% trans "Farmers" %}</h1>
 <form method="get" class="search">
-  <input type="search" name="q" value="{{ query }}" placeholder="Name, mobile or code">
-  <button>Search</button>
+  <input type="search" name="q" value="{{ query }}" placeholder="{% trans "Name, mobile or code" %}">
+  <button>{% trans "Search" %}</button>
 </form>
-<p><a class="button primary" href="{% url 'field:farmer_new' %}">Register a farmer</a></p>
+<p><a class="button primary" href="{% url 'field:farmer_new' %}">{% trans "Register a farmer" %}</a></p>
 <ul class="list">
   {% for farmer in farmers %}
   <li><a href="{% url 'field:farmer_detail' farmer.pk %}">{{ farmer.name }}
-    <small>{{ farmer.code }} · {{ farmer.village.name }} · {{ farmer.plots.count }} plot{{ farmer.plots.count|pluralize }}</small></a></li>
-  {% empty %}<li class="muted">No farmers found.</li>{% endfor %}
+    <small>{{ farmer.code }} · {{ farmer.village.name }} · {% blocktrans trimmed with n=farmer.plots.count %}{{ n }} plot(s){% endblocktrans %}</small></a></li>
+  {% empty %}<li class="muted">{% trans "No farmers found." %}</li>{% endfor %}
 </ul>
 {% endblock %}

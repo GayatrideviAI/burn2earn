@@ -1,5 +1,5 @@
-{% load static %}<!doctype html>
-<html lang="en">
+{% load static i18n %}{% get_current_language as LANGUAGE_CODE %}<!doctype html>
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,6 +12,7 @@
 <body>
 <header class="bar">
   <a class="brand" href="#/">Regenerix</a>
+  <span id="langs" class="langs"></span>
   <span id="net" class="net">…</span>
 </header>
 <main id="view"></main>
@@ -22,7 +23,10 @@
     syncUrl: "{% url 'field:api_sync' %}",
     swUrl: "{% url 'field:service_worker' %}",
     loginUrl: "{% url 'field:login' %}",
-    onlineUrl: "{% url 'field:dashboard' %}"
+    onlineUrl: "{% url 'field:dashboard' %}",
+    serverLanguage: "{{ LANGUAGE_CODE }}",
+    languages: [["en", "English"], ["hi", "हिन्दी"], ["pa", "ਪੰਜਾਬੀ"]],
+    catalog: {{ catalog_json|safe }}
   };
 </script>
 <script src="{% static 'field/app.js' %}"></script>

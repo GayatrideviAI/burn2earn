@@ -1,11 +1,12 @@
 {% extends "field/base.html" %}
-{% block title %}Log in{% endblock %}
-{% block hero %}<section class="hero"><div><h1>Turning crop residue into value</h1><p>Biomass Mitra portal</p></div></section>{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Log in" %}{% endblock %}
+{% block hero %}<section class="hero"><div><h1>{% trans "Turning crop residue into value" %}</h1><p>{% trans "Biomass Mitra portal" %}</p></div></section>{% endblock %}
 {% block content %}
-<div class="panel"><h2>Log in</h2>
+<div class="panel"><h2>{% trans "Log in" %}</h2>
 <form method="post">{% csrf_token %}
   {% include "field/form_fields.html" %}
   <input type="hidden" name="next" value="{{ next }}">
-  <button class="primary">Log in</button>
+  <button class="primary">{% trans "Log in" %}</button>
 </form></div>
 {% endblock %}

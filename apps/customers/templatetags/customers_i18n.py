@@ -26,3 +26,9 @@ def tn(value, arg="1g"):
 @register.filter
 def confidence_label(value):
     return CONFIDENCE_LABELS.get(value, value)
+
+
+@register.filter
+def tonnes_t(value):
+    """A tonnage exactly as stored, followed by the translated unit, for example '12.500 t'."""
+    return format_html("{} {}", value, _("t"))

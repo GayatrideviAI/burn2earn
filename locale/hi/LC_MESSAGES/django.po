@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: apps/customers/templates/customers/base.html:6 apps/customers/templates/customers/base.html:13
+#: apps/customers/templates/customers/base.html:6 apps/customers/templates/customers/base.html:13 apps/field/templates/field/base.html:17
 msgid "Stock"
 msgstr "स्टॉक"
 
@@ -18,7 +18,7 @@ msgstr "स्टॉक"
 msgid "Contracts"
 msgstr "अनुबंध"
 
-#: apps/customers/templates/customers/base.html:21 apps/customers/templates/customers/forbidden.html:8
+#: apps/customers/templates/customers/base.html:21 apps/customers/templates/customers/forbidden.html:8 apps/field/templates/field/base.html:19
 msgid "Log out"
 msgstr "लॉग आउट"
 
@@ -68,7 +68,7 @@ msgstr "उपयोग के लिए उपलब्ध"
 msgid "Chain of custody"
 msgstr "Chain of custody"
 
-#: apps/customers/templates/customers/batch.html:21
+#: apps/customers/templates/customers/batch.html:21 apps/field/templates/field/base.html:16 apps/field/templates/field/dashboard.html:6
 msgid "Farmers"
 msgstr "किसान"
 
@@ -81,7 +81,7 @@ msgstr "ने अवशेष सौंपा"
 msgid "Farmer"
 msgstr "किसान"
 
-#: apps/customers/templates/customers/batch.html:23 apps/customers/templates/customers/who.html:11
+#: apps/customers/templates/customers/batch.html:23 apps/customers/templates/customers/who.html:11 apps/field/forms.py:23
 msgid "Village"
 msgstr "गाँव"
 
@@ -138,11 +138,12 @@ msgstr "क्या"
 msgid "Change"
 msgstr "बदलाव"
 
-#: apps/customers/templates/customers/batch.html:36
+#: apps/customers/templates/customers/batch.html:36 apps/field/forms.py:145
 msgid "Note"
 msgstr "टिप्पणी"
 
 #: apps/customers/templates/customers/batch.html:36
+#. The permanent record of each stock movement.
 msgid "Ledger"
 msgstr "बही"
 
@@ -352,7 +353,7 @@ msgstr "ध्यान देने की ज़रूरत"
 msgid "Behind"
 msgstr "पीछे"
 
-#: apps/customers/templates/customers/contracts.html:21 apps/customers/templates/customers/order.html:8
+#: apps/customers/templates/customers/contracts.html:21 apps/customers/templates/customers/order.html:8 apps/field/forms.py:137
 msgid "Product"
 msgstr "उत्पाद"
 
@@ -479,7 +480,7 @@ msgstr "%(n)s की गिनती नहीं हुई"
 msgid "Stock only counts as usable once it has been physically counted (within %(n)s days) and has a measured moisture reading within your plant's limit."
 msgstr "स्टॉक तभी उपयोग योग्य माना जाता है जब उसकी भौतिक गिनती हो चुकी हो (%(n)s दिनों के भीतर) और नापी गई नमी आपके प्लांट की सीमा के भीतर हो।"
 
-#: apps/customers/templates/customers/forbidden.html:3
+#: apps/customers/templates/customers/forbidden.html:3 apps/field/templates/field/forbidden.html:3 apps/field/templates/field/forbidden.html:5
 msgid "No access"
 msgstr "पहुँच नहीं"
 
@@ -491,7 +492,7 @@ msgstr "यह लॉगिन ग्राहक स्टॉक के लि�
 msgid "Ask Regenerix to link your login to your company."
 msgstr "Regenerix से कहें कि वह आपका लॉगिन आपकी कंपनी से जोड़ दे।"
 
-#: apps/customers/templates/customers/login.html:3 apps/customers/templates/customers/login.html:10
+#: apps/customers/templates/customers/login.html:3 apps/customers/templates/customers/login.html:10 apps/field/templates/field/login.html:3
 msgid "Log in"
 msgstr "लॉग इन"
 
@@ -511,7 +512,8 @@ msgstr "आना बाकी"
 msgid "Loads"
 msgstr "खेपें"
 
-#: apps/customers/templates/customers/order.html:19
+#: apps/customers/templates/customers/order.html:19 apps/field/templates/field/base.html:18 apps/field/templates/field/dispatch_list.html:3
+#. Sending finished product (pellets, briquettes) from the Grid to a buyer's factory.
 msgid "Dispatch"
 msgstr "रवानगी"
 
@@ -543,7 +545,7 @@ msgstr "आपके यार्ड में"
 msgid "all received"
 msgstr "सब प्राप्त"
 
-#: apps/customers/templates/customers/order.html:24
+#: apps/customers/templates/customers/order.html:24 apps/field/templates/field/dispatch_list.html:19
 msgid "Nothing dispatched yet."
 msgstr "अभी कुछ रवाना नहीं हुआ।"
 
@@ -752,7 +754,7 @@ msgstr "उठाई-धराई"
 msgid "Fire"
 msgstr "आग"
 
-#: apps/customers/models.py:214
+#: apps/customers/models.py:214 apps/farms/models.py:28 apps/farms/models.py:124
 msgid "Other"
 msgstr "अन्य"
 
@@ -903,7 +905,7 @@ msgstr "हिसाब से निकाला"
 msgid "Overdue for check"
 msgstr "जाँच में देरी"
 
-#: apps/customers/templatetags/customers_i18n.py:23
+#: apps/customers/templatetags/customers_i18n.py:23 apps/customers/templatetags/customers_i18n.py:34
 #. Short for tonne (1,000 kg), written after every weight, e.g. '12.5 t'.
 msgid "t"
 msgstr "टन"
@@ -919,3 +921,873 @@ msgstr "At the Hub"
 #: apps/trade/models.py:119
 msgid "On the way to the buyer"
 msgstr "खरीदार के रास्ते में"
+
+#: apps/farms/models.py:25 apps/field/static/field/app.js:413
+msgid "Hindi"
+msgstr "हिन्दी"
+
+#: apps/farms/models.py:26 apps/field/static/field/app.js:413
+msgid "English"
+msgstr "अंग्रेज़ी"
+
+#: apps/farms/models.py:27 apps/field/static/field/app.js:413
+msgid "Punjabi"
+msgstr "पंजाबी"
+
+#: apps/farms/models.py:116 apps/field/static/field/app.js:473
+msgid "Owned"
+msgstr "अपनी"
+
+#: apps/farms/models.py:117 apps/field/static/field/app.js:473
+msgid "Leased"
+msgstr "पट्टे पर"
+
+#: apps/farms/models.py:118 apps/field/static/field/app.js:473
+#. Farmed by someone who gives part of the crop to the landowner.
+msgid "Sharecropped"
+msgstr "बटाई पर"
+
+#: apps/farms/models.py:121 apps/field/static/field/app.js:474
+msgid "Canal"
+msgstr "नहर"
+
+#: apps/farms/models.py:122 apps/field/static/field/app.js:474
+#. Irrigation from a borewell.
+msgid "Tubewell"
+msgstr "ट्यूबवेल"
+
+#: apps/farms/models.py:123 apps/field/static/field/app.js:474
+#. No irrigation; depends on rain.
+msgid "Rain-fed"
+msgstr "बारिश पर निर्भर"
+
+#: apps/field/templates/field/collection_form.html:3 apps/field/templates/field/farmer_detail.html:7 apps/field/static/field/app.js:441
+#. Record that residue was collected from a farmer.
+msgid "Log a pickup"
+msgstr "उठान दर्ज करें"
+
+#: apps/field/templates/field/collection_form.html:9 apps/field/static/field/app.js:514
+msgid "Save pickup"
+msgstr "उठान सहेजें"
+
+#: apps/field/templates/field/collection_form.html:10 apps/field/templates/field/dispatch_form.html:11 apps/field/templates/field/farmer_form.html:17
+msgid "Cancel"
+msgstr "रद्द करें"
+
+#: apps/field/templates/field/collection_form.html:6 apps/field/static/field/app.js:507
+#, python-format
+msgid "Log a pickup from %(name)s"
+msgstr "%(name)s से उठान दर्ज करें"
+
+#: apps/field/templates/field/dashboard.html:3
+msgid "No Grid assigned yet"
+msgstr "No Grid assigned yet"
+
+#: apps/field/templates/field/dashboard.html:7 apps/field/static/field/app.js:364
+msgid "Plots"
+msgstr "खेत"
+
+#: apps/field/templates/field/dashboard.html:14
+msgid "Not counted yet (no figure):"
+msgstr "अभी गिनती में नहीं (कोई आँकड़ा नहीं):"
+
+#: apps/field/templates/field/dashboard.html:19 apps/field/templates/field/stock.html:5
+msgid "Stock at your site"
+msgstr "आपकी जगह पर स्टॉक"
+
+#: apps/field/templates/field/dashboard.html:21
+msgid "See details"
+msgstr "विवरण देखें"
+
+#: apps/field/templates/field/dashboard.html:24 apps/field/templates/field/farmer_form.html:3 apps/field/templates/field/farmer_form.html:6
+#. Add a new farmer. Needs their consent.
+msgid "Register a farmer"
+msgstr "किसान दर्ज करें"
+
+#: apps/field/templates/field/dashboard.html:25
+msgid "Recently added"
+msgstr "हाल में जोड़े गए"
+
+#: apps/field/templates/field/dashboard.html:28
+msgid "No farmers yet."
+msgstr "अभी कोई किसान नहीं।"
+
+#: apps/field/templates/field/dashboard.html:3 apps/field/static/field/app.js:360
+#, python-format
+msgid "Hello, %(name)s"
+msgstr "नमस्ते, %(name)s"
+
+#: apps/field/templates/field/dashboard.html:3 apps/field/templates/field/stock.html:9 apps/field/static/field/app.js:361
+#, python-format
+msgid "Grid %(code)s"
+msgstr "Grid %(code)s"
+
+#: apps/field/templates/field/dashboard.html:11
+#, python-format
+msgid "Expected biomass, %(y)s"
+msgstr "अनुमानित बायोमास, %(y)s"
+
+#: apps/field/templates/field/dashboard.html:12
+#, python-format
+msgid "<strong>%(t)s tonnes</strong> from %(n)s plot(s) in your Grid, after expected losses"
+msgstr "<strong>%(t)s tonnes</strong> from %(n)s plot(s) in your Grid, after expected losses"
+
+#: apps/field/templates/field/dashboard.html:13
+#, python-format
+msgid "%(label)s: %(t)s tonnes"
+msgstr "%(label)s: %(t)s टन"
+
+#: apps/field/templates/field/dashboard.html:13 apps/field/templates/field/farmer_detail.html:11 apps/field/static/field/app.js:445
+#, python-format
+msgid "%(a)s acres"
+msgstr "%(a)s एकड़"
+
+#: apps/field/templates/field/dashboard.html:20
+#, python-format
+msgid "<strong>%(h)s tonnes</strong> on hand · %(c)s collected · %(p)s made"
+msgstr "<strong>%(h)s टन</strong> मौजूद · %(c)s इकट्ठा · %(p)s बना"
+
+#: apps/field/templates/field/dispatch_form.html:3
+msgid "New dispatch"
+msgstr "नई रवानगी"
+
+#: apps/field/templates/field/dispatch_form.html:6 apps/field/templates/field/dispatch_list.html:9
+#. Starts a dispatch to a buyer's factory.
+msgid "Send product to a buyer"
+msgstr "खरीदार को उत्पाद भेजें"
+
+#: apps/field/templates/field/dispatch_form.html:7
+msgid "Only product you have reported as made and not already sent can be dispatched."
+msgstr "केवल वही उत्पाद भेजा जा सकता है जिसे आपने बना हुआ बताया है और जो पहले नहीं भेजा गया।"
+
+#: apps/field/templates/field/dispatch_form.html:10
+msgid "Create dispatch"
+msgstr "रवानगी बनाएँ"
+
+#: apps/field/templates/field/dispatch_list.html:7 apps/field/templates/field/stock.html:7 apps/field/views.py:245
+msgid "You have no Grid assigned yet."
+msgstr "You have no Grid assigned yet."
+
+#: apps/field/templates/field/dispatch_list.html:13
+#, python-format
+msgid "%(product)s to %(factory)s (%(company)s)"
+msgstr "%(product)s, %(factory)s (%(company)s) को"
+
+#: apps/field/templates/field/dispatch_list.html:14
+#, python-format
+msgid "Loaded %(q)s"
+msgstr "लादा गया %(q)s"
+
+#: apps/field/templates/field/dispatch_list.html:14
+#, python-format
+msgid "last weighed %(w)s (lost %(l)s)"
+msgstr "आखिरी तौल %(w)s (नुकसान %(l)s)"
+
+#: apps/field/templates/field/dispatch_list.html:16
+#, python-format
+msgid "ledger #%(n)s"
+msgstr "बही #%(n)s"
+
+#: apps/field/templates/field/farmer_detail.html:8 apps/field/static/field/app.js:442
+#. Heading for the farmer's plots.
+msgid "Land"
+msgstr "ज़मीन"
+
+#: apps/field/templates/field/farmer_detail.html:13 apps/field/static/field/app.js:446
+msgid "Outside every GeoCell"
+msgstr "Outside every GeoCell"
+
+#: apps/field/templates/field/farmer_detail.html:19 apps/field/static/field/app.js:449
+msgid "No crops recorded."
+msgstr "कोई फसल दर्ज नहीं।"
+
+#: apps/field/templates/field/farmer_detail.html:21 apps/field/static/field/app.js:450
+msgid "Add crop"
+msgstr "फसल जोड़ें"
+
+#: apps/field/templates/field/farmer_detail.html:23 apps/field/static/field/app.js:451
+msgid "No land added yet."
+msgstr "अभी कोई ज़मीन नहीं जोड़ी गई।"
+
+#: apps/field/templates/field/farmer_detail.html:24 apps/field/templates/field/plot_form.html:3 apps/field/static/field/app.js:441
+msgid "Add a plot"
+msgstr "खेत जोड़ें"
+
+#: apps/field/templates/field/farmer_detail.html:13 apps/field/static/field/app.js:446
+#, python-format
+msgid "GeoCell %(code)s"
+msgstr "GeoCell %(code)s"
+
+#: apps/field/templates/field/farmer_form.html:9
+msgid "A farmer with this mobile number already exists. Families often share a phone, so this may be fine."
+msgstr "इस मोबाइल नंबर वाला किसान पहले से मौजूद है। परिवार अक्सर एक फ़ोन साझा करते हैं, इसलिए यह ठीक हो सकता है।"
+
+#: apps/field/templates/field/farmer_form.html:16
+msgid "Register anyway"
+msgstr "फिर भी दर्ज करें"
+
+#: apps/field/templates/field/farmer_form.html:16
+msgid "Register"
+msgstr "दर्ज करें"
+
+#: apps/field/templates/field/farmer_list.html:7 apps/field/static/field/app.js:381
+msgid "Name, mobile or code"
+msgstr "नाम, मोबाइल या कोड"
+
+#: apps/field/templates/field/farmer_list.html:8
+msgid "Search"
+msgstr "खोजें"
+
+#: apps/field/templates/field/farmer_list.html:15 apps/field/static/field/app.js:402
+msgid "No farmers found."
+msgstr "कोई किसान नहीं मिला।"
+
+#: apps/field/templates/field/farmer_list.html:14 apps/field/static/field/app.js:400
+#, python-format
+msgid "%(n)s plot(s)"
+msgstr "%(n)s खेत"
+
+#: apps/field/templates/field/forbidden.html:7
+msgid "This login is not linked to a Biomass Mitra. Please ask Regenerix to link it."
+msgstr "This login is not linked to a Biomass Mitra. Please ask Regenerix to link it."
+
+#: apps/field/templates/field/forbidden.html:9
+msgid "Your Mitra account is not active right now. Please contact Regenerix."
+msgstr "Your Mitra account is not active right now. Please contact Regenerix."
+
+#: apps/field/templates/field/login.html:4
+msgid "Turning crop residue into value"
+msgstr "फसल अवशेष को मूल्य में बदलना"
+
+#: apps/field/templates/field/login.html:4
+msgid "Biomass Mitra portal"
+msgstr "Biomass Mitra portal"
+
+#: apps/field/templates/field/output_form.html:3 apps/field/templates/field/output_form.html:10 apps/field/templates/field/stock.html:25
+#. Tell the system how much pellets/briquettes were made.
+msgid "Report output"
+msgstr "उत्पादन बताएँ"
+
+#: apps/field/templates/field/output_form.html:6 apps/field/static/field/app.js:527
+msgid "Report what you made"
+msgstr "जो बनाया वह बताएँ"
+
+#: apps/field/templates/field/output_form.html:7 apps/field/static/field/app.js:527
+msgid "Pellets, briquettes and other products. This goes up to your Grid and its Hub."
+msgstr "Pellets, briquettes and other products. This goes up to your Grid and its Hub."
+
+#: apps/field/templates/field/plot_form.html:8 apps/field/static/field/app.js:460
+msgid "Use my location"
+msgstr "मेरी लोकेशन इस्तेमाल करें"
+
+#: apps/field/templates/field/plot_form.html:10 apps/field/static/field/app.js:475
+msgid "Save plot"
+msgstr "खेत सहेजें"
+
+#: apps/field/templates/field/plot_form.html:15 apps/field/static/field/app.js:462
+msgid "Location is not available on this device."
+msgstr "इस फ़ोन पर लोकेशन उपलब्ध नहीं है।"
+
+#: apps/field/templates/field/plot_form.html:16 apps/field/static/field/app.js:463
+msgid "Finding location…"
+msgstr "लोकेशन ढूँढ रहे हैं…"
+
+#: apps/field/templates/field/plot_form.html:17 apps/field/static/field/app.js:467
+msgid "Done. Stand at the plot for the best accuracy."
+msgstr "हो गया। सही जगह के लिए खेत में खड़े होकर लें।"
+
+#: apps/field/templates/field/plot_form.html:18 apps/field/static/field/app.js:468
+msgid "Could not get location. Type it in instead."
+msgstr "लोकेशन नहीं मिली। इसकी जगह खुद लिखें।"
+
+#: apps/field/templates/field/plot_form.html:6 apps/field/static/field/app.js:470
+#, python-format
+msgid "Add a plot for %(name)s"
+msgstr "%(name)s के लिए खेत जोड़ें"
+
+#: apps/field/templates/field/season_form.html:3 apps/field/templates/field/season_form.html:5 apps/field/static/field/app.js:488
+msgid "Add a crop"
+msgstr "फसल जोड़ें"
+
+#: apps/field/templates/field/season_form.html:9 apps/field/static/field/app.js:495
+msgid "Save crop"
+msgstr "फसल सहेजें"
+
+#: apps/field/templates/field/season_form.html:6
+#, python-format
+msgid "%(name)s · %(a)s acres"
+msgstr "%(name)s · %(a)s एकड़"
+
+#: apps/field/templates/field/stock.html:11
+#. Residue collected but not yet used up in making product.
+msgid "Tonnes on hand"
+msgstr "मौजूद टन"
+
+#: apps/field/templates/field/stock.html:12
+msgid "Collected"
+msgstr "इकट्ठा"
+
+#: apps/field/templates/field/stock.html:13 apps/field/templates/field/stock.html:29
+#. Quantity of finished product made (pellets, briquettes).
+msgid "Made"
+msgstr "बना"
+
+#: apps/field/templates/field/stock.html:15
+msgid "On hand = collected minus the residue you reported as used when reporting output."
+msgstr "मौजूद = इकट्ठा माल में से वह अवशेष घटाकर जो आपने उत्पादन बताते समय इस्तेमाल हुआ बताया।"
+
+#: apps/field/templates/field/stock.html:26
+msgid "Log a pickup (choose farmer)"
+msgstr "उठान दर्ज करें (किसान चुनें)"
+
+#: apps/field/templates/field/stock.html:31
+msgid "Nothing reported yet."
+msgstr "अभी कुछ नहीं बताया गया।"
+
+#: apps/field/templates/field/stock.html:34
+msgid "Recent pickups"
+msgstr "हाल के उठान"
+
+#: apps/field/templates/field/stock.html:37
+msgid "No pickups yet."
+msgstr "अभी कोई उठान नहीं।"
+
+#: apps/field/templates/field/stock.html:40
+msgid "Recent output"
+msgstr "हाल का उत्पादन"
+
+#: apps/field/templates/field/stock.html:43
+msgid "No output reported yet."
+msgstr "अभी कोई उत्पादन नहीं बताया गया।"
+
+#: apps/field/templates/field/stock.html:18
+#, python-format
+msgid "%(y)s so far"
+msgstr "%(y)s अब तक"
+
+#: apps/field/templates/field/stock.html:19
+#, python-format
+msgid "Collected %(c)s from %(n)s pickup(s), paid ₹%(p)s"
+msgstr "%(n)s उठान से %(c)s इकट्ठा किया, ₹%(p)s का भुगतान किया"
+
+#: apps/field/templates/field/stock.html:19
+#, python-format
+msgid "(about ₹%(r)s per tonne)"
+msgstr "(लगभग ₹%(r)s प्रति टन)"
+
+#: apps/field/templates/field/stock.html:20
+#, python-format
+msgid "Expected for the year: %(e)s"
+msgstr "साल के लिए अनुमान: %(e)s"
+
+#: apps/field/templates/field/stock.html:20
+#, python-format
+msgid "%(s)s%% collected"
+msgstr "%(s)s%% इकट्ठा"
+
+#: apps/field/templates/field/stock.html:36
+#, python-format
+msgid "%(q)s of %(b)s · ₹%(p)s (₹%(r)s/t)"
+msgstr "%(b)s का %(q)s · ₹%(p)s (₹%(r)s/टन)"
+
+#: apps/field/forms.py:21 apps/field/static/field/app.js:410
+msgid "Name"
+msgstr "नाम"
+
+#: apps/field/forms.py:22 apps/field/static/field/app.js:411
+msgid "Mobile number"
+msgstr "मोबाइल नंबर"
+
+#: apps/field/forms.py:25 apps/field/forms.py:51 apps/field/forms.py:52
+msgid "Not stated"
+msgstr "नहीं बताया"
+
+#: apps/field/forms.py:25 apps/field/static/field/app.js:413
+msgid "Preferred language"
+msgstr "पसंदीदा भाषा"
+
+#: apps/field/forms.py:29 apps/field/static/field/app.js:414
+#. Consent statement the Mitra confirms before registering; wording needs legal review.
+msgid "The farmer has been told how their information will be used and agrees."
+msgstr "किसान को बता दिया गया है कि उनकी जानकारी का उपयोग कैसे होगा और वे सहमत हैं।"
+
+#: apps/field/forms.py:30 apps/field/static/field/app.js:419
+msgid "Consent is needed before a farmer can be registered."
+msgstr "किसान को दर्ज करने से पहले सहमति ज़रूरी है।"
+
+#: apps/field/forms.py:46 apps/field/static/field/app.js:471
+msgid "Latitude"
+msgstr "अक्षांश"
+
+#: apps/field/forms.py:47 apps/field/static/field/app.js:471
+msgid "Longitude"
+msgstr "देशांतर"
+
+#: apps/field/forms.py:49 apps/field/static/field/app.js:472
+msgid "Area (acres)"
+msgstr "क्षेत्रफल (एकड़)"
+
+#: apps/field/forms.py:51 apps/field/static/field/app.js:473
+msgid "Ownership"
+msgstr "मालिकाना"
+
+#: apps/field/forms.py:52 apps/field/static/field/app.js:474
+msgid "Irrigation"
+msgstr "सिंचाई"
+
+#: apps/field/forms.py:57 apps/field/static/field/app.js:477
+msgid "Latitude should be between 6 and 38 for India."
+msgstr "भारत के लिए अक्षांश 6 से 38 के बीच होना चाहिए।"
+
+#: apps/field/forms.py:63 apps/field/static/field/app.js:478
+msgid "Longitude should be between 68 and 98 for India."
+msgstr "भारत के लिए देशांतर 68 से 98 के बीच होना चाहिए।"
+
+#: apps/field/forms.py:68 apps/field/static/field/app.js:489
+msgid "Season"
+msgstr "मौसम"
+
+#: apps/field/forms.py:69 apps/field/static/field/app.js:490
+msgid "Year"
+msgstr "साल"
+
+#: apps/field/forms.py:70 apps/field/static/field/app.js:491
+msgid "Crop"
+msgstr "फसल"
+
+#: apps/field/forms.py:71
+#. The crop variety, for example a paddy variety name.
+msgid "Variety"
+msgstr "किस्म"
+
+#: apps/field/forms.py:72
+msgid "Sowing date"
+msgstr "बुवाई की तारीख"
+
+#: apps/field/forms.py:74
+msgid "Expected harvest date"
+msgstr "कटाई की अनुमानित तारीख"
+
+#: apps/field/forms.py:86 apps/field/static/field/app.js:498
+msgid "The harvest date cannot be before the sowing date."
+msgstr "कटाई की तारीख बुवाई की तारीख से पहले नहीं हो सकती।"
+
+#: apps/field/forms.py:91
+#. A farmer's field, recorded with its area in acres and GPS location.
+msgid "Plot"
+msgstr "खेत"
+
+#: apps/field/forms.py:92 apps/field/static/field/app.js:509
+#. Crop residue: straw and stalks left after harvest (paddy straw, etc.).
+msgid "Residue"
+msgstr "अवशेष"
+
+#: apps/field/forms.py:94 apps/field/static/field/app.js:510
+msgid "Quantity picked up (tonnes)"
+msgstr "उठाई गई मात्रा (टन)"
+
+#: apps/field/forms.py:97 apps/field/static/field/app.js:511
+msgid "Price paid to the farmer (₹, total)"
+msgstr "किसान को दिया गया दाम (₹, कुल)"
+
+#: apps/field/forms.py:99 apps/field/forms.py:122 apps/field/static/field/app.js:512
+msgid "Date"
+msgstr "तारीख"
+
+#: apps/field/forms.py:100 apps/field/forms.py:123
+msgid "Notes"
+msgstr "टिप्पणियाँ"
+
+#: apps/field/forms.py:110 apps/field/static/field/app.js:518
+msgid "The pickup date cannot be in the future."
+msgstr "उठान की तारीख आने वाले समय की नहीं हो सकती।"
+
+#: apps/field/forms.py:115 apps/field/static/field/app.js:528
+msgid "What was made"
+msgstr "क्या बना"
+
+#: apps/field/forms.py:117 apps/field/static/field/app.js:529
+msgid "Quantity made (tonnes, rough is fine)"
+msgstr "बनी मात्रा (टन, मोटा अंदाज़ा चलेगा)"
+
+#: apps/field/forms.py:120 apps/field/static/field/app.js:530
+msgid "Residue used up (tonnes, if known)"
+msgstr "इस्तेमाल हुआ अवशेष (टन, अगर पता हो)"
+
+#: apps/field/forms.py:132 apps/field/static/field/app.js:537
+msgid "The date cannot be in the future."
+msgstr "तारीख आने वाले समय की नहीं हो सकती।"
+
+#: apps/field/forms.py:138
+msgid "Buyer's factory"
+msgstr "खरीदार की फ़ैक्टरी"
+
+#: apps/field/forms.py:139
+msgid "Not for a posted requirement"
+msgstr "किसी दर्ज माँग के लिए नहीं"
+
+#: apps/field/forms.py:139
+msgid "Requirement"
+msgstr "माँग"
+
+#: apps/field/forms.py:141
+msgid "Not against a purchase order"
+msgstr "किसी खरीद आदेश के तहत नहीं"
+
+#: apps/field/forms.py:141
+msgid "Purchase order"
+msgstr "खरीद आदेश"
+
+#: apps/field/forms.py:143
+msgid "Weight loaded (tonnes)"
+msgstr "लादा गया वज़न (टन)"
+
+#: apps/field/forms.py:144
+msgid "Vehicle number or driver"
+msgstr "गाड़ी नंबर या ड्राइवर"
+
+#: apps/field/forms.py:157
+#, python-format
+msgid "%(code)s · %(factory)s · %(product)s · %(left)s t still to send"
+msgstr "%(code)s · %(factory)s · %(product)s · %(left)s टन भेजना बाकी"
+
+#: apps/field/views.py:92
+#, python-format
+msgid "Registered %(name)s (%(code)s). Now add their land."
+msgstr "%(name)s (%(code)s) दर्ज हो गए। अब उनकी ज़मीन जोड़ें।"
+
+#: apps/field/views.py:124
+msgid "Plot saved, but it is outside every GeoCell. An Admin will check the location."
+msgstr "Plot saved, but it is outside every GeoCell. An Admin will check the location."
+
+#: apps/field/views.py:127
+msgid "Plot saved. It is in a different panchayat from the farmer's village."
+msgstr "खेत सहेज लिया गया। यह किसान के गाँव से अलग पंचायत में है।"
+
+#: apps/field/views.py:129
+msgid "Plot saved."
+msgstr "खेत सहेज लिया गया।"
+
+#: apps/field/views.py:145 apps/field/api.py:182
+msgid "This crop is already recorded for that season and year."
+msgstr "यह फसल उस मौसम और साल के लिए पहले से दर्ज है।"
+
+#: apps/field/views.py:147
+msgid "Crop saved."
+msgstr "फसल सहेज ली गई।"
+
+#: apps/field/views.py:160 apps/field/api.py:197
+msgid "You have no Grid assigned yet, so a pickup cannot be recorded."
+msgstr "You have no Grid assigned yet, so a pickup cannot be recorded."
+
+#: apps/field/views.py:164
+#, python-format
+msgid "Saved %(tonnes)s tonnes (%(code)s)."
+msgstr "%(tonnes)s टन सहेजे गए (%(code)s)।"
+
+#: apps/field/views.py:176 apps/field/api.py:210
+msgid "You have no Grid assigned yet, so output cannot be reported."
+msgstr "You have no Grid assigned yet, so output cannot be reported."
+
+#: apps/field/views.py:180
+#, python-format
+msgid "Reported %(tonnes)s tonnes (%(code)s)."
+msgstr "%(tonnes)s टन बताए गए (%(code)s)।"
+
+#: apps/field/views.py:252
+#, python-format
+msgid "Dispatch %(code)s created. The Hub will confirm each step."
+msgstr "Dispatch %(code)s created. The Hub will confirm each step."
+
+#: apps/field/api.py:52
+#, python-format
+msgid "%(what)s is not a valid id."
+msgstr "%(what)s सही आईडी नहीं है।"
+
+#: apps/field/api.py:141
+#, python-format
+msgid "Saved. Another farmer has this mobile number (%(codes)s); an Admin will review."
+msgstr "सहेज लिया गया। एक और किसान का यही मोबाइल नंबर है (%(codes)s); एडमिन जाँच करेगा।"
+
+#: apps/field/api.py:147
+msgid "The farmer"
+msgstr "किसान"
+
+#: apps/field/api.py:149
+msgid "The farmer was not found. Their registration may have failed."
+msgstr "किसान नहीं मिला। हो सकता है उनका पंजीकरण नहीं हो पाया हो।"
+
+#: apps/field/api.py:173
+msgid "The plot"
+msgstr "खेत"
+
+#: apps/field/api.py:175
+msgid "The plot was not found. Its creation may have failed."
+msgstr "खेत नहीं मिला। हो सकता है इसे जोड़ना असफल रहा हो।"
+
+#: apps/field/api.py:234 apps/field/api.py:236 apps/field/api.py:238
+msgid "This id is already used by someone else's record."
+msgstr "This id is already used by someone else's record."
+
+#: apps/field/api.py:246
+msgid "The change id"
+msgstr "The change id"
+
+#: apps/field/api.py:249
+msgid "Unknown kind of change."
+msgstr "Unknown kind of change."
+
+#: apps/field/api.py:253
+msgid "The change has no data."
+msgstr "The change has no data."
+
+#: apps/field/api.py:265
+msgid "The record could not be saved because some details are not allowed."
+msgstr "कुछ जानकारी मान्य न होने के कारण रिकॉर्ड सहेजा नहीं जा सका।"
+
+#: apps/field/api.py:278
+#, python-format
+msgid "Send up to %(max)s changes as a list."
+msgstr "Send up to %(max)s changes as a list."
+
+#: apps/field/static/field/app.js:54
+msgid "Not sent yet"
+msgstr "अभी भेजा नहीं गया"
+
+#: apps/field/static/field/app.js:80
+msgid "a farmer"
+msgstr "एक किसान"
+
+#: apps/field/static/field/app.js:83
+#, python-format
+msgid "Register farmer %(name)s"
+msgstr "किसान %(name)s दर्ज करें"
+
+#: apps/field/static/field/app.js:84
+#, python-format
+msgid "Add a %(area)s acre plot for %(farmer)s"
+msgstr "%(farmer)s के लिए %(area)s एकड़ का खेत जोड़ें"
+
+#: apps/field/static/field/app.js:85
+#, python-format
+msgid "Add a crop (%(year)s)"
+msgstr "फसल जोड़ें (%(year)s)"
+
+#: apps/field/static/field/app.js:86
+#, python-format
+msgid "Pickup of %(tonnes)s t from %(farmer)s"
+msgstr "%(farmer)s से %(tonnes)s टन का उठान"
+
+#: apps/field/static/field/app.js:87
+#, python-format
+msgid "Output of %(tonnes)s t"
+msgstr "%(tonnes)s टन का उत्पादन"
+
+#: apps/field/static/field/app.js:280
+#. Phone has a signal.
+msgid "Online"
+msgstr "ऑनलाइन"
+
+#: apps/field/static/field/app.js:280
+#. Phone has no signal; everything is saved on the phone.
+msgid "Offline"
+msgstr "ऑफ़लाइन"
+
+#: apps/field/static/field/app.js:281
+#, python-format
+msgid "%(n)s waiting"
+msgstr "%(n)s इंतज़ार में"
+
+#: apps/field/static/field/app.js:282
+#, python-format
+msgid "%(n)s need attention"
+msgstr "%(n)s पर ध्यान चाहिए"
+
+#: apps/field/static/field/app.js:365 apps/field/static/field/app.js:547 apps/field/static/field/app.js:589
+#. Changes saved on the phone that have not reached the server yet (shown as a count).
+msgid "To send"
+msgstr "भेजना बाकी"
+
+#: apps/field/static/field/app.js:367
+#, python-format
+msgid "Saved on this phone, not sent yet: %(pickups)s pickup(s), %(pt)s t; %(outputs)s output report(s), %(ot)s t."
+msgstr "इस फ़ोन में सहेजा गया, अभी भेजा नहीं गया: %(pickups)s उठान, %(pt)s टन; %(outputs)s उत्पादन रिपोर्ट, %(ot)s टन।"
+
+#: apps/field/static/field/app.js:370
+msgid "Connect to the internet once so your farmers and lists can be downloaded."
+msgstr "एक बार इंटरनेट से जुड़ें ताकि आपके किसान और सूचियाँ डाउनलोड हो सकें।"
+
+#: apps/field/static/field/app.js:371 apps/field/static/field/app.js:548
+msgid "Please log in again to send your changes."
+msgstr "बदलाव भेजने के लिए कृपया फिर से लॉग इन करें।"
+
+#: apps/field/static/field/app.js:372
+msgid "Everything you enter is saved on this phone first. It is sent when there is a signal."
+msgstr "आप जो भी दर्ज करते हैं वह पहले इस फ़ोन में सहेजा जाता है। सिग्नल मिलने पर वह भेज दिया जाता है।"
+
+#: apps/field/static/field/app.js:400 apps/field/static/field/app.js:440 apps/field/static/field/app.js:448
+#. Saved on this phone, will be sent when there is a signal.
+msgid "waiting to send"
+msgstr "भेजने के इंतज़ार में"
+
+#: apps/field/static/field/app.js:407
+msgid "Connect to the internet once to download the village list."
+msgstr "गाँवों की सूची डाउनलोड करने के लिए एक बार इंटरनेट से जुड़ें।"
+
+#: apps/field/static/field/app.js:412
+msgid "Choose a village"
+msgstr "गाँव चुनें"
+
+#: apps/field/static/field/app.js:415
+msgid "Save farmer"
+msgstr "किसान सहेजें"
+
+#: apps/field/static/field/app.js:416
+msgid "Enter the farmer's name."
+msgstr "किसान का नाम लिखें।"
+
+#: apps/field/static/field/app.js:417
+msgid "Enter a mobile number with 10 to 15 digits."
+msgstr "10 से 15 अंकों का मोबाइल नंबर लिखें।"
+
+#: apps/field/static/field/app.js:418
+msgid "Choose the farmer's village."
+msgstr "किसान का गाँव चुनें।"
+
+#: apps/field/static/field/app.js:423
+#, python-format
+msgid "%(name)s already has this mobile number. Families often share a phone. Press Save farmer again to register anyway."
+msgstr "%(name)s के पास पहले से यही मोबाइल नंबर है। परिवार अक्सर एक फ़ोन साझा करते हैं। फिर भी दर्ज करने के लिए \"किसान सहेजें\" फिर से दबाएँ।"
+
+#: apps/field/static/field/app.js:437 apps/field/static/field/app.js:457
+msgid "Farmer not found."
+msgstr "किसान नहीं मिला।"
+
+#: apps/field/static/field/app.js:437
+msgid "Back"
+msgstr "वापस"
+
+#: apps/field/static/field/app.js:446 apps/field/static/field/app.js:558
+#. Saved on this phone, will be sent when there is a signal.
+msgid "Waiting to send"
+msgstr "भेजने के इंतज़ार में"
+
+#: apps/field/static/field/app.js:479
+msgid "Enter the area in acres."
+msgstr "क्षेत्रफल एकड़ में लिखें।"
+
+#: apps/field/static/field/app.js:487 apps/field/static/field/app.js:506
+msgid "Not found."
+msgstr "नहीं मिला।"
+
+#: apps/field/static/field/app.js:489 apps/field/static/field/app.js:491 apps/field/static/field/app.js:509
+msgid "Choose"
+msgstr "चुनें"
+
+#: apps/field/static/field/app.js:492
+msgid "Variety (optional)"
+msgstr "किस्म (वैकल्पिक)"
+
+#: apps/field/static/field/app.js:493
+msgid "Sowing date (optional)"
+msgstr "बुवाई की तारीख (वैकल्पिक)"
+
+#: apps/field/static/field/app.js:494
+msgid "Expected harvest date (optional)"
+msgstr "कटाई की अनुमानित तारीख (वैकल्पिक)"
+
+#: apps/field/static/field/app.js:496
+msgid "Choose the season and the crop."
+msgstr "मौसम और फसल चुनें।"
+
+#: apps/field/static/field/app.js:497
+msgid "Enter a year between 2000 and 2100."
+msgstr "2000 से 2100 के बीच का साल लिखें।"
+
+#: apps/field/static/field/app.js:508
+msgid "Plot (optional)"
+msgstr "खेत (वैकल्पिक)"
+
+#: apps/field/static/field/app.js:513 apps/field/static/field/app.js:532
+msgid "Notes (optional)"
+msgstr "टिप्पणियाँ (वैकल्पिक)"
+
+#: apps/field/static/field/app.js:515
+msgid "Choose the residue type."
+msgstr "अवशेष का प्रकार चुनें।"
+
+#: apps/field/static/field/app.js:516 apps/field/static/field/app.js:535
+msgid "Enter the quantity in tonnes."
+msgstr "मात्रा टन में लिखें।"
+
+#: apps/field/static/field/app.js:517
+msgid "Enter the price paid (0 if nothing was paid)."
+msgstr "दिया गया दाम लिखें (कुछ नहीं दिया तो 0)।"
+
+#: apps/field/static/field/app.js:526
+msgid "Connect to the internet once to download the product list."
+msgstr "उत्पादों की सूची डाउनलोड करने के लिए एक बार इंटरनेट से जुड़ें।"
+
+#: apps/field/static/field/app.js:534
+msgid "Choose what was made."
+msgstr "चुनें कि क्या बना।"
+
+#: apps/field/static/field/app.js:536
+msgid "Residue used must be a number."
+msgstr "इस्तेमाल हुआ अवशेष एक संख्या होनी चाहिए।"
+
+#: apps/field/static/field/app.js:544
+msgid "Sending…"
+msgstr "भेज रहे हैं…"
+
+#: apps/field/static/field/app.js:544
+msgid "Send now"
+msgstr "अभी भेजें"
+
+#: apps/field/static/field/app.js:549
+msgid "You are online."
+msgstr "आप ऑनलाइन हैं।"
+
+#: apps/field/static/field/app.js:549
+msgid "No signal. Changes stay on this phone."
+msgstr "सिग्नल नहीं है। बदलाव इसी फ़ोन में रहेंगे।"
+
+#: apps/field/static/field/app.js:552
+msgid "Discard"
+msgstr "हटाएँ"
+
+#: apps/field/static/field/app.js:554
+msgid "Discard this change? It will not be saved on the server."
+msgstr "यह बदलाव हटाएँ? यह सर्वर पर सहेजा नहीं जाएगा।"
+
+#: apps/field/static/field/app.js:556
+msgid "Try again"
+msgstr "फिर कोशिश करें"
+
+#: apps/field/static/field/app.js:561
+msgid "Nothing waiting. All changes are sent."
+msgstr "कुछ इंतज़ार में नहीं। सभी बदलाव भेजे जा चुके हैं।"
+
+#: apps/field/static/field/app.js:562
+msgid "Sent recently"
+msgstr "हाल में भेजे गए"
+
+#: apps/field/static/field/app.js:564
+msgid "Sent."
+msgstr "भेजा गया।"
+
+#: apps/field/static/field/app.js:564
+msgid "Sent"
+msgstr "भेजा गया"
+
+#: apps/field/static/field/app.js:565
+msgid "Nothing yet."
+msgstr "अभी कुछ नहीं।"
+
+#: apps/field/static/field/app.js:589
+msgid "Home"
+msgstr "होम"
+
+#: apps/field/static/field/app.js:589
+msgid "Output"
+msgstr "उत्पादन"
