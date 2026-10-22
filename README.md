@@ -269,7 +269,22 @@ anyone relies on them. A probe only shows the temperature at its own spot, so th
 
 Try it: `docker compose exec web python manage.py load_demo_yard` then log in at `/yard/` as `yard1` / `yard-demo-123`.
 
-**Not built yet:** the offline phone app for yard operators (next step), weather and rain risk, WhatsApp/SMS alerts.
+### Offline yard app
+
+Open `/yard/app/` on the phone once, with a signal, and add it to the home screen. It then opens with no signal. It downloads the operator's piles
+(latest temperatures, batches, open alerts and the last risk level), and everything entered is saved on the phone first: temperatures, inspections,
+stock counts, moisture readings, pile size and cover, and "I have seen this" on an alert. The time of each reading, inspection and acknowledgement is the time
+on the phone when it was entered, so a reading taken in a dead zone keeps its real time. Changes go up in order when a signal returns; each carries an id made
+on the phone, so a change sent twice is saved once, and a change the server rejects stays on the "To send" screen with the reason.
+
+The risk level is worked out on the server. With no signal the phone shows the last level it downloaded and raises it at once, with the advice, if the temperature or
+inspection just entered is worse. It never lowers a level by itself. It is shown as "raised on this phone" until the server confirms it. Not in the offline app:
+editing or deleting a saved record, and offline login.
+
+Check it in a real browser with the network switched off (needs Node, Playwright and Chromium):
+`NODE_PATH=$(npm root -g) node apps/yardops/js_tests/offline_smoke.mjs`
+
+**Not built yet:** weather and rain risk, WhatsApp/SMS alerts.
 
 ## Hindi and Punjabi (customer pages and Mitra app)
 
@@ -279,7 +294,7 @@ The customer pages (`/customer/`), the Mitra pages (`/mitra/`) and the offline M
 
 How the field check works:
 
-1. Open `locale/translations.xlsx`. Column A is the English, B is Hindi, C is Punjabi, and the App column says whether a phrase is in the customer app, the Mitra app or both. Yellow cells still show English. Fix or fill in B and C, use the Status and Comments columns, and leave column A alone.
+1. Open `locale/translations.xlsx`. Column A is the English, B is Hindi, C is Punjabi, and the App column says whether a phrase is in the customer app, the Mitra app, the yard app or several. Yellow cells still show English. Fix or fill in B and C, use the Status and Comments columns, and leave column A alone.
 2. Keep every `%(name)s` exactly as written; the page puts a number or name there.
 3. Put the returned sheet at `locale/translations.xlsx` and run:
 

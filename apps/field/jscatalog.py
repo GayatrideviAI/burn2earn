@@ -20,20 +20,23 @@ def phrases_in(path):
     return [json.loads('"' + m.group(1) + '"') for m in JS_PHRASE.finditer(text)]
 
 
-@lru_cache(maxsize=1)
-def _phrases():
-    return sorted(set(phrases_in(Path(__file__).parent / "static" / "field" / "app.js")))
+MITRA_JS = Path(__file__).parent / "static" / "field" / "app.js"
 
 
-def js_catalog():
+@lru_cache(maxsize=None)
+def _phrases(path):
+    return sorted(set(phrases_in(path)))
+
+
+def js_catalog(path=MITRA_JS):
     catalog = {}
     for code in ("hi", "pa"):
         with translation.override(code):
-            catalog[code] = {p: gettext(p) for p in _phrases() if gettext(p) != p}
+            catalog[code] = {p: gettext(p) for p in _phrases(Path(path)) if gettext(p) != p}
     return catalog
 
 
-def js_catalog_json():
+def js_catalog_json(path=MITRA_JS):
     # Safe to place inside a <script> tag.
-    text = json.dumps(js_catalog(), ensure_ascii=False)
+    text = json.dumps(js_catalog(path), ensure_ascii=False)
     return text.replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")

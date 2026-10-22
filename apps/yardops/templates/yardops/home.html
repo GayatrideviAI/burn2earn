@@ -3,6 +3,7 @@
 {% block title %}{% trans "Yard check" %}{% endblock %}
 {% block content %}
 <h1>{% trans "Yard check" %}</h1>
+<p class="muted"><a href="{% url 'yardops:app' %}">{% trans "Open the phone app that works without a signal" %}</a></p>
 
 {% if alerts %}
 <section class="card">

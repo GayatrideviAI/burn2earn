@@ -102,6 +102,8 @@ SOURCES = [
     ROOT / "apps/yardops/risk.py",
     ROOT / "apps/yardops/services.py",
     ROOT / "apps/yardops/models.py",
+    ROOT / "apps/yardops/api.py",
+    ROOT / "apps/yardops/static/yardops/app.js",
 ]
 SKIP = {"trace_report.html", "sw.js", "manifest.webmanifest"}  # staff-only page / not shown to people
 
@@ -148,7 +150,9 @@ def scan_js(path):
 def section(place):
     if "apps/field/" in place:
         return "Mitra app"
-    if "apps/customers/" in place or "apps/yardops/" in place:
+    if "apps/yardops/" in place:
+        return "Yard app"
+    if "apps/customers/" in place:
         return "Customer app"
     return "Shared labels"
 
@@ -156,7 +160,7 @@ def section(place):
 def sections_of(places):
     found = {section(p) for p in places}
     if len(found) > 1:
-        return "Both apps"
+        return "Several apps"
     return found.pop()
 
 

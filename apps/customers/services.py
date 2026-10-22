@@ -148,12 +148,13 @@ def receive_batch(batch):
 
 
 @transaction.atomic
-def record_count(batch, counted_tonnes, method, *, counted_on=None, counted_by=""):
+def record_count(batch, counted_tonnes, method, *, counted_on=None, counted_by="", pk=None):
     counted_tonnes = Decimal(counted_tonnes)
     if counted_tonnes < 0:
         raise ValidationError("A count cannot be negative.")
+    extra = {"id": pk} if pk else {}  # the phone app chooses the id so a retry cannot save twice
     count = StockCount.objects.create(
-        batch=batch, counted_tonnes=counted_tonnes, method=method, counted_on=counted_on or date.today(), counted_by=counted_by
+        batch=batch, counted_tonnes=counted_tonnes, method=method, counted_on=counted_on or date.today(), counted_by=counted_by, **extra
     )
     entry = chain.append(
         "stock.counted",
@@ -174,10 +175,11 @@ def record_count(batch, counted_tonnes, method, *, counted_on=None, counted_by="
 
 @transaction.atomic
 def record_quality(batch, *, moisture_percent=None, ash_percent=None, gcv=None, basis=Basis.MEASURED,
-                   observed_at=None, method="", tested_by=""):
+                   observed_at=None, method="", tested_by="", pk=None):
+    extra = {"id": pk} if pk else {}
     obs = QualityObservation(
         batch=batch, basis=basis, observed_at=observed_at or timezone.now(), moisture_percent=moisture_percent,
-        ash_percent=ash_percent, gcv=gcv, method=method, tested_by=tested_by,
+        ash_percent=ash_percent, gcv=gcv, method=method, tested_by=tested_by, **extra,
     )
     obs.clean()
     obs.save()

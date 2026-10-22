@@ -1,17 +1,23 @@
+from pathlib import Path
+
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 
 from apps.core.models import Status
 from apps.customers import services as stock
 from apps.customers.models import Batch, Pile
+from apps.field.jscatalog import js_catalog_json
 
 from . import risk, services
 from .access import yard_required
 from .forms import CountForm, HeatForm, InspectionForm, MoistureForm, SizeForm
+APP_JS = Path(__file__).parent / "static" / "yardops" / "app.js"
+
 from .models import HeatReading, PileInspection, RiskAlert
 
 
@@ -102,3 +108,21 @@ def acknowledge(request, pk):
     services.acknowledge(alert, request.user, note=request.POST.get("note", "").strip())
     messages.success(request, _("Alert acknowledged."))
     return redirect("yardops:home")
+
+
+@yard_required
+@ensure_csrf_cookie
+def offline_app(request):
+    """The page that installs the offline app. After the first visit it opens without a signal."""
+    return render(request, "yardops/app.html", {"catalog_json": js_catalog_json(APP_JS)})
+
+
+def service_worker(request):
+    response = render(request, "yardops/sw.js", content_type="text/javascript")
+    response["Service-Worker-Allowed"] = "/yard/"
+    response["Cache-Control"] = "no-cache"
+    return response
+
+
+def manifest(request):
+    return render(request, "yardops/manifest.webmanifest", content_type="application/manifest+json")
