@@ -1,0 +1,10 @@
+{% extends "yardops/base.html" %}
+{% load i18n %}
+{% block title %}{% trans "No access" %}{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>{% trans "This login is not set up for a yard" %}</h1>
+  <p>{% trans "Ask Regenerix to link your login to your yard." %}</p>
+  <form method="post" action="{% url 'yardops:logout' %}">{% csrf_token %}<button class="btn">{% trans "Log out" %}</button></form>
+</section>
+{% endblock %}

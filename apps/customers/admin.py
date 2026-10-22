@@ -53,7 +53,7 @@ class PlantProfileAdmin(NoDeleteAdminMixin, admin.ModelAdmin):
 class PileInline(admin.TabularInline):
     model = Pile
     extra = 0
-    fields = ("label", "form", "exposure", "cover_type", "status")
+    fields = ("label", "form", "exposure", "cover_type", "length_m", "width_m", "height_m", "status")
 
 
 @admin.register(Stockyard)

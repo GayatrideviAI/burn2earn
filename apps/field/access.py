@@ -24,6 +24,8 @@ def mitra_required(view):
         mitra = get_mitra(request.user)
         if mitra is None and getattr(request.user, "customer_member", None) is not None:
             return redirect("customers:dashboard")
+        if mitra is None and getattr(request.user, "yard_operator", None) is not None:
+            return redirect("yardops:home")
         if mitra is None:
             return render(request, "field/forbidden.html", {"reason": "no_mitra"}, status=403)
         if mitra.operating_status in (MitraOperatingStatus.SUSPENDED, MitraOperatingStatus.EXITED):

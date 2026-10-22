@@ -123,6 +123,12 @@ class Pile(BaseModel):
     form = models.CharField(max_length=10, choices=BiomassForm.choices)
     exposure = models.CharField(max_length=10, choices=Exposure.choices, default=Exposure.OPEN)
     cover_type = models.CharField(max_length=100, blank=True, help_text="For example tarp, shed, none")
+    length_m = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True, validators=[MinValueValidator(Decimal("0.1"))])
+    width_m = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True, validators=[MinValueValidator(Decimal("0.1"))])
+    height_m = models.DecimalField(
+        max_digits=4, decimal_places=1, null=True, blank=True, validators=[MinValueValidator(Decimal("0.1"))],
+        help_text="Stack height; tall stacks hold heat",
+    )
 
     class Meta:
         ordering = ["yard__code", "label"]

@@ -18,7 +18,7 @@ msgstr "ਸਟਾਕ"
 msgid "Contracts"
 msgstr "ਇਕਰਾਰਨਾਮੇ"
 
-#: apps/customers/templates/customers/base.html:21 apps/customers/templates/customers/forbidden.html:8 apps/field/templates/field/base.html:19
+#: apps/customers/templates/customers/base.html:18 apps/customers/templates/customers/forbidden.html:8 apps/field/templates/field/base.html:19
 msgid "Log out"
 msgstr "ਲਾਗ ਆਊਟ"
 
@@ -123,64 +123,80 @@ msgid "This batch is not linked to a delivered load, so it cannot be traced back
 msgstr "ਇਹ ਬੈਚ ਕਿਸੇ ਪਹੁੰਚਾਈ ਗਈ ਖੇਪ ਨਾਲ ਜੁੜਿਆ ਨਹੀਂ ਹੈ, ਇਸ ਲਈ ਇਸਨੂੰ ਕਿਸਾਨਾਂ ਤੱਕ ਨਹੀਂ ਲੱਭਿਆ ਜਾ ਸਕਦਾ।"
 
 #: apps/customers/templates/customers/batch.html:35
+msgid "Pile temperature and risk"
+msgstr "ਢੇਰ ਦਾ ਤਾਪਮਾਨ ਅਤੇ ਜੋਖਮ"
+
+#: apps/customers/templates/customers/batch.html:39
+msgid "Temperature over time"
+msgstr "ਸਮੇਂ ਨਾਲ ਤਾਪਮਾਨ"
+
+#: apps/customers/templates/customers/batch.html:40
+msgid "No temperature readings yet."
+msgstr "ਹਾਲੇ ਤੱਕ ਤਾਪਮਾਨ ਦੀ ਕੋਈ ਰੀਡਿੰਗ ਨਹੀਂ।"
+
+#: apps/customers/templates/customers/batch.html:41
+msgid "A probe only shows the temperature at its own spot in the stack. This is an early-warning aid, not a guarantee against fire."
+msgstr "A probe only shows the temperature at its own spot in the stack. This is an early-warning aid, not a guarantee against fire."
+
+#: apps/customers/templates/customers/batch.html:44
 msgid "Movements"
 msgstr "ਆਵਾਜਾਈ"
 
-#: apps/customers/templates/customers/batch.html:36
+#: apps/customers/templates/customers/batch.html:45
 msgid "When"
 msgstr "ਕਦੋਂ"
 
-#: apps/customers/templates/customers/batch.html:36
+#: apps/customers/templates/customers/batch.html:45
 msgid "What"
 msgstr "ਕੀ"
 
-#: apps/customers/templates/customers/batch.html:36
+#: apps/customers/templates/customers/batch.html:45
 msgid "Change"
 msgstr "ਬਦਲਾਅ"
 
-#: apps/customers/templates/customers/batch.html:36 apps/field/forms.py:145
+#: apps/customers/templates/customers/batch.html:45 apps/field/forms.py:145
 msgid "Note"
 msgstr "ਟਿੱਪਣੀ"
 
-#: apps/customers/templates/customers/batch.html:36
+#: apps/customers/templates/customers/batch.html:45
 #. The permanent record of each stock movement.
 msgid "Ledger"
 msgstr "ਵਹੀ"
 
-#: apps/customers/templates/customers/batch.html:39
+#: apps/customers/templates/customers/batch.html:48
 msgid "None yet."
 msgstr "ਹਾਲੇ ਕੋਈ ਨਹੀਂ।"
 
-#: apps/customers/templates/customers/batch.html:43
+#: apps/customers/templates/customers/batch.html:52
 msgid "Physical counts"
 msgstr "ਅਸਲ ਗਿਣਤੀ"
 
-#: apps/customers/templates/customers/batch.html:44
+#: apps/customers/templates/customers/batch.html:53
 msgid "Not counted yet."
 msgstr "ਹਾਲੇ ਗਿਣਤੀ ਨਹੀਂ ਹੋਈ।"
 
-#: apps/customers/templates/customers/batch.html:45
+#: apps/customers/templates/customers/batch.html:54
 msgid "Quality readings"
 msgstr "ਗੁਣਵੱਤਾ ਦੀਆਂ ਰੀਡਿੰਗਾਂ"
 
-#: apps/customers/templates/customers/batch.html:47
+#: apps/customers/templates/customers/batch.html:56
 msgid "moisture"
 msgstr "ਨਮੀ"
 
-#: apps/customers/templates/customers/batch.html:48
+#: apps/customers/templates/customers/batch.html:57
 msgid "ash"
 msgstr "ਸੁਆਹ"
 
-#: apps/customers/templates/customers/batch.html:50
+#: apps/customers/templates/customers/batch.html:59 apps/yardops/templates/yardops/pile.html:51
 msgid "No readings yet."
 msgstr "ਹਾਲੇ ਕੋਈ ਰੀਡਿੰਗ ਨਹੀਂ।"
 
-#: apps/customers/templates/customers/batch.html:53
+#: apps/customers/templates/customers/batch.html:62
 #. A log where altering an old entry would be detected.
 msgid "Tamper-evident trail"
 msgstr "Tamper-evident trail"
 
-#: apps/customers/templates/customers/batch.html:54
+#: apps/customers/templates/customers/batch.html:63
 msgid "Each entry carries a fingerprint of the one before it, so a changed record would be detected."
 msgstr "Each entry carries a fingerprint of the one before it, so a changed record would be detected."
 
@@ -234,7 +250,7 @@ msgstr "ਪਲਾਂਟ ਵਿੱਚ %(c)s ਸਾੜਿਆ ਗਿਆ, %(l)s ਨ�
 msgid "%(b)s still on the books."
 msgstr "%(b)s ਹਾਲੇ ਰਿਕਾਰਡ ਵਿੱਚ ਹੈ।"
 
-#: apps/customers/templates/customers/batch.html:44
+#: apps/customers/templates/customers/batch.html:53
 #, python-format
 msgid "%(d)s: <b>%(t)s</b> by %(m)s"
 msgstr "%(d)s: <b>%(t)s</b>, ਤਰੀਕਾ: %(m)s"
@@ -306,7 +322,7 @@ msgstr "ਮੰਗਵਾਇਆ ਗਿਆ"
 msgid "On the way"
 msgstr "ਰਸਤੇ ਵਿੱਚ"
 
-#: apps/customers/templates/customers/contract.html:30 apps/customers/models.py:392 apps/trade/models.py:121
+#: apps/customers/templates/customers/contract.html:30 apps/customers/models.py:398 apps/trade/models.py:121
 msgid "Cancelled"
 msgstr "ਰੱਦ"
 
@@ -345,7 +361,7 @@ msgstr "ਇਕਰਾਰਨਾਮੇ ਅਤੇ ਸਪਲਾਈ"
 msgid "What was contracted, what has reached your gate, and what is still to come."
 msgstr "ਕੀ ਤੈਅ ਹੋਇਆ ਸੀ, ਤੁਹਾਡੇ ਗੇਟ ਤੱਕ ਕੀ ਪਹੁੰਚਿਆ, ਅਤੇ ਹਾਲੇ ਕੀ ਆਉਣਾ ਬਾਕੀ ਹੈ।"
 
-#: apps/customers/templates/customers/contracts.html:8
+#: apps/customers/templates/customers/contracts.html:8 apps/yardops/risk.py:30
 msgid "Needs attention"
 msgstr "ਧਿਆਨ ਦੇਣ ਦੀ ਲੋੜ"
 
@@ -423,40 +439,69 @@ msgstr "ਦਿਨ"
 msgid "What to do next"
 msgstr "ਅੱਗੇ ਕੀ ਕਰਨਾ ਹੈ"
 
-#: apps/customers/templates/customers/dashboard.html:32
+#: apps/customers/templates/customers/dashboard.html:36
 msgid "Nothing needs attention right now."
 msgstr "ਇਸ ਵੇਲੇ ਕਿਸੇ ਚੀਜ਼ ਵੱਲ ਧਿਆਨ ਦੇਣ ਦੀ ਲੋੜ ਨਹੀਂ ਹੈ।"
 
-#: apps/customers/templates/customers/dashboard.html:36
+#: apps/customers/templates/customers/dashboard.html:41
+msgid "Use first"
+msgstr "ਪਹਿਲਾਂ ਵਰਤੋ"
+
+#: apps/customers/templates/customers/dashboard.html:42
+msgid "Piles ranked by risk, then by age, rather than simply oldest first. Shipping and burning the riskiest stock first saves tonnes."
+msgstr "Piles ranked by risk, then by age, rather than simply oldest first. Shipping and burning the riskiest stock first saves tonnes."
+
+#: apps/customers/templates/customers/dashboard.html:44 apps/customers/templates/customers/yard.html:10 apps/yardops/templates/yardops/home.html:31
+#. A heap of stored biomass inside a yard.
+msgid "Pile"
+msgstr "ਢੇਰ"
+
+#: apps/customers/templates/customers/dashboard.html:44 apps/yardops/templates/yardops/home.html:31
+msgid "Risk"
+msgstr "ਜੋਖਮ"
+
+#: apps/customers/templates/customers/dashboard.html:44 apps/yardops/templates/yardops/home.html:31
+msgid "Last temperature"
+msgstr "ਆਖ਼ਰੀ ਤਾਪਮਾਨ"
+
+#: apps/customers/templates/customers/dashboard.html:44
+msgid "Oldest stock"
+msgstr "ਸਭ ਤੋਂ ਪੁਰਾਣਾ ਸਟਾਕ"
+
+#: apps/customers/templates/customers/dashboard.html:48 apps/yardops/templates/yardops/home.html:37
+msgid "none yet"
+msgstr "ਹਾਲੇ ਨਹੀਂ"
+
+#: apps/customers/templates/customers/dashboard.html:57
 msgid "Stock by yard"
 msgstr "ਯਾਰਡ ਅਨੁਸਾਰ ਸਟਾਕ"
 
-#: apps/customers/templates/customers/dashboard.html:39
+#: apps/customers/templates/customers/dashboard.html:60 apps/yardops/templates/yardops/base.html:6
 msgid "Yard"
 msgstr "ਯਾਰਡ"
 
-#: apps/customers/templates/customers/dashboard.html:39 apps/customers/templates/customers/yard.html:10
+#: apps/customers/templates/customers/dashboard.html:60 apps/customers/templates/customers/yard.html:10
 msgid "Book"
 msgstr "ਰਿਕਾਰਡ"
 
-#: apps/customers/templates/customers/dashboard.html:39
+#: apps/customers/templates/customers/dashboard.html:60
 msgid "Physical"
 msgstr "ਅਸਲ"
 
-#: apps/customers/templates/customers/dashboard.html:39
+#: apps/customers/templates/customers/dashboard.html:60
 msgid "Usable"
 msgstr "ਵਰਤੋਂ ਯੋਗ"
 
-#: apps/customers/templates/customers/dashboard.html:39
+#: apps/customers/templates/customers/dashboard.html:60
 msgid "Available"
 msgstr "ਉਪਲਬਧ"
 
-#: apps/customers/templates/customers/dashboard.html:39 apps/customers/models.py:113
+#: apps/customers/templates/customers/dashboard.html:60 apps/customers/models.py:113
 #. Stored without a cover so rain can reach it.
 msgid "Open to rain"
 msgstr "ਮੀਂਹ ਵਿੱਚ ਖੁੱਲ੍ਹਾ"
 
-#: apps/customers/templates/customers/dashboard.html:50
+#: apps/customers/templates/customers/dashboard.html:71
 msgid "No stock is recorded for your company yet."
 msgstr "ਤੁਹਾਡੀ ਕੰਪਨੀ ਲਈ ਹਾਲੇ ਕੋਈ ਸਟਾਕ ਦਰਜ ਨਹੀਂ ਹੈ।"
 
@@ -470,12 +515,12 @@ msgstr "ਵਰਤੋਂ ਯੋਗ ਵਿੱਚੋਂ %(r)s ਰਾਖਵਾਂ �
 msgid "%(n)s days"
 msgstr "%(n)s ਦਿਨ"
 
-#: apps/customers/templates/customers/dashboard.html:43
+#: apps/customers/templates/customers/dashboard.html:64
 #, python-format
 msgid "%(n)s not counted"
 msgstr "%(n)s ਦੀ ਗਿਣਤੀ ਨਹੀਂ ਹੋਈ"
 
-#: apps/customers/templates/customers/dashboard.html:51
+#: apps/customers/templates/customers/dashboard.html:72
 #, python-format
 msgid "Stock only counts as usable once it has been physically counted (within %(n)s days) and has a measured moisture reading within your plant's limit."
 msgstr "ਸਟਾਕ ਤਦ ਹੀ ਵਰਤੋਂ ਯੋਗ ਮੰਨਿਆ ਜਾਂਦਾ ਹੈ ਜਦੋਂ ਉਸਦੀ ਅਸਲ ਗਿਣਤੀ ਹੋ ਚੁੱਕੀ ਹੋਵੇ (%(n)s ਦਿਨਾਂ ਦੇ ਅੰਦਰ) ਅਤੇ ਮਾਪੀ ਗਈ ਨਮੀ ਤੁਹਾਡੇ ਪਲਾਂਟ ਦੀ ਹੱਦ ਦੇ ਅੰਦਰ ਹੋਵੇ।"
@@ -614,12 +659,7 @@ msgstr "%(t)s could not be attributed because no farmer pickups are recorded for
 msgid "All yards"
 msgstr "ਸਾਰੇ ਯਾਰਡ"
 
-#: apps/customers/templates/customers/yard.html:10
-#. A heap of stored biomass inside a yard.
-msgid "Pile"
-msgstr "ਢੇਰ"
-
-#: apps/customers/templates/customers/yard.html:10
+#: apps/customers/templates/customers/yard.html:10 apps/yardops/forms.py:27
 msgid "Batch"
 msgstr "ਬੈਚ"
 
@@ -630,6 +670,10 @@ msgstr "Confidence"
 #: apps/customers/templates/customers/yard.html:10
 msgid "Moisture"
 msgstr "ਨਮੀ"
+
+#: apps/customers/templates/customers/yard.html:10
+msgid "Fire and spoilage risk"
+msgstr "ਅੱਗ ਅਤੇ ਖ਼ਰਾਬੀ ਦਾ ਜੋਖਮ"
 
 #: apps/customers/templates/customers/yard.html:19
 msgid "no reading"
@@ -660,7 +704,7 @@ msgstr "ਵਿੱਤ"
 msgid "ESG / sustainability"
 msgstr "ESG / sustainability"
 
-#: apps/customers/models.py:75 apps/customers/models.py:310
+#: apps/customers/models.py:75 apps/customers/models.py:316
 msgid "Regenerix"
 msgstr "Regenerix"
 
@@ -672,7 +716,7 @@ msgstr "VLE"
 msgid "Third party"
 msgstr "ਤੀਜੀ ਧਿਰ"
 
-#: apps/customers/models.py:78 apps/customers/models.py:312
+#: apps/customers/models.py:78 apps/customers/models.py:318
 msgid "The customer"
 msgstr "ਗਾਹਕ"
 
@@ -704,99 +748,99 @@ msgstr "ਅੰਸ਼ਕ ਤੌਰ ਉੱਤੇ ਢਕਿਆ"
 msgid "Protected"
 msgstr "ਸੁਰੱਖਿਅਤ"
 
-#: apps/customers/models.py:199
+#: apps/customers/models.py:205
 msgid "Receipt"
 msgstr "ਪ੍ਰਾਪਤੀ"
 
-#: apps/customers/models.py:200
+#: apps/customers/models.py:206
 #. Stock moved from one pile to another inside the yard.
 msgid "Moved to another pile"
 msgstr "ਦੂਜੇ ਢੇਰ ਵਿੱਚ ਲਿਜਾਇਆ ਗਿਆ"
 
-#: apps/customers/models.py:201
+#: apps/customers/models.py:207
 #. Used as fuel.
 msgid "Burned at the plant"
 msgstr "ਪਲਾਂਟ ਵਿੱਚ ਸਾੜਿਆ ਗਿਆ"
 
-#: apps/customers/models.py:202
+#: apps/customers/models.py:208
 msgid "Adjustment"
 msgstr "ਸੁਧਾਈ"
 
-#: apps/customers/models.py:203
+#: apps/customers/models.py:209
 msgid "Loss"
 msgstr "ਨੁਕਸਾਨ"
 
-#: apps/customers/models.py:204
+#: apps/customers/models.py:210
 msgid "Returned to supplier"
 msgstr "ਸਪਲਾਇਰ ਨੂੰ ਮੋੜਿਆ ਗਿਆ"
 
-#: apps/customers/models.py:205
+#: apps/customers/models.py:211
 msgid "Disposed of"
 msgstr "ਸੁੱਟਿਆ ਗਿਆ"
 
-#: apps/customers/models.py:209
+#: apps/customers/models.py:215
 msgid "Rain"
 msgstr "ਮੀਂਹ"
 
-#: apps/customers/models.py:210
+#: apps/customers/models.py:216
 msgid "Decomposition"
 msgstr "ਸੜਨ"
 
-#: apps/customers/models.py:211
+#: apps/customers/models.py:217
 msgid "Contamination"
 msgstr "ਮਿਲਾਵਟ"
 
-#: apps/customers/models.py:212
+#: apps/customers/models.py:218
 msgid "Handling"
 msgstr "ਚੁੱਕ-ਧਰਾਈ"
 
-#: apps/customers/models.py:213
+#: apps/customers/models.py:219
 msgid "Fire"
 msgstr "ਅੱਗ"
 
-#: apps/customers/models.py:214 apps/farms/models.py:28 apps/farms/models.py:124
+#: apps/customers/models.py:220 apps/farms/models.py:28 apps/farms/models.py:124
 msgid "Other"
 msgstr "ਹੋਰ"
 
-#: apps/customers/models.py:237
+#: apps/customers/models.py:243
 msgid "Measured"
 msgstr "ਮਾਪਿਆ ਗਿਆ"
 
-#: apps/customers/models.py:238 apps/customers/templatetags/customers_i18n.py:15
+#: apps/customers/models.py:244 apps/customers/templatetags/customers_i18n.py:15
 #. Estimated by survey or drone, not weighed.
 msgid "Estimated"
 msgstr "ਅੰਦਾਜ਼ਨ"
 
-#: apps/customers/models.py:268
+#: apps/customers/models.py:274
 #. The truck scale at the plant gate.
 msgid "Weighbridge"
 msgstr "ਧਰਮ ਕੰਡਾ"
 
-#: apps/customers/models.py:269
+#: apps/customers/models.py:275
 msgid "QR scan and count"
 msgstr "QR ਸਕੈਨ ਅਤੇ ਗਿਣਤੀ"
 
-#: apps/customers/models.py:270
+#: apps/customers/models.py:276
 msgid "Survey or drone estimate"
 msgstr "ਸਰਵੇ ਜਾਂ ਡਰੋਨ ਨਾਲ ਅੰਦਾਜ਼ਾ"
 
-#: apps/customers/models.py:271
+#: apps/customers/models.py:277
 msgid "Physical audit"
 msgstr "ਅਸਲ ਜਾਂਚ"
 
-#: apps/customers/models.py:311
+#: apps/customers/models.py:317
 msgid "The yard operator"
 msgstr "ਯਾਰਡ ਸੰਚਾਲਕ"
 
-#: apps/customers/models.py:313
+#: apps/customers/models.py:319
 msgid "Shared (see notes)"
 msgstr "ਸਾਂਝਾ (ਟਿੱਪਣੀ ਵੇਖੋ)"
 
-#: apps/customers/models.py:390
+#: apps/customers/models.py:396
 msgid "Open"
 msgstr "ਖੁੱਲ੍ਹਾ"
 
-#: apps/customers/models.py:391
+#: apps/customers/models.py:397
 msgid "Fulfilled"
 msgstr "ਪੂਰਾ ਹੋਇਆ"
 
@@ -1394,7 +1438,7 @@ msgstr "ਕਿਸਾਨ ਨੂੰ ਦਿੱਤਾ ਗਿਆ ਮੁੱਲ (₹, �
 msgid "Date"
 msgstr "ਤਾਰੀਖ਼"
 
-#: apps/field/forms.py:100 apps/field/forms.py:123
+#: apps/field/forms.py:100 apps/field/forms.py:123 apps/yardops/forms.py:21
 msgid "Notes"
 msgstr "ਟਿੱਪਣੀਆਂ"
 
@@ -1791,3 +1835,381 @@ msgstr "ਹੋਮ"
 #: apps/field/static/field/app.js:589
 msgid "Output"
 msgstr "ਉਤਪਾਦਨ"
+
+#: apps/yardops/templates/yardops/forbidden.html:6
+msgid "This login is not set up for a yard"
+msgstr "ਇਹ ਲੌਗਇਨ ਕਿਸੇ ਯਾਰਡ ਲਈ ਨਹੀਂ ਬਣਿਆ"
+
+#: apps/yardops/templates/yardops/forbidden.html:7
+msgid "Ask Regenerix to link your login to your yard."
+msgstr "ਆਪਣੇ ਲੌਗਇਨ ਨੂੰ ਆਪਣੇ ਯਾਰਡ ਨਾਲ ਜੋੜਨ ਲਈ Regenerix ਨੂੰ ਕਹੋ।"
+
+#: apps/yardops/templates/yardops/home.html:3 apps/yardops/templates/yardops/home.html:5
+msgid "Yard check"
+msgstr "ਯਾਰਡ ਜਾਂਚ"
+
+#: apps/yardops/templates/yardops/home.html:9
+msgid "Alerts"
+msgstr "ਚੇਤਾਵਨੀਆਂ"
+
+#: apps/yardops/templates/yardops/home.html:16
+msgid "Not acknowledged yet"
+msgstr "ਹਾਲੇ ਮੰਨਿਆ ਨਹੀਂ ਗਿਆ"
+
+#: apps/yardops/templates/yardops/home.html:18
+msgid "I have seen this"
+msgstr "ਮੈਂ ਇਹ ਵੇਖ ਲਿਆ"
+
+#: apps/yardops/templates/yardops/home.html:38
+msgid "Log"
+msgstr "ਦਰਜ ਕਰੋ"
+
+#: apps/yardops/templates/yardops/home.html:42
+msgid "No piles with stock in this yard."
+msgstr "ਇਸ ਯਾਰਡ ਵਿੱਚ ਸਟਾਕ ਵਾਲਾ ਕੋਈ ਢੇਰ ਨਹੀਂ।"
+
+#: apps/yardops/templates/yardops/home.html:45
+msgid "No yards are linked to your login yet."
+msgstr "ਤੁਹਾਡੇ ਲੌਗਇਨ ਨਾਲ ਹਾਲੇ ਕੋਈ ਯਾਰਡ ਨਹੀਂ ਜੁੜਿਆ।"
+
+#: apps/yardops/templates/yardops/home.html:15
+#, python-format
+msgid "Raised %(d)s"
+msgstr "%(d)s ਨੂੰ ਉਠਾਈ ਗਈ"
+
+#: apps/yardops/templates/yardops/home.html:16
+#, python-format
+msgid "acknowledged after %(m)s min"
+msgstr "%(m)s ਮਿੰਟ ਬਾਅਦ ਮੰਨਿਆ"
+
+#: apps/yardops/templates/yardops/login.html:6
+msgid "Yard log in"
+msgstr "ਯਾਰਡ ਲੌਗ ਇਨ"
+
+#: apps/yardops/templates/yardops/pile.html:5
+msgid "All piles"
+msgstr "ਸਾਰੇ ਢੇਰ"
+
+#: apps/yardops/templates/yardops/pile.html:12
+msgid "Why this is flagged"
+msgstr "ਇਸ ਨੂੰ ਕਿਉਂ ਚਿੰਨ੍ਹਿਤ ਕੀਤਾ ਗਿਆ"
+
+#: apps/yardops/templates/yardops/pile.html:18
+msgid "There is no stock in this pile."
+msgstr "ਇਸ ਢੇਰ ਵਿੱਚ ਕੋਈ ਸਟਾਕ ਨਹੀਂ ਹੈ।"
+
+#: apps/yardops/templates/yardops/pile.html:20
+msgid "Nothing is flagged on this pile."
+msgstr "ਇਸ ਢੇਰ ਉੱਤੇ ਕੁਝ ਚਿੰਨ੍ਹਿਤ ਨਹੀਂ ਹੈ।"
+
+#: apps/yardops/templates/yardops/pile.html:24
+msgid "Log a temperature"
+msgstr "ਤਾਪਮਾਨ ਦਰਜ ਕਰੋ"
+
+#: apps/yardops/templates/yardops/pile.html:27
+msgid "Save temperature"
+msgstr "ਤਾਪਮਾਨ ਸੰਭਾਲੋ"
+
+#: apps/yardops/templates/yardops/pile.html:28
+msgid "Log an inspection"
+msgstr "ਨਿਰੀਖਣ ਦਰਜ ਕਰੋ"
+
+#: apps/yardops/templates/yardops/pile.html:31
+msgid "Save inspection"
+msgstr "ਨਿਰੀਖਣ ਸੰਭਾਲੋ"
+
+#: apps/yardops/templates/yardops/pile.html:36
+msgid "Count the stock"
+msgstr "ਸਟਾਕ ਗਿਣੋ"
+
+#: apps/yardops/templates/yardops/pile.html:39
+msgid "Save count"
+msgstr "ਗਿਣਤੀ ਸੰਭਾਲੋ"
+
+#: apps/yardops/templates/yardops/pile.html:40
+msgid "Log a moisture reading"
+msgstr "ਨਮੀ ਦੀ ਰੀਡਿੰਗ ਦਰਜ ਕਰੋ"
+
+#: apps/yardops/templates/yardops/pile.html:43
+msgid "Save moisture"
+msgstr "ਨਮੀ ਸੰਭਾਲੋ"
+
+#: apps/yardops/templates/yardops/pile.html:45
+msgid "Batches in this pile"
+msgstr "ਇਸ ਢੇਰ ਦੇ ਬੈਚ"
+
+#: apps/yardops/templates/yardops/pile.html:50
+msgid "Recent temperatures"
+msgstr "ਹਾਲ ਦੇ ਤਾਪਮਾਨ"
+
+#: apps/yardops/templates/yardops/pile.html:54
+msgid "Recent inspections"
+msgstr "ਹਾਲ ਦੇ ਨਿਰੀਖਣ"
+
+#: apps/yardops/templates/yardops/pile.html:56
+msgid "wet"
+msgstr "ਗਿੱਲਾ"
+
+#: apps/yardops/templates/yardops/pile.html:56
+msgid "mould"
+msgstr "ਫ਼ਫ਼ੂੰਦੀ"
+
+#: apps/yardops/templates/yardops/pile.html:56
+msgid "steam or smell"
+msgstr "ਭਾਫ਼ ਜਾਂ ਬਦਬੂ"
+
+#: apps/yardops/templates/yardops/pile.html:56
+msgid "cover missing"
+msgstr "ਢੱਕਣ/ਤਿਰਪਾਲ ਨਹੀਂ"
+
+#: apps/yardops/templates/yardops/pile.html:57
+msgid "all clear"
+msgstr "ਸਭ ਠੀਕ"
+
+#: apps/yardops/templates/yardops/pile.html:58
+msgid "No inspections yet."
+msgstr "ਹਾਲੇ ਤੱਕ ਕੋਈ ਨਿਰੀਖਣ ਨਹੀਂ।"
+
+#: apps/yardops/templates/yardops/pile.html:61
+msgid "Pile size and cover"
+msgstr "ਢੇਰ ਦਾ ਆਕਾਰ ਅਤੇ ਢੱਕਣ"
+
+#: apps/yardops/templates/yardops/pile.html:64
+msgid "Save pile details"
+msgstr "ਢੇਰ ਦਾ ਵੇਰਵਾ ਸੰਭਾਲੋ"
+
+#: apps/yardops/templates/yardops/pile.html:8
+#, python-format
+msgid "%(h)s m high"
+msgstr "%(h)s ਮੀ. ਉੱਚਾ"
+
+#: apps/yardops/templates/yardops/pile.html:46
+#, python-format
+msgid "%(t)s on the books, received %(d)s"
+msgstr "ਬਹੀ ਵਿੱਚ %(t)s, %(d)s ਨੂੰ ਮਿਲਿਆ"
+
+#: apps/yardops/templates/yardops/pile.html:51
+#, python-format
+msgid "%(d)s cm deep"
+msgstr "%(d)s ਸੈਮੀ ਡੂੰਘਾ"
+
+#: apps/yardops/forms.py:9
+msgid "Temperature (°C)"
+msgstr "ਤਾਪਮਾਨ (°C)"
+
+#: apps/yardops/forms.py:12
+msgid "Where in the stack"
+msgstr "ਢੇਰ ਵਿੱਚ ਕਿੱਥੇ"
+
+#: apps/yardops/forms.py:12
+msgid "For example north face, 1 m deep"
+msgstr "ਉਦਾਹਰਣ: ਉੱਤਰ ਵੱਲ, 1 ਮੀ. ਡੂੰਘਾ"
+
+#: apps/yardops/forms.py:13
+msgid "Probe depth (cm)"
+msgstr "ਪ੍ਰੋਬ ਦੀ ਡੂੰਘਾਈ (ਸੈਮੀ)"
+
+#: apps/yardops/forms.py:17
+msgid "The stack looks wet"
+msgstr "ਢੇਰ ਗਿੱਲਾ ਦਿਸਦਾ ਹੈ"
+
+#: apps/yardops/forms.py:18
+msgid "Mould is visible"
+msgstr "ਫ਼ਫ਼ੂੰਦੀ ਦਿਸ ਰਹੀ ਹੈ"
+
+#: apps/yardops/forms.py:19
+msgid "Steam, or a burnt or musty smell"
+msgstr "ਭਾਫ਼, ਜਾਂ ਸੜਨ ਜਾਂ ਸਿੱਲ੍ਹ ਦੀ ਬਦਬੂ"
+
+#: apps/yardops/forms.py:20
+msgid "Cover is in place and secure"
+msgstr "ਢੱਕਣ ਆਪਣੀ ਥਾਂ ਉੱਤੇ ਅਤੇ ਕੱਸਿਆ ਹੋਇਆ ਹੈ"
+
+#: apps/yardops/forms.py:33
+msgid "Counted (tonnes)"
+msgstr "ਗਿਣਤੀ (ਟਨ)"
+
+#: apps/yardops/forms.py:36
+msgid "How it was counted"
+msgstr "ਕਿਵੇਂ ਗਿਣਿਆ ਗਿਆ"
+
+#: apps/yardops/forms.py:41
+msgid "Moisture (%)"
+msgstr "ਨਮੀ (%)"
+
+#: apps/yardops/forms.py:44
+msgid "Method"
+msgstr "ਤਰੀਕਾ"
+
+#: apps/yardops/forms.py:48
+msgid "Length (m)"
+msgstr "ਲੰਬਾਈ (ਮੀ.)"
+
+#: apps/yardops/forms.py:49
+msgid "Width (m)"
+msgstr "ਚੌੜਾਈ (ਮੀ.)"
+
+#: apps/yardops/forms.py:50
+msgid "Height (m)"
+msgstr "ਉਚਾਈ (ਮੀ.)"
+
+#: apps/yardops/forms.py:51
+msgid "Cover"
+msgstr "ਢੱਕਣ"
+
+#: apps/yardops/forms.py:51
+msgid "For example tarp, shed, none"
+msgstr "ਉਦਾਹਰਣ: ਤਿਰਪਾਲ, ਸ਼ੈੱਡ, ਕੁਝ ਨਹੀਂ"
+
+#: apps/yardops/views.py:63
+msgid "Temperature saved."
+msgstr "ਤਾਪਮਾਨ ਸੰਭਾਲਿਆ ਗਿਆ।"
+
+#: apps/yardops/views.py:69
+msgid "Inspection saved."
+msgstr "ਨਿਰੀਖਣ ਸੰਭਾਲਿਆ ਗਿਆ।"
+
+#: apps/yardops/views.py:72
+msgid "Count saved."
+msgstr "ਗਿਣਤੀ ਸੰਭਾਲੀ ਗਈ।"
+
+#: apps/yardops/views.py:75
+msgid "Moisture saved."
+msgstr "ਨਮੀ ਸੰਭਾਲੀ ਗਈ।"
+
+#: apps/yardops/views.py:78
+msgid "Pile details saved."
+msgstr "ਢੇਰ ਦਾ ਵੇਰਵਾ ਸੰਭਾਲਿਆ ਗਿਆ।"
+
+#: apps/yardops/views.py:103
+msgid "Alert acknowledged."
+msgstr "ਚੇਤਾਵਨੀ ਮੰਨੀ ਗਈ।"
+
+#: apps/yardops/risk.py:29
+msgid "Normal"
+msgstr "ਆਮ"
+
+#: apps/yardops/risk.py:31 apps/yardops/models.py:94
+msgid "Watch closely"
+msgstr "ਧਿਆਨ ਨਾਲ ਵੇਖੋ"
+
+#: apps/yardops/risk.py:32 apps/yardops/models.py:95
+msgid "Check twice a day"
+msgstr "ਦਿਨ ਵਿੱਚ ਦੋ ਵਾਰ ਜਾਂਚੋ"
+
+#: apps/yardops/risk.py:33 apps/yardops/models.py:96
+msgid "Fire likely"
+msgstr "ਅੱਗ ਦਾ ਖ਼ਦਸ਼ਾ"
+
+#: apps/yardops/risk.py:38
+msgid "Probe the stack today and look it over."
+msgstr "ਅੱਜ ਢੇਰ ਵਿੱਚ ਪ੍ਰੋਬ ਪਾਓ ਅਤੇ ਉਸ ਨੂੰ ਵੇਖੋ।"
+
+#: apps/yardops/risk.py:39
+msgid "Inspect the stack today and probe it twice a day."
+msgstr "Inspect the stack today and probe it twice a day."
+
+#: apps/yardops/risk.py:40
+msgid "Check twice a day and open up the stack. Keep the fire service number ready."
+msgstr "Check twice a day and open up the stack. Keep the fire service number ready."
+
+#: apps/yardops/risk.py:41
+msgid "Fire is likely. Call the fire service before disturbing the stack."
+msgstr "Fire is likely. Call the fire service before disturbing the stack."
+
+#: apps/yardops/risk.py:92
+#, python-format
+msgid "At this rate it reaches %(limit)s °C in about %(days)s days (an estimate from the last readings)."
+msgstr "At this rate it reaches %(limit)s °C in about %(days)s days (an estimate from the last readings)."
+
+#: apps/yardops/risk.py:120
+#, python-format
+msgid "%(n)s days ago"
+msgstr "%(n)s ਦਿਨ ਪਹਿਲਾਂ"
+
+#: apps/yardops/risk.py:122
+#, python-format
+msgid "%(n)s hours ago"
+msgstr "%(n)s ਘੰਟੇ ਪਹਿਲਾਂ"
+
+#: apps/yardops/risk.py:122
+msgid "just now"
+msgstr "ਹੁਣੇ ਹੀ"
+
+#: apps/yardops/risk.py:153
+#, python-format
+msgid "Temperature is %(t)s °C (%(when)s), at or above %(limit)s °C: fire is likely."
+msgstr "Temperature is %(t)s °C (%(when)s), at or above %(limit)s °C: fire is likely."
+
+#: apps/yardops/risk.py:154 apps/yardops/risk.py:155 apps/yardops/risk.py:156
+#, python-format
+msgid "Temperature is %(t)s °C (%(when)s), at or above %(limit)s °C."
+msgstr "ਤਾਪਮਾਨ %(t)s °C ਹੈ (%(when)s), ਜੋ %(limit)s °C ਜਾਂ ਉਸ ਤੋਂ ਉੱਪਰ ਹੈ।"
+
+#: apps/yardops/risk.py:169
+#, python-format
+msgid "Temperature is rising by about %(rise)s °C a day."
+msgstr "ਤਾਪਮਾਨ ਲਗਭਗ %(rise)s °C ਪ੍ਰਤੀ ਦਿਨ ਵਧ ਰਿਹਾ ਹੈ।"
+
+#: apps/yardops/risk.py:178
+msgid "No temperature reading has been taken yet."
+msgstr "ਹਾਲੇ ਤੱਕ ਤਾਪਮਾਨ ਦੀ ਕੋਈ ਰੀਡਿੰਗ ਨਹੀਂ ਲਈ ਗਈ।"
+
+#: apps/yardops/risk.py:180
+#, python-format
+msgid "No temperature reading for %(n)s days."
+msgstr "%(n)s ਦਿਨ ਤੋਂ ਤਾਪਮਾਨ ਦੀ ਕੋਈ ਰੀਡਿੰਗ ਨਹੀਂ।"
+
+#: apps/yardops/risk.py:190
+msgid "The last inspection found steam or a burnt or musty smell."
+msgstr "ਪਿਛਲੇ ਨਿਰੀਖਣ ਵਿੱਚ ਭਾਫ਼ ਜਾਂ ਸੜਨ ਜਾਂ ਸਿੱਲ੍ਹ ਦੀ ਬਦਬੂ ਮਿਲੀ।"
+
+#: apps/yardops/risk.py:192
+msgid "The last inspection found the stack wet."
+msgstr "ਪਿਛਲੇ ਨਿਰੀਖਣ ਵਿੱਚ ਢੇਰ ਗਿੱਲਾ ਮਿਲਿਆ।"
+
+#: apps/yardops/risk.py:194
+msgid "The last inspection found mould."
+msgstr "ਪਿਛਲੇ ਨਿਰੀਖਣ ਵਿੱਚ ਫ਼ਫ਼ੂੰਦੀ ਮਿਲੀ।"
+
+#: apps/yardops/risk.py:196
+msgid "The cover was not in place at the last inspection."
+msgstr "ਪਿਛਲੇ ਨਿਰੀਖਣ ਵਿੱਚ ਢੱਕਣ ਆਪਣੀ ਥਾਂ ਉੱਤੇ ਨਹੀਂ ਸੀ।"
+
+#: apps/yardops/risk.py:202
+#, python-format
+msgid "Stacked damp: %(m)s%% moisture at intake, above %(limit)s%%."
+msgstr "Stacked damp: %(m)s%% moisture at intake, above %(limit)s%%."
+
+#: apps/yardops/risk.py:204
+#, python-format
+msgid "The stack is %(h)s m high, above the %(limit)s m limit."
+msgstr "ਢੇਰ %(h)s ਮੀ. ਉੱਚਾ ਹੈ, ਜੋ %(limit)s ਮੀ. ਦੀ ਸੀਮਾ ਤੋਂ ਉੱਪਰ ਹੈ।"
+
+#: apps/yardops/services.py:21
+msgid "This pile is no longer in use."
+msgstr "ਇਹ ਢੇਰ ਹੁਣ ਵਰਤੋਂ ਵਿੱਚ ਨਹੀਂ ਹੈ।"
+
+#: apps/yardops/services.py:33
+msgid "The reading time cannot be in the future."
+msgstr "ਰੀਡਿੰਗ ਦਾ ਸਮਾਂ ਭਵਿੱਖ ਵਿੱਚ ਨਹੀਂ ਹੋ ਸਕਦਾ।"
+
+#: apps/yardops/services.py:94
+msgid "Back below the alert level."
+msgstr "Back below the alert level."
+
+#: apps/yardops/services.py:101
+msgid "Replaced by an alert at a different level."
+msgstr "Replaced by an alert at a different level."
+
+#: apps/yardops/services.py:121
+msgid "This alert is already closed."
+msgstr "ਇਹ ਚੇਤਾਵਨੀ ਪਹਿਲਾਂ ਹੀ ਬੰਦ ਹੋ ਚੁੱਕੀ ਹੈ।"
+
+#: apps/yardops/models.py:47
+msgid "Manual probe"
+msgstr "ਹੱਥ ਨਾਲ ਪ੍ਰੋਬ"
+
+#: apps/yardops/models.py:48
+msgid "Fixed sensor"
+msgstr "ਲੱਗਿਆ ਹੋਇਆ ਸੈਂਸਰ"

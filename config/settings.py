@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "apps.ledger",
     "apps.trade",
     "apps.customers",
+    "apps.yardops",
 ]
 
 MIDDLEWARE = [
@@ -121,3 +122,18 @@ SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 # bring in new stock. Both are starting values to adjust with the first pilot customer.
 STOCK_VERIFICATION_DAYS = 14
 STOCK_REPLENISH_LEAD_DAYS = 14
+
+# ---- Yard heat and stack rules -----------------------------------------------------------------
+# The temperature steps follow general hay-safety guidance (about 50 °C normal limit, 65 °C watch
+# closely, 70 °C check twice a day and open the stack, 80 °C fire likely). The other numbers are
+# starting assumptions. ALL of them must be validated for baled paddy straw with a qualified
+# fire-safety partner before anyone relies on them.
+YARD_HEAT_WARM_C = 50
+YARD_HEAT_WATCH_C = 65
+YARD_HEAT_ACT_C = 70
+YARD_HEAT_EMERGENCY_C = 80
+YARD_HEAT_RISE_C_PER_DAY = 3      # a rise this fast is a warning even below the temperature steps
+YARD_READING_MAX_AGE_DAYS = 3     # a pile with no temperature reading for this long is "not checked"
+YARD_DAMP_INTAKE_PERCENT = 20     # stacked damper than this at intake
+YARD_MAX_STACK_HEIGHT_M = 4       # taller stacks hold heat
+YARD_ALERT_ACK_MINUTES = 30       # an alert not acknowledged by now is shown as overdue

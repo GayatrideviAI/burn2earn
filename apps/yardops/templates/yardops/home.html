@@ -1,0 +1,47 @@
+{% extends "yardops/base.html" %}
+{% load i18n customers_i18n %}
+{% block title %}{% trans "Yard check" %}{% endblock %}
+{% block content %}
+<h1>{% trans "Yard check" %}</h1>
+
+{% if alerts %}
+<section class="card">
+  <h2>{% trans "Alerts" %}</h2>
+  <ul class="actions">
+  {% for alert in alerts %}
+    <li><span class="tag {% if alert.level == 'watch' %}warn{% else %}bad{% endif %}">{{ alert.get_level_display }}</span>
+      <span><a href="{% url 'yardops:pile' alert.pile.pk %}">{{ alert.pile }}</a>
+        <small class="muted block">{{ alert.reasons|linebreaksbr }}</small>
+        <small class="muted block">{% blocktrans trimmed with d=alert.raised_at|date:"d M H:i" %}Raised {{ d }}{% endblocktrans %}
+          {% if alert.acknowledged_at %}· {% blocktrans trimmed with m=alert.response_minutes %}acknowledged after {{ m }} min{% endblocktrans %}{% elif alert.is_overdue %}· <b class="bad-text">{% trans "Not acknowledged yet" %}</b>{% endif %}</small>
+        {% if not alert.acknowledged_at %}
+        <form method="post" action="{% url 'yardops:acknowledge' alert.pk %}" class="inline">{% csrf_token %}<button class="btn small">{% trans "I have seen this" %}</button></form>
+        {% endif %}
+      </span></li>
+  {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+{% for y in yards %}
+<section class="card">
+  <h2>{{ y.yard.name }} <span class="mono">{{ y.yard.code }}</span></h2>
+  {% if y.rows %}
+  <div class="scroll"><table>
+    <thead><tr><th>{% trans "Pile" %}</th><th>{% trans "Risk" %}</th><th class="r">{% trans "Stock" %}</th><th>{% trans "Last temperature" %}</th><th></th></tr></thead>
+    <tbody>
+    {% for a in y.rows %}
+      <tr><td><a href="{% url 'yardops:pile' a.pile.pk %}">{{ a.pile.label }}</a> <span class="muted small">{{ a.pile.get_form_display }}</span></td>
+        <td><span class="tag {{ a.tag }}">{{ a.label }}</span></td>
+        <td class="r">{{ a.tonnes|tn:"1g" }}</td>
+        <td>{% if a.latest %}{{ a.latest.temperature_c|floatformat:"-1" }} °C <span class="muted small">{{ a.latest.taken_at|timesince }}</span>{% else %}<span class="muted">{% trans "none yet" %}</span>{% endif %}</td>
+        <td><a class="btn small" href="{% url 'yardops:pile' a.pile.pk %}">{% trans "Log" %}</a></td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}<p class="muted">{% trans "No piles with stock in this yard." %}</p>{% endif %}
+</section>
+{% empty %}
+<section class="card"><p class="muted">{% trans "No yards are linked to your login yet." %}</p></section>
+{% endfor %}
+{% endblock %}

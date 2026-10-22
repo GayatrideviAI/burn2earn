@@ -7,7 +7,7 @@
 <p class="muted">{{ yard.get_owner_type_display }}{% if yard.owner_name %}: {{ yard.owner_name }}{% endif %} · {% blocktrans trimmed with b=totals.book|tn:"1g" a=totals.available|tn:"1g" %}your stock here: {{ b }} on the books, {{ a }} available to use{% endblocktrans %}</p>
 <section class="card">
   <div class="scroll"><table>
-    <thead><tr><th>{% trans "Pile" %}</th><th>{% trans "Batch" %}</th><th>{% trans "Material" %}</th><th class="r">{% trans "Book" %}</th><th class="r">{% trans "Counted" %}</th><th>{% trans "Confidence" %}</th><th>{% trans "Moisture" %}</th></tr></thead>
+    <thead><tr><th>{% trans "Pile" %}</th><th>{% trans "Batch" %}</th><th>{% trans "Material" %}</th><th class="r">{% trans "Book" %}</th><th class="r">{% trans "Counted" %}</th><th>{% trans "Confidence" %}</th><th>{% trans "Moisture" %}</th><th>{% trans "Fire and spoilage risk" %}</th></tr></thead>
     <tbody>
     {% for v in rows %}
       <tr><td>{{ v.batch.pile.label }} <span class="muted small">{{ v.batch.pile.get_exposure_display }}</span></td>
@@ -16,7 +16,8 @@
         <td class="r">{{ v.book|tn:"1g" }}</td>
         <td class="r">{% if v.physical is None %}-{% else %}{{ v.physical|tn:"1g" }}{% endif %}</td>
         <td><span class="tag {% if v.confidence == 'Verified' %}good{% elif v.confidence == 'Overdue' %}bad{% elif v.confidence == 'Estimated' %}warn{% else %}mute{% endif %}">{{ v.confidence|confidence_label }}</span></td>
-        <td>{% if v.moisture is None %}<span class="muted">{% trans "no reading" %}</span>{% else %}{{ v.moisture|floatformat:"1" }}%{% if v.quality == 'over_limit' %} <span class="tag bad">{% trans "over limit" %}</span>{% endif %}{% endif %}</td></tr>
+        <td>{% if v.moisture is None %}<span class="muted">{% trans "no reading" %}</span>{% else %}{{ v.moisture|floatformat:"1" }}%{% if v.quality == 'over_limit' %} <span class="tag bad">{% trans "over limit" %}</span>{% endif %}{% endif %}</td>
+        <td><span class="tag {{ v.risk.tag }}">{{ v.risk.label }}</span></td></tr>
     {% endfor %}
     </tbody>
   </table></div>

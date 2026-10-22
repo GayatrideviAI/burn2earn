@@ -9,6 +9,9 @@ from django.shortcuts import get_object_or_404, render
 from apps.core.models import Status
 from apps.ledger.chain import entries_for
 
+from apps.yardops import risk
+from apps.yardops.models import HeatReading
+
 from . import contracts, services
 from .access import customer_required
 from .models import Batch, Contract, PurchaseOrder
@@ -22,7 +25,8 @@ def dashboard(request):
         request,
         "customers/dashboard.html",
         {"buyer": request.buyer, "member": request.member, "s": s, "supply": supply, "lead_days": services.lead_time_days(),
-         "verify_days": services.verification_days()},
+         "verify_days": services.verification_days(), "heat_actions": risk.risk_actions(request.buyer),
+         "use_first": risk.use_first(request.buyer)},
     )
 
 
@@ -34,6 +38,11 @@ def yard_detail(request, pk):
         raise Http404("No stock of yours in this yard.")
     yard = rows[0].batch.pile.yard
     totals = next(y for y in s.yards if y["yard"].pk == yard.pk)
+    by_pile = {}
+    for v in rows:
+        if v.batch.pile_id not in by_pile:
+            by_pile[v.batch.pile_id] = risk.assess(v.batch.pile)
+        v.risk = by_pile[v.batch.pile_id]
     return render(request, "customers/yard.html", {"buyer": request.buyer, "yard": yard, "rows": rows, "totals": totals})
 
 
@@ -41,6 +50,7 @@ def yard_detail(request, pk):
 def batch_detail(request, pk):
     batch = get_object_or_404(Batch.objects.select_related("pile__yard", "biomass_type"), pk=pk, customer=request.buyer)
     view = services.batch_view(batch, limit=services.plant_limit(request.buyer))
+    heat = list(HeatReading.objects.filter(pile=batch.pile, status=Status.ACTIVE)[:15])
     return render(
         request,
         "customers/batch.html",
@@ -53,6 +63,9 @@ def batch_detail(request, pk):
             "quality": batch.quality.filter(status=Status.ACTIVE),
             "trail": entries_for(batch),
             "origin": contracts.batch_origin(batch),
+            "risk": risk.assess(batch.pile),
+            "heat": heat,
+            "spark": risk.spark_points(heat),
         },
     )
 

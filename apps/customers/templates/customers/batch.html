@@ -32,6 +32,15 @@
   {% else %}<p class="muted">{% trans "This batch is not linked to a delivered load, so it cannot be traced back to farmers." %}</p>{% endif %}
 </section>
 
+<section class="card"><h2>{% trans "Pile temperature and risk" %}</h2>
+  <p><span class="tag {{ risk.tag }}">{{ risk.label }}</span>{% if risk.action %} {{ risk.action }}{% endif %}</p>
+  {% if risk.reasons %}<ul class="plain">{% for r in risk.reasons %}<li>{{ r.text }}</li>{% endfor %}</ul>{% endif %}
+  {% if risk.projection %}<p class="muted small">{{ risk.projection }}</p>{% endif %}
+  {% if spark %}<svg viewBox="0 0 240 48" width="240" height="48" role="img" aria-label="{% trans "Temperature over time" %}"><polyline fill="none" stroke="#1c5d99" stroke-width="2" points="{{ spark }}"/></svg>{% endif %}
+  <ul class="plain">{% for h in heat %}<li>{{ h.taken_at|date:"d M H:i" }} · <b>{{ h.temperature_c|floatformat:"-1" }} °C</b>{% if h.spot %} · {{ h.spot }}{% endif %} <span class="muted small">{{ h.get_method_display }}</span></li>{% empty %}<li class="muted">{% trans "No temperature readings yet." %}</li>{% endfor %}</ul>
+  <p class="muted small">{% trans "A probe only shows the temperature at its own spot in the stack. This is an early-warning aid, not a guarantee against fire." %}</p>
+</section>
+
 <section class="card"><h2>{% trans "Movements" %}</h2>
   <div class="scroll"><table><thead><tr><th>{% trans "When" %}</th><th>{% trans "What" %}</th><th class="r">{% trans "Change" %}</th><th>{% trans "Note" %}</th><th class="r">{% trans "Ledger" %}</th></tr></thead><tbody>
   {% for t in transactions %}<tr><td>{{ t.occurred_at|date:"d M Y H:i" }}</td><td>{{ t.get_kind_display }}{% if t.loss_cause %} ({{ t.get_loss_cause_display }}){% endif %}</td>

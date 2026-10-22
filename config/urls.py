@@ -14,5 +14,6 @@ urlpatterns = [
     path("mitra/", include("apps.field.urls")),
     path("i18n/", include("django.conf.urls.i18n")),
     path("customer/", include("apps.customers.urls")),
+    path("yard/", include("apps.yardops.urls")),
     path("", RedirectView.as_view(pattern_name="field:dashboard", permanent=False)),
 ]

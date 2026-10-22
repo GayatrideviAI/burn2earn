@@ -1,0 +1,24 @@
+{% load static i18n %}{% get_current_language as LANGUAGE_CODE %}<!doctype html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% trans "Yard" %}{% endblock %} · Regenerix</title>
+  <link rel="stylesheet" href="{% static 'customers/customers.css' %}">
+  <link rel="stylesheet" href="{% static 'yardops/yard.css' %}">
+</head>
+<body>
+<header class="bar">
+  <a class="brand" href="{% url 'yardops:home' %}">Regenerix</a>
+  {% if user.is_authenticated %}<span class="who">{{ operator.name }}</span>{% endif %}
+  {% include "customers/lang_switch.html" %}
+  {% if user.is_authenticated %}
+  <form method="post" action="{% url 'yardops:logout' %}">{% csrf_token %}<button class="link">{% trans "Log out" %}</button></form>
+  {% endif %}
+</header>
+<main>
+  {% for message in messages %}<p class="flash {{ message.tags }}">{{ message }}</p>{% endfor %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>
