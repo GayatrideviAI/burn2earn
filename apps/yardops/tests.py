@@ -99,9 +99,9 @@ class RiskRuleTests(RiskCase):
 
     def test_a_wet_stack_and_missing_cover_are_flagged(self):
         self.heat(40)
-        services.record_inspection(self.pile, looks_wet=True)
+        services.record_inspection(self.pile, looks_wet=True, inspected_at=timezone.now() - timedelta(hours=2))
         self.assertEqual(self.level(), risk.WATCH)
-        services.record_inspection(self.pile, cover_in_place=False, inspected_at=timezone.now() + timedelta(seconds=1))
+        services.record_inspection(self.pile, cover_in_place=False, inspected_at=timezone.now() - timedelta(hours=1))
         self.assertEqual(self.level(), risk.ATTENTION)
 
     def test_stacking_damp_or_too_tall_is_flagged(self):
