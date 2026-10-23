@@ -18,6 +18,7 @@ urlpatterns = [
     path("manifest.webmanifest", views.manifest, name="manifest"),
     path("api/bootstrap/", api.bootstrap, name="api_bootstrap"),
     path("api/sync/", api.sync, name="api_sync"),
+    path("api/photos/", api.photo_upload, name="api_photos"),
     path("farmers/", views.farmer_list, name="farmer_list"),
     path("farmers/new/", views.farmer_new, name="farmer_new"),
     path("farmers/<uuid:pk>/", views.farmer_detail, name="farmer_detail"),

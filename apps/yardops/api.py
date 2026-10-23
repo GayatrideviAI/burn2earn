@@ -21,6 +21,9 @@ from apps.core.models import Status
 from apps.customers import services as stock
 from apps.customers.models import Batch, CountMethod, Pile, StockCount, QualityObservation
 
+from apps.weightphotos import api as photo_api
+from apps.weightphotos.models import Source
+
 from . import risk, services
 from .access import yard_required
 from .forms import CountForm, HeatForm, InspectionForm, MoistureForm, SizeForm
@@ -153,6 +156,7 @@ def bootstrap(request):
             "count_methods": [{"id": value, "name": str(label)} for value, label in CountMethod.choices],
             "piles": rows,
             "alerts": alerts,
+            "photos_to_weigh": photo_api.to_weigh(request.user),
         }
     )
 
@@ -271,6 +275,18 @@ def _acknowledge(operator, op_id, data):
     return "ok", ""
 
 
+def _photo_weigh(operator, op_id, data):
+    yards = {y.pk for y in operator.yards.all()}
+    try:
+        return photo_api.weigh_operation(
+            operator.user, op_id, data, may_see=lambda photo: photo.pile_id is not None and photo.pile.yard_id in yards
+        )
+    except LookupError as error:
+        raise OperationError(str(error))
+    except ValidationError as error:
+        raise OperationError("; ".join(error.messages))
+
+
 # type -> (model to look for a repeat in, handler). Changes that are naturally repeatable have no model.
 HANDLERS = {
     "heat.create": (HeatReading, _heat),
@@ -279,6 +295,7 @@ HANDLERS = {
     "moisture.create": (QualityObservation, _moisture),
     "size.update": (None, _size),
     "alert.acknowledge": (None, _acknowledge),
+    "photo.weigh": (None, _photo_weigh),
 }
 
 
@@ -333,3 +350,11 @@ def sync(request):
         return JsonResponse({"error": _("Send up to %(max)s changes as a list.") % {"max": MAX_OPERATIONS}}, status=400)
     results = [apply_operation(request.operator, op if isinstance(op, dict) else {}) for op in operations]
     return JsonResponse({"results": results, "server_time": timezone.now().isoformat()})
+
+
+@yard_required
+@require_POST
+def photo_upload(request):
+    return photo_api.handle_upload(
+        request, source=Source.YARD, taken_by=request.operator.name, piles=Pile.objects.filter(yard__in=request.yards)
+    )

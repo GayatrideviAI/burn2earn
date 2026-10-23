@@ -155,6 +155,7 @@
       case "moisture.create": return t("Moisture %(percent)s in pile %(pile)s", { percent: d.percent + "%", pile: batchPile(d.batch_id) });
       case "size.update": return t("Size of pile %(pile)s", { pile: pile(d.pile_id) });
       case "alert.acknowledge": return t("Alert seen");
+      case "photo.weigh": return t("Weighbridge weight %(tonnes)s t for a photo", { tonnes: d.weighed_tonnes });
       default: return op.type;
     }
   }
@@ -287,10 +288,12 @@
     var before = waiting.length;
     state.syncing = true;
     render();
-    var chain = Promise.resolve();
+    var chain = photos.uploadAll().catch(function (e) {
+      if (e && e.message === "login") { state.needLogin = true; throw e; }
+    });
     if (waiting.length) {
       var batch = waiting.slice(0, 50);
-      chain = fetchJson(cfg.syncUrl, {
+      chain = chain.then(function () { return fetchJson(cfg.syncUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-CSRFToken": csrf() },
         body: JSON.stringify({ operations: batch.map(function (op) { return { id: op.id, type: op.type, data: op.data }; }) }),
@@ -307,7 +310,7 @@
           }
         });
         return Promise.all(jobs).then(function () { return rememberHistory(entries); });
-      });
+      }); });
     }
     return chain
       .then(function () { return downloadData(); })
@@ -330,11 +333,13 @@
   }
 
   function refreshStatus() {
-    return queueAll().then(function (rows) {
+    return Promise.all([queueAll(), photos.all()]).then(function (both) {
+      var rows = both[0], pics = both[1];
       state.queue = rows;
+      state.photoCount = pics.length;
       var net = document.getElementById("net");
-      var waiting = rows.filter(function (op) { return !op.error; }).length;
-      var errors = rows.length - waiting;
+      var waiting = rows.filter(function (op) { return !op.error; }).length + pics.filter(function (p) { return !p.error; }).length;
+      var errors = rows.length - rows.filter(function (op) { return !op.error; }).length + pics.filter(function (p) { return p.error; }).length;
       net.className = "net " + (navigator.onLine ? "on" : "off");
       var bits = [navigator.onLine ? t("Online") : t("Offline")];
       if (waiting) bits.push(t("%(n)s waiting", { n: waiting }));
@@ -409,8 +414,36 @@
 
   function tag(level) { return h("span", { class: "tag " + TAGS[level] }, levelLabel(level)); }
 
+  // ---------------------------------------------------------------- photos (shared with the Mitra app)
+  var photos = window.WeightPhotos.create({
+    app: "yard", uploadUrl: cfg.photosUrl, t: t, csrf: csrf, today: today,
+    ui: { h: h, row: row, input: input, select: select, form: form },
+    saved: function (params) {
+      state.flash = { text: t("Photo saved on this phone."), level: 0 };
+      // Counts first, then move: the move redraws the screen and shows the message once.
+      refreshStatus().then(function () { location.hash = params.back; scheduleSync(); });
+    },
+    refresh: function () { refreshStatus().then(render); scheduleSync(); },
+    queuedWeights: function () {
+      return state.queue.filter(function (op) { return op.type === "photo.weigh"; }).map(function (op) { return op.data.photo_id; });
+    },
+    addWeight: function (photoId, w) {
+      addChange("photo.weigh", { photo_id: photoId, weighed_tonnes: w.weighed_tonnes, slip_number: w.slip_number, weighed_on: w.weighed_on }).then(render);
+    },
+  });
+
   // ---------------------------------------------------------------- screens
   var views = {};
+
+  views.photo = function (subject, pileId) {
+    var pile = pileId ? pileFor(pileId) : null;
+    if (pileId && !pile) return [h("p", {}, t("Pile not found."))];
+    return photos.capture({ subject: subject === "load" ? "load" : "stack", pile: pile, back: pile ? "#/pile/" + pile.id : "#/" });
+  };
+
+  views.photos = function () {
+    return photos.list(state.snapshot ? state.snapshot.photos_to_weigh : []);
+  };
 
   function view() { return overlay(state.snapshot, state.queue); }
 
@@ -449,6 +482,7 @@
           h("ul", { class: "reasons" }, (a.reasons || "").split("\n").filter(Boolean).map(function (r) { return h("li", {}, r); })),
           ack);
       }),
+      h("p", {}, link(t("Photograph a loaded vehicle"), "#/photo/load", "button"), " ", link(t("Photos"), "#/photos", "button")),
       h("h2", {}, t("All piles")),
       v.piles.length ? h("ul", { class: "list" }, v.piles.map(function (p) {
         var last = p.readings[0];
@@ -481,7 +515,8 @@
         link(t("Log an inspection"), "#/inspect/" + p.id, "button"),
         link(t("Count the stock"), "#/count/" + p.id, "button"),
         link(t("Log a moisture reading"), "#/moisture/" + p.id, "button"),
-        link(t("Pile size and cover"), "#/size/" + p.id, "button")),
+        link(t("Pile size and cover"), "#/size/" + p.id, "button"),
+        link(t("Photograph this stack"), "#/photo/stack/" + p.id, "button")),
       h("h2", {}, t("Recent temperatures")),
       p.readings.length ? h("ul", { class: "list" }, p.readings.map(function (r) {
         return h("li", {}, r.temperature_c + " °C", h("small", {}, ageText(r.at) + (r.spot ? " · " + r.spot : "") + (r.pending ? " · " + t("waiting to send") : "")));
@@ -641,17 +676,20 @@
       case "count": out = views.count(parts[1]); break;
       case "moisture": out = views.moisture(parts[1]); break;
       case "size": out = views.size(parts[1]); break;
+      case "photo": out = views.photo(parts[1], parts[2]); break;
+      case "photos": out = views.photos(); break;
       case "sync": out = views.sync(); break;
       default: out = views.home();
     }
     drawLangs();
-    main.textContent = "";
-    append(main, out);
     var tabs = document.getElementById("tabs");
     tabs.textContent = "";
-    [["#/", t("Home")], ["#/sync", t("To send") + " (" + state.queue.length + ")"]].forEach(function (item) {
+    [["#/", t("Home")], ["#/photos", t("Photos") + " (" + (state.photoCount || 0) + ")"], ["#/sync", t("To send") + " (" + state.queue.length + ")"]].forEach(function (item) {
       tabs.appendChild(h("a", { href: item[0], class: (location.hash || "#/") === item[0] ? "active" : "" }, item[1]));
     });
+    // Some screens (the photo list) read from the phone's storage first.
+    var draw = function (nodes) { main.textContent = ""; append(main, nodes); };
+    if (out && typeof out.then === "function") out.then(draw); else draw(out);
   }
 
   window.addEventListener("hashchange", render);

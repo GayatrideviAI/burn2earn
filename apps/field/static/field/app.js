@@ -85,6 +85,7 @@
       case "season.create": return t("Add a crop (%(year)s)", { year: d.year });
       case "collection.create": return t("Pickup of %(tonnes)s t from %(farmer)s", { tonnes: d.quantity_tonnes, farmer: farmer(d.farmer_id) });
       case "output.create": return t("Output of %(tonnes)s t", { tonnes: d.quantity_tonnes });
+      case "photo.weigh": return t("Weighbridge weight %(tonnes)s t for a photo", { tonnes: d.weighed_tonnes });
       default: return op.type;
     }
   }
@@ -175,7 +176,7 @@
   }
 
   // ---------------------------------------------------------------- state
-  var state = { snapshot: null, queue: [], history: [], online: navigator.onLine, syncing: false, needLogin: false };
+  var state = { snapshot: null, queue: [], history: [], online: navigator.onLine, syncing: false, needLogin: false, flash: null, photoCount: 0 };
 
   function load() {
     return Promise.all([kvGet("snapshot"), queueAll(), kvGet("history")]).then(function (r) {
@@ -225,10 +226,12 @@
     var before = waiting.length;
     state.syncing = true;
     render();
-    var chain = Promise.resolve();
+    var chain = photos.uploadAll().catch(function (e) {
+      if (e && e.message === "login") { state.needLogin = true; throw e; }
+    });
     if (waiting.length) {
       var batch = waiting.slice(0, 50);
-      chain = fetchJson(cfg.syncUrl, {
+      chain = chain.then(function () { return fetchJson(cfg.syncUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-CSRFToken": csrf() },
         body: JSON.stringify({ operations: batch.map(function (op) { return { id: op.id, type: op.type, data: op.data }; }) }),
@@ -245,7 +248,7 @@
           }
         });
         return Promise.all(jobs).then(function () { return rememberHistory(entries); });
-      });
+      }); });
     }
     return chain
       .then(function () { return downloadData(); })
@@ -271,11 +274,13 @@
   }
 
   function refreshStatus() {
-    return queueAll().then(function (rows) {
+    return Promise.all([queueAll(), photos.all()]).then(function (both) {
+      var rows = both[0], pics = both[1];
       state.queue = rows;
+      state.photoCount = pics.length;
       var net = document.getElementById("net");
-      var waiting = rows.filter(function (op) { return !op.error; }).length;
-      var errors = rows.length - waiting;
+      var waiting = rows.filter(function (op) { return !op.error; }).length + pics.filter(function (p) { return !p.error; }).length;
+      var errors = rows.length - rows.filter(function (op) { return !op.error; }).length + pics.filter(function (p) { return p.error; }).length;
       net.className = "net " + (navigator.onLine ? "on" : "off");
       var bits = [navigator.onLine ? t("Online") : t("Offline")];
       if (waiting) bits.push(t("%(n)s waiting", { n: waiting }));
@@ -348,8 +353,41 @@
   function positive(value) { var n = Number(value); return value !== "" && isFinite(n) && n > 0; }
   function notFuture(value) { return value <= today(); }
 
+  // ---------------------------------------------------------------- photos (shared with the Yard app)
+  var photos = window.WeightPhotos.create({
+    app: "mitra", uploadUrl: cfg.photosUrl, t: t, csrf: csrf, today: today,
+    ui: { h: h, row: row, input: input, select: select, form: form },
+    saved: function (params) {
+      state.flash = { text: t("Photo saved on this phone."), level: 0 };
+      // Counts first, then move: the move redraws the screen and shows the message once.
+      refreshStatus().then(function () { location.hash = params.back; scheduleSync(); });
+    },
+    refresh: function () { refreshStatus().then(render); scheduleSync(); },
+    queuedWeights: function () {
+      return state.queue.filter(function (op) { return op.type === "photo.weigh"; }).map(function (op) { return op.data.photo_id; });
+    },
+    addWeight: function (photoId, w) {
+      addChange("photo.weigh", { photo_id: photoId, weighed_tonnes: w.weighed_tonnes, slip_number: w.slip_number, weighed_on: w.weighed_on }).then(render);
+    },
+  });
+
   // ---------------------------------------------------------------- screens
   var views = {};
+
+  views.photo = function (subject) {
+    return photos.capture({ subject: subject === "stack" ? "stack" : "load", pile: null, back: "#/" });
+  };
+
+  views.photos = function () {
+    return photos.list(state.snapshot ? state.snapshot.photos_to_weigh : []);
+  };
+
+  function flashBox() {
+    if (!state.flash) return null;
+    var text = state.flash.text;
+    state.flash = null;
+    return h("p", { class: "msg" }, text);
+  }
 
   views.home = function () {
     var totals = pendingTotals(state.queue);
@@ -366,7 +404,9 @@
       totals.pickups || totals.outputs
         ? h("p", { class: "muted" }, t("Saved on this phone, not sent yet: %(pickups)s pickup(s), %(pt)s t; %(outputs)s output report(s), %(ot)s t.", { pickups: totals.pickups, pt: totals.pickupTonnes.toFixed(2), outputs: totals.outputs, ot: totals.outputTonnes.toFixed(2) }))
         : null,
+      flashBox(),
       h("p", {}, link(t("Register a farmer"), "#/farmer/new", "button primary"), " ", link(t("Report output"), "#/output", "button")),
+      h("p", {}, link(t("Photograph a loaded vehicle"), "#/photo/load", "button"), " ", link(t("Photograph a stack"), "#/photo/stack", "button")),
       !state.snapshot ? h("p", { class: "msg warning" }, t("Connect to the internet once so your farmers and lists can be downloaded.")) : null,
       state.needLogin ? h("p", { class: "msg warning" }, [t("Please log in again to send your changes.") + " ", h("a", { href: cfg.loginUrl + "?next=" + encodeURIComponent(location.pathname) }, t("Log in"))]) : null,
       h("p", { class: "muted" }, t("Everything you enter is saved on this phone first. It is sent when there is a signal.")),
@@ -578,17 +618,20 @@
       case "crop": out = views.crop(parts[1], parts[2]); break;
       case "pickup": out = views.pickup(parts[1]); break;
       case "output": out = views.output(); break;
+      case "photo": out = views.photo(parts[1]); break;
+      case "photos": out = views.photos(); break;
       case "sync": out = views.sync(); break;
       default: out = views.home();
     }
     drawLangs();
-    main.textContent = "";
-    append(main, out);
     var tabs = document.getElementById("tabs");
     tabs.textContent = "";
-    [["#/", t("Home")], ["#/farmers", t("Farmers")], ["#/output", t("Output")], ["#/sync", t("To send") + " (" + state.queue.length + ")"]].forEach(function (t) {
-      tabs.appendChild(h("a", { href: t[0], class: (location.hash || "#/") === t[0] ? "active" : "" }, t[1]));
+    [["#/", t("Home")], ["#/farmers", t("Farmers")], ["#/output", t("Output")], ["#/photos", t("Photos") + " (" + (state.photoCount || 0) + ")"], ["#/sync", t("To send") + " (" + state.queue.length + ")"]].forEach(function (item) {
+      tabs.appendChild(h("a", { href: item[0], class: (location.hash || "#/") === item[0] ? "active" : "" }, item[1]));
     });
+    // Some screens (the photo list) read from the phone's storage first.
+    var draw = function (nodes) { main.textContent = ""; append(main, nodes); };
+    if (out && typeof out.then === "function") out.then(draw); else draw(out);
   }
 
   window.addEventListener("hashchange", function () { state.confirmDuplicate = false; render(); });

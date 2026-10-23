@@ -11,7 +11,7 @@ from django.views.decorators.http import require_POST
 from apps.core.models import Status
 from apps.customers import services as stock
 from apps.customers.models import Batch, Pile
-from apps.field.jscatalog import js_catalog_json
+from apps.field.jscatalog import PHOTOS_JS, js_catalog_json
 
 from . import risk, services
 from .access import yard_required
@@ -114,7 +114,7 @@ def acknowledge(request, pk):
 @ensure_csrf_cookie
 def offline_app(request):
     """The page that installs the offline app. After the first visit it opens without a signal."""
-    return render(request, "yardops/app.html", {"catalog_json": js_catalog_json(APP_JS)})
+    return render(request, "yardops/app.html", {"catalog_json": js_catalog_json((APP_JS, PHOTOS_JS))})
 
 
 def service_worker(request):

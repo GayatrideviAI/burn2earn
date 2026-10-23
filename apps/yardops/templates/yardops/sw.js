@@ -1,9 +1,10 @@
 {% load static %}
 // Keeps the offline app's page and files on the phone so it opens with no signal.
-const VERSION = "yard-app-v1";
+const VERSION = "yard-app-v2";
 const SHELL = [
   "{% url 'yardops:app' %}",
   "{% static 'yardops/app.js' %}",
+  "{% static 'weightphotos/photos.js' %}",
   "{% static 'field/app.css' %}",
   "{% static 'yardops/app.css' %}",
   "{% static 'field/icon.svg' %}",
