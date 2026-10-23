@@ -84,6 +84,9 @@ details{margin-top:10px}summary{cursor:pointer;font-weight:600}
   <h2>Estimate</h2>
   <p id="seen" class="mute"></p>
   <div class="result" id="cards"></div>
+  <h2 style="margin-top:18px">What it could earn (Rs)</h2>
+  <div class="result" id="money"></div>
+  <p class="mute" id="share" style="margin-top:8px"></p>
   <div id="warns"></div>
   <p class="mute" style="margin-top:12px">Each range runs from a low case to a high case; the big number is the most likely.</p>
 </section>
@@ -118,11 +121,13 @@ $("photo").addEventListener("change", () => {
 });
 function show(el, text) { el.textContent = text; el.hidden = !text; }
 function fmt(n) { return n >= 100 ? Math.round(n).toString() : n >= 10 ? n.toFixed(1) : n >= 1 ? n.toFixed(2) : n.toFixed(3); }
-function card(title, q) {
+const rs = (n) => "Rs " + Math.round(n).toLocaleString("en-IN");
+function card(title, q, unit, f) {
+  unit = unit || " t"; f = f || fmt;
   const d = document.createElement("div"); d.className = "big";
   const t = document.createElement("div"); t.textContent = title; t.className = "mute";
-  const n = document.createElement("div"); n.className = "n"; n.textContent = fmt(q.likely) + " t";
-  const r = document.createElement("div"); r.className = "r"; r.textContent = "range " + fmt(q.low) + " to " + fmt(q.high) + " t";
+  const n = document.createElement("div"); n.className = "n"; n.textContent = f(q.likely) + unit;
+  const r = document.createElement("div"); r.className = "r"; r.textContent = "range " + f(q.low) + " to " + f(q.high) + unit;
   d.append(t, n, r); return d;
 }
 form.addEventListener("submit", async (e) => {
@@ -153,6 +158,9 @@ function render(d) {
   bits.push("straw looks " + d.seen.moisture_look);
   $("seen").textContent = "What was read from your photo: " + bits.join("; ") + ".";
   $("cards").replaceChildren(card("Compressed biogas (CBG)", d.cbg_tonnes), card("Pellets", d.pellet_tonnes), card("Straw as found", d.straw_tonnes));
+  const m = d.revenue_rs, money = (t, q) => card(t, q, "", rs);
+  $("money").replaceChildren(money("Selling the straw", m.straw), money("Carbon credits (before costs)", m.carbon), money("Total", m.total));
+  $("share").textContent = "Carbon credits are counted at " + Math.round(m.carbon_share * 100) + "% going to the farmer, and about " + fmt(d.co2e_tonnes.likely) + " tonnes of CO2 equivalent avoided by not burning. Real credits need a registered, verified project.";
   $("warns").replaceChildren(...[...d.warnings, ...d.notes.filter(Boolean)].map((w) => { const p = document.createElement("div"); p.className = "note"; p.textContent = w; return p; }));
   $("out").hidden = false; $("out").scrollIntoView({ behavior: "smooth" });
 }

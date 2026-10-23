@@ -16,6 +16,7 @@
     <a href="{% url 'field:farmer_list' %}">{% trans "Farmers" %}</a>
     <a href="{% url 'field:stock' %}">{% trans "Stock" %}</a>
     <a href="{% url 'field:dispatch_list' %}">{% trans "Dispatch" %}</a>
+    {% if PREDICTOR_URL %}<a href="{{ PREDICTOR_URL }}" target="_blank" rel="noopener">{% trans "Estimate earnings" %}</a>{% endif %}
     <form method="post" action="{% url 'field:logout' %}">{% csrf_token %}<button class="link">{% trans "Log out" %}</button></form>
   </nav>
   {% endif %}

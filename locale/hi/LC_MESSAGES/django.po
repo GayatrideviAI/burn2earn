@@ -18,7 +18,7 @@ msgstr "स्टॉक"
 msgid "Contracts"
 msgstr "अनुबंध"
 
-#: apps/customers/templates/customers/base.html:18 apps/customers/templates/customers/forbidden.html:8 apps/field/templates/field/base.html:19
+#: apps/customers/templates/customers/base.html:18 apps/customers/templates/customers/forbidden.html:8 apps/field/templates/field/base.html:20
 msgid "Log out"
 msgstr "लॉग आउट"
 
@@ -1004,6 +1004,10 @@ msgstr "ट्यूबवेल"
 #. No irrigation; depends on rain.
 msgid "Rain-fed"
 msgstr "बारिश पर निर्भर"
+
+#: apps/field/templates/field/base.html:19 apps/field/templates/field/dashboard.html:24 apps/field/templates/field/farmer_detail.html:7
+msgid "Estimate earnings"
+msgstr "कमाई का अनुमान लगाएँ"
 
 #: apps/field/templates/field/collection_form.html:3 apps/field/templates/field/farmer_detail.html:7 apps/field/static/field/app.js:481
 #. Record that residue was collected from a farmer.

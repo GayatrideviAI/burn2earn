@@ -80,13 +80,13 @@ def _bale_kg(reading, known_bale_kg):
     return kg, "Bale weight worked out from its size and typical density."
 
 
-def _conversion(straw_kg, moisture, cbg_ratio, pellet_moisture, recovery):
+def _conversion(straw_kg, moisture, cbg_ratio, pellet_moisture, recovery, carbon_per_dry_t):
     """straw_kg is weight as found. Returns (cbg_tonnes, pellet_tonnes)."""
     dry_t = straw_kg * (1 - moisture) / 1000
     reference_dry_per_cbg = cbg_ratio * (1 - CBG_REFERENCE_MOISTURE)
     cbg = dry_t / reference_dry_per_cbg
     pellets = dry_t * recovery / (1 - pellet_moisture)
-    return cbg, pellets
+    return cbg, pellets, dry_t * carbon_per_dry_t
 
 
 def _combine(likely_out, ups, downs):
@@ -95,7 +95,15 @@ def _combine(likely_out, ups, downs):
     return Q(likely_out * math.exp(-down), likely_out, likely_out * math.exp(up))
 
 
-def estimate(mode, reading, known_bale_kg=None):
+def _times(a, b):
+    """Product of two independent uncertain quantities."""
+    down = math.sqrt(math.log(a.likely / a.low) ** 2 + math.log(b.likely / b.low) ** 2)
+    up = math.sqrt(math.log(a.high / a.likely) ** 2 + math.log(b.high / b.likely) ** 2)
+    likely = a.likely * b.likely
+    return Q(likely * math.exp(-down), likely, likely * math.exp(up))
+
+
+def estimate(mode, reading, known_bale_kg=None, carbon_share=1.0):
     """mode is "bales" or "field"; reading is the (already parsed) vision JSON."""
     warnings = []
     notes = []
@@ -138,28 +146,35 @@ def estimate(mode, reading, known_bale_kg=None):
         cbg_ratio=_factor("cbg_straw_ratio"),
         pellet_moisture=_factor("pellet_moisture"),
         recovery=_factor("pellet_recovery"),
+        carbon_per_dry_t=_factor("carbon_per_dry_tonne"),
     )
-    likely_inputs.update({k: inputs[k].likely for k in ("moisture", "cbg_ratio", "pellet_moisture", "recovery")})
+    likely_inputs.update({k: inputs[k].likely for k in ("moisture", "cbg_ratio", "pellet_moisture", "recovery", "carbon_per_dry_t")})
 
     def run(p):
         kg = straw(p)
-        cbg, pel = _conversion(kg, p["moisture"], p["cbg_ratio"], p["pellet_moisture"], p["recovery"])
-        return kg / 1000, cbg, pel
+        cbg, pel, co2 = _conversion(kg, p["moisture"], p["cbg_ratio"], p["pellet_moisture"], p["recovery"], p["carbon_per_dry_t"])
+        return kg / 1000, cbg, pel, co2
 
     base = run(likely_inputs)
-    ups = [[], [], []]
-    downs = [[], [], []]
+    ups = [[], [], [], []]
+    downs = [[], [], [], []]
     for key, q in inputs.items():
         outs = []
         for end in (q.low, q.high):
             trial = dict(likely_inputs)
             trial[key] = end
             outs.append(run(trial))
-        for i in range(3):
+        for i in range(4):
             lo, hi = min(o[i] for o in outs), max(o[i] for o in outs)
             ups[i].append(math.log(max(hi, base[i]) / base[i]))
             downs[i].append(math.log(base[i] / min(lo, base[i])))
-    straw_q, cbg_q, pellet_q = (_combine(base[i], ups[i], downs[i]) for i in range(3))
+    straw_q, cbg_q, pellet_q, co2_q = (_combine(base[i], ups[i], downs[i]) for i in range(4))
+
+    # Money. Straw income and carbon value both rise and fall with the straw weight, so the totals add low to low and high to high.
+    straw_rs = _times(straw_q, _factor("straw_price"))
+    carbon_rs = _times(co2_q, _factor("carbon_price"))
+    carbon_rs = Q(carbon_rs.low * carbon_share, carbon_rs.likely * carbon_share, carbon_rs.high * carbon_share)
+    total_rs = Q(straw_rs.low + carbon_rs.low, straw_rs.likely + carbon_rs.likely, straw_rs.high + carbon_rs.high)
 
     if reading.get("moisture_look") in (None, "unknown"):
         warnings.append("The straw's dryness could not be judged, so damp was assumed.")
@@ -173,6 +188,10 @@ def estimate(mode, reading, known_bale_kg=None):
         digits = max(0, min(digits, 6))
         return {"low": round(q.low, digits), "likely": round(q.likely, digits), "high": round(q.high, digits)}
 
+    def money(q):
+        step = 10 if q.likely < 10000 else 100
+        return {k: int(round(v / step) * step) for k, v in (("low", q.low), ("likely", q.likely), ("high", q.high))}
+
     return {
         "mode": mode,
         "seen": {**summary, "residue_type": reading.get("residue_type", "unknown"),
@@ -180,6 +199,9 @@ def estimate(mode, reading, known_bale_kg=None):
         "straw_tonnes": r(straw_q),
         "cbg_tonnes": r(cbg_q),
         "pellet_tonnes": r(pellet_q),
+        "co2e_tonnes": r(co2_q),
+        "revenue_rs": {"straw": money(straw_rs), "carbon": money(carbon_rs), "total": money(total_rs),
+                       "carbon_share": carbon_share},
         "warnings": warnings,
         "notes": notes + [reading.get("notes", "")[:300]] if reading.get("notes") else notes,
     }

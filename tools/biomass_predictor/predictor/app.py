@@ -13,8 +13,12 @@ STATIC = Path(__file__).parent / "static"
 CAVEATS = [
     "This is a rough estimate from one photo, not a measurement. Weigh before you trade.",
     "The conversion numbers are published figures or placeholders and have not been confirmed by a technical team.",
+    "Money figures are a guide. Real straw prices are set by Regenerix, and carbon credits depend on a registered, verified project.",
     "The photo reader has not yet been checked against weighed piles.",
 ]
+
+
+CARBON_SHARE = min(1.0, max(0.0, float(os.environ.get("PREDICTOR_FARMER_CARBON_SHARE", 1.0))))
 
 
 def client_ip(request):
@@ -84,7 +88,8 @@ def create_app(reader=None, limiter=None):
             reason = str(reading.get("reason") or "The photo could not be used.")[:200]
             return fail(f"{reason} Try a clearer photo with the reference object in view.", 422)
         try:
-            result = engine.estimate(mode, reading, known_bale_kg=known if mode == "bales" else None)
+            result = engine.estimate(mode, reading, known_bale_kg=known if mode == "bales" else None,
+                                    carbon_share=CARBON_SHARE)
         except engine.BadReading as error:
             return fail(f"{error} Try another photo.", 422)
         result["caveats"] = CAVEATS

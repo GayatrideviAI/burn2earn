@@ -21,7 +21,7 @@
   <a class="button" href="{% url 'field:stock' %}">{% trans "See details" %}</a>
 </section>
 {% endif %}
-<p><a class="button primary" href="{% url 'field:farmer_new' %}">{% trans "Register a farmer" %}</a></p>
+<p><a class="button primary" href="{% url 'field:farmer_new' %}">{% trans "Register a farmer" %}</a>{% if PREDICTOR_URL %} <a class="button" href="{{ PREDICTOR_URL }}" target="_blank" rel="noopener">{% trans "Estimate earnings" %}</a>{% endif %}</p>
 <h2>{% trans "Recently added" %}</h2>
 <ul class="list">
   {% for farmer in recent %}<li><a href="{% url 'field:farmer_detail' farmer.pk %}">{{ farmer.name }} <small>{{ farmer.code }}</small></a></li>

@@ -337,3 +337,5 @@ When adding a customer-facing word: in a template use `{% trans "Text" %}` or `{
 ## Biomass predictor (stand-alone)
 
 `tools/biomass_predictor/` is a separate public web tool that estimates tonnes of CBG and pellets from a straw photo. See its README for sources, limits and how to run it.
+
+To show "Estimate earnings" links to the predictor in the Mitra pages (menu, dashboard, farmer page), set `PREDICTOR_URL` to its public address, for example `PREDICTOR_URL=https://estimate.example.org/`. Leave it empty to hide them. Prices and carbon figures live in the predictor's `factors.py`; Regenerix should confirm them.

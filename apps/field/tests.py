@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.test import override_settings
 from django.urls import reverse
 
 from apps.accounts.models import Role, User
@@ -71,6 +72,20 @@ class AccessTests(FieldTestCase):
         response = self.client.post(reverse("field:logout"))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(self.client.get(reverse("field:dashboard")).status_code, 302)
+
+
+class PredictorLinkTests(FieldTestCase):
+    @override_settings(PREDICTOR_URL="https://predict.example.org/")
+    def test_link_shows_when_the_predictor_address_is_set(self):
+        farmer = self.register()
+        for url in (reverse("field:dashboard"), reverse("field:farmer_detail", args=[farmer.pk])):
+            response = self.client.get(url)
+            self.assertContains(response, 'href="https://predict.example.org/"')
+            self.assertContains(response, 'rel="noopener"')
+
+    @override_settings(PREDICTOR_URL="")
+    def test_no_link_when_it_is_not_set(self):
+        self.assertNotContains(self.client.get(reverse("field:dashboard")), "Estimate earnings")
 
 
 class FarmerPageTests(FieldTestCase):

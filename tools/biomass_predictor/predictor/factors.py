@@ -32,6 +32,8 @@ class Factor:
 CSE = "https://cdn.cseindia.org/attachments/0.86053500_1785406558_national-bluepint.pdf"
 ICAR = "https://epubs.icar.org.in/index.php/IJAgS/article/download/59001/24421/147276"
 MDPI = "https://www.mdpi.com/2071-1050/14/9/5077"
+IPCC = "https://greencalculus.com/data/afolu-biomass-burning-factors/"
+BEE = "https://www.spglobal.com/energy/en/news-research/latest-news/energy-transition/110124-industry-sees-initial-carbon-credits-priced-around-10mtco2e-in-india"
 RAILA = "https://www.tf.lbtu.lv/conference/proceedings2012/Papers/050_Raila_A.pdf"
 
 FACTORS = {
@@ -80,6 +82,24 @@ FACTORS = {
         Factor(
             "pellet_recovery", "Share of dry straw that ends up in pellets", "fraction", 0.85, 0.93, 0.97, "assumption",
             "No source found yet", "", "Allows for dust, screening and process loss.",
+        ),
+        Factor(
+            "straw_price", "Price paid for straw", "Rs per tonne as found", 1000, 1250, 1500, "published",
+            "CSE national blueprint for CBG: feedstock price Rs 1,000-1,500 per tonne", CSE,
+            "This is the price a plant is assumed to pay. What reaches the farmer may be lower. "
+            "Regenerix must confirm its own price.",
+        ),
+        Factor(
+            "carbon_per_dry_tonne", "Emissions avoided by not burning (CH4 + N2O)", "tonnes CO2e per tonne dry straw", 0.05, 0.074, 0.10, "derived",
+            "IPCC 2006 Vol.4 Ch.2 (CH4 2.7 g and N2O 0.07 g per kg dry matter burnt; rice combustion factor 0.8), "
+            "AR6 warming values 27 and 273", IPCC,
+            "0.8 x (2.7 x 27 + 0.07 x 273) / 1000 = 0.074. Low and high are our widening. "
+            "A real credit needs a registered method and verification, which may count differently.",
+        ),
+        Factor(
+            "carbon_price", "Carbon credit price", "Rs per tonne CO2e", 600, 850, 1100, "assumption",
+            "Indian government expects about US$10 per credit (BEE, quoted by S&P Global, Nov 2024)", BEE,
+            "We assumed about Rs 85 per US$; the exchange rate and voluntary-market price are not sourced.",
         ),
     ]
 }
