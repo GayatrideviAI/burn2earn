@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Straw to CBG and pellets estimator</title>
+<style>
+:root{--bg:#f6f3ea;--card:#fffdf7;--ink:#26301f;--mute:#6a7360;--line:#ddd6c2;--green:#2f6b3a;--green-ink:#fff;--amber:#8a5a00;--amber-bg:#fbf0d4;--red:#9b2c1d;--red-bg:#fbe5e0}
+@media (prefers-color-scheme:dark){:root{--bg:#161a13;--card:#1f241b;--ink:#e9eddf;--mute:#a1aa95;--line:#394133;--green:#7fc58a;--green-ink:#10200f;--amber:#f0c36a;--amber-bg:#3a2e12;--red:#ff9c8c;--red-bg:#3b1d19}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 56px}
+h1{font-size:1.5rem;line-height:1.2;margin:8px 0 4px}
+h2{font-size:1.05rem;margin:0 0 10px}
+p{margin:0 0 12px}.mute{color:var(--mute);font-size:.9rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:16px 0}
+label{display:block;font-weight:600;margin:14px 0 4px}
+select,input[type=number],input[type=text]{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg label{margin:0;font-weight:500}
+.seg input{position:absolute;opacity:0}
+.seg span{display:block;text-align:center;padding:10px;border:1px solid var(--line);border-radius:8px;cursor:pointer}
+.seg input:checked+span{background:var(--green);color:var(--green-ink);border-color:var(--green)}
+.seg input:focus-visible+span,button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+button{width:100%;margin-top:18px;padding:13px;border:0;border-radius:10px;background:var(--green);color:var(--green-ink);font:inherit;font-weight:700;cursor:pointer}
+button[disabled]{opacity:.6;cursor:progress}
+#preview{max-width:100%;max-height:240px;border-radius:8px;margin-top:10px;display:none}
+.result{display:grid;gap:10px;grid-template-columns:1fr}
+@media (min-width:560px){.result{grid-template-columns:1fr 1fr}}
+.big{border:1px solid var(--line);border-radius:10px;padding:12px}
+.big .n{font-size:2rem;font-weight:800;line-height:1.1}
+.big .r{color:var(--mute);font-size:.9rem}
+.note{padding:10px 12px;border-radius:8px;background:var(--amber-bg);color:var(--amber);margin:8px 0;font-size:.92rem}
+.err{padding:10px 12px;border-radius:8px;background:var(--red-bg);color:var(--red);margin-top:14px}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th,td{text-align:left;padding:6px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+.tag{font-size:.75rem;padding:1px 6px;border-radius:99px;border:1px solid var(--line)}
+.tag.assumption{background:var(--amber-bg);color:var(--amber);border-color:transparent}
+details{margin-top:10px}summary{cursor:pointer;font-weight:600}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<h1>How much CBG and pellets can this straw make?</h1>
+<p class="mute">Upload one photo of baled or loose crop straw. You get a rough range in tonnes. It is an estimate, not a measurement.</p>
+
+<form id="form" class="card" novalidate>
+  <h2>1. What does the photo show?</h2>
+  <div class="seg" role="radiogroup" aria-label="Photo type">
+    <label><input type="radio" name="mode" value="bales" checked><span>Bales or stacks</span></label>
+    <label><input type="radio" name="mode" value="field"><span>Loose straw in a field</span></label>
+  </div>
+
+  <label for="photo">2. Photo</label>
+  <input id="photo" name="photo" type="file" accept="image/*" required>
+  <img id="preview" alt="Your photo">
+  <p class="mute" id="tip" style="margin-top:8px"></p>
+
+  <label for="ref">3. Something of known size in the photo</label>
+  <select id="ref">
+    <option value="A4 paper|29.7">A sheet of A4 paper (long side 29.7 cm)</option>
+    <option value="metre stick|100">A 1 metre stick or rod</option>
+    <option value="door|200">A standard door (200 cm tall)</option>
+    <option value="standing adult|165">A standing adult (about 165 cm; least exact)</option>
+    <option value="other|">Something else...</option>
+  </select>
+  <div id="custom" hidden>
+    <label for="ref_label">What is it?</label><input id="ref_label" type="text" maxlength="60">
+    <label for="ref_cm">Its length in cm</label><input id="ref_cm" type="number" min="5" max="1000" step="any" inputmode="decimal">
+  </div>
+
+  <div id="knownbox">
+    <label for="known">Weight of one bale in kg (optional)</label>
+    <input id="known" type="number" min="5" max="700" step="any" inputmode="decimal" placeholder="Leave empty if you do not know">
+    <p class="mute">If you know it, the result is more reliable.</p>
+  </div>
+
+  <button id="go" type="submit">Estimate</button>
+  <div id="error" class="err" role="alert" hidden></div>
+</form>
+
+<section id="out" class="card" hidden aria-live="polite">
+  <h2>Estimate</h2>
+  <p id="seen" class="mute"></p>
+  <div class="result" id="cards"></div>
+  <div id="warns"></div>
+  <p class="mute" style="margin-top:12px">Each range runs from a low case to a high case; the big number is the most likely.</p>
+</section>
+
+<section class="card">
+  <h2>Read this before using the numbers</h2>
+  <p id="caveats" class="mute"></p>
+  <p class="mute"><strong>Privacy:</strong> your photo is sent to an AI service to be read and is not saved by this tool. Location and device details are removed first.</p>
+  <details id="how"><summary>How the numbers are worked out</summary>
+    <p class="mute" style="margin-top:8px">The AI reads sizes and counts from the photo. Everything after that is simple arithmetic with the figures below. Figures marked "assumption" have no published source yet.</p>
+    <div style="overflow-x:auto"><table id="factors"></table></div>
+  </details>
+</section>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+const form = $("form"), mode = () => form.mode.value;
+const TIPS = {
+  bales: "Stand back so the whole stack is in view and keep the known-size object next to the bales, facing the camera.",
+  field: "Take the photo from a raised spot looking across the field, with the known-size object lying in the straw."
+};
+function sync() {
+  $("tip").textContent = TIPS[mode()];
+  $("knownbox").hidden = mode() !== "bales";
+  $("custom").hidden = $("ref").value.split("|")[0] !== "other";
+}
+form.addEventListener("change", sync); sync();
+$("photo").addEventListener("change", () => {
+  const f = $("photo").files[0], p = $("preview");
+  if (!f) { p.style.display = "none"; return; }
+  p.src = URL.createObjectURL(f); p.style.display = "block";
+});
+function show(el, text) { el.textContent = text; el.hidden = !text; }
+function fmt(n) { return n >= 100 ? Math.round(n).toString() : n >= 10 ? n.toFixed(1) : n >= 1 ? n.toFixed(2) : n.toFixed(3); }
+function card(title, q) {
+  const d = document.createElement("div"); d.className = "big";
+  const t = document.createElement("div"); t.textContent = title; t.className = "mute";
+  const n = document.createElement("div"); n.className = "n"; n.textContent = fmt(q.likely) + " t";
+  const r = document.createElement("div"); r.className = "r"; r.textContent = "range " + fmt(q.low) + " to " + fmt(q.high) + " t";
+  d.append(t, n, r); return d;
+}
+form.addEventListener("submit", async (e) => {
+  e.preventDefault(); show($("error"), ""); $("out").hidden = true;
+  const file = $("photo").files[0];
+  if (!file) return show($("error"), "Please choose a photo.");
+  let [label, cm] = $("ref").value.split("|");
+  if (label === "other") { label = $("ref_label").value || "reference object"; cm = $("ref_cm").value; }
+  if (!cm) return show($("error"), "Enter the length of the known-size object.");
+  const body = new FormData();
+  body.append("mode", mode()); body.append("photo", file);
+  body.append("ref_label", label); body.append("ref_cm", cm);
+  if (mode() === "bales" && $("known").value) body.append("known_bale_kg", $("known").value);
+  $("go").disabled = true; $("go").textContent = "Reading your photo...";
+  try {
+    const res = await fetch("/api/estimate", { method: "POST", body });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) return show($("error"), data.error || "Something went wrong. Please try again.");
+    render(data);
+  } catch (err) {
+    show($("error"), "Could not reach the server. Check your connection and try again.");
+  } finally { $("go").disabled = false; $("go").textContent = "Estimate"; }
+});
+function render(d) {
+  const bits = [];
+  if (d.seen.bales_counted) bits.push("about " + d.seen.bales_counted + " bales of about " + d.seen.kg_per_bale + " kg");
+  if (d.seen.area_acres) bits.push(d.seen.area_acres + " acres, " + Math.round(d.seen.straw_cover * 100) + "% covered");
+  bits.push("straw looks " + d.seen.moisture_look);
+  $("seen").textContent = "What was read from your photo: " + bits.join("; ") + ".";
+  $("cards").replaceChildren(card("Compressed biogas (CBG)", d.cbg_tonnes), card("Pellets", d.pellet_tonnes), card("Straw as found", d.straw_tonnes));
+  $("warns").replaceChildren(...[...d.warnings, ...d.notes.filter(Boolean)].map((w) => { const p = document.createElement("div"); p.className = "note"; p.textContent = w; return p; }));
+  $("out").hidden = false; $("out").scrollIntoView({ behavior: "smooth" });
+}
+fetch("/api/factors").then((r) => r.json()).then((d) => {
+  $("caveats").textContent = d.caveats.join(" ");
+  const t = $("factors"), head = t.createTHead().insertRow();
+  ["Figure", "Low / likely / high", "Basis"].forEach((h) => { const th = document.createElement("th"); th.textContent = h; head.append(th); });
+  const body = t.createTBody();
+  d.factors.forEach((f) => {
+    const row = body.insertRow();
+    row.insertCell().textContent = f.label + " (" + f.unit + ")";
+    row.insertCell().textContent = [f.low, f.likely, f.high].join(" / ");
+    const c = row.insertCell(), tag = document.createElement("span");
+    tag.className = "tag " + f.status; tag.textContent = f.status; c.append(tag, " ");
+    if (f.url) { const a = document.createElement("a"); a.href = f.url; a.textContent = f.source; a.rel = "noopener"; c.append(a); } else c.append(f.source);
+    if (f.note) c.append(document.createElement("br"), f.note);
+  });
+}).catch(() => {});
+</script>
+</body>
+</html>

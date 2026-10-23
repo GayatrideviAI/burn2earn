@@ -60,3 +60,16 @@ jobs:
           PY
             exit 1
           }
+
+  predictor:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: tools/biomass_predictor
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -t . -v
