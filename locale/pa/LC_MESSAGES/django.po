@@ -130,7 +130,7 @@ msgstr "ਢੇਰ ਦਾ ਤਾਪਮਾਨ ਅਤੇ ਜੋਖਮ"
 msgid "Temperature over time"
 msgstr "ਸਮੇਂ ਨਾਲ ਤਾਪਮਾਨ"
 
-#: apps/customers/templates/customers/batch.html:40 apps/yardops/static/yardops/app.js:457 apps/yardops/static/yardops/app.js:488
+#: apps/customers/templates/customers/batch.html:40 apps/yardops/static/yardops/app.js:491 apps/yardops/static/yardops/app.js:523
 msgid "No temperature readings yet."
 msgstr "ਹਾਲੇ ਤੱਕ ਤਾਪਮਾਨ ਦੀ ਕੋਈ ਰੀਡਿੰਗ ਨਹੀਂ।"
 
@@ -578,7 +578,7 @@ msgstr "ਲੱਦਿਆ ਗਿਆ"
 msgid "At your gate"
 msgstr "ਤੁਹਾਡੇ ਗੇਟ ਉੱਤੇ"
 
-#: apps/customers/templates/customers/order.html:19
+#: apps/customers/templates/customers/order.html:19 apps/weightphotos/static/weightphotos/photos.js:138
 msgid "Vehicle"
 msgstr "ਗੱਡੀ"
 
@@ -659,7 +659,7 @@ msgstr "%(t)s could not be attributed because no farmer pickups are recorded for
 msgid "All yards"
 msgstr "ਸਾਰੇ ਯਾਰਡ"
 
-#: apps/customers/templates/customers/yard.html:10 apps/yardops/forms.py:27 apps/yardops/static/yardops/app.js:562
+#: apps/customers/templates/customers/yard.html:10 apps/yardops/forms.py:27 apps/yardops/static/yardops/app.js:597
 msgid "Batch"
 msgstr "ਬੈਚ"
 
@@ -966,51 +966,51 @@ msgstr "At the Hub"
 msgid "On the way to the buyer"
 msgstr "ਖਰੀਦਦਾਰ ਵੱਲ ਰਸਤੇ ਵਿੱਚ"
 
-#: apps/farms/models.py:25 apps/field/static/field/app.js:413
+#: apps/farms/models.py:25 apps/field/static/field/app.js:453
 msgid "Hindi"
 msgstr "ਹਿੰਦੀ"
 
-#: apps/farms/models.py:26 apps/field/static/field/app.js:413
+#: apps/farms/models.py:26 apps/field/static/field/app.js:453
 msgid "English"
 msgstr "ਅੰਗਰੇਜ਼ੀ"
 
-#: apps/farms/models.py:27 apps/field/static/field/app.js:413
+#: apps/farms/models.py:27 apps/field/static/field/app.js:453
 msgid "Punjabi"
 msgstr "ਪੰਜਾਬੀ"
 
-#: apps/farms/models.py:116 apps/field/static/field/app.js:473
+#: apps/farms/models.py:116 apps/field/static/field/app.js:513
 msgid "Owned"
 msgstr "ਆਪਣੀ"
 
-#: apps/farms/models.py:117 apps/field/static/field/app.js:473
+#: apps/farms/models.py:117 apps/field/static/field/app.js:513
 msgid "Leased"
 msgstr "ਪੱਟੇ ਉੱਤੇ"
 
-#: apps/farms/models.py:118 apps/field/static/field/app.js:473
+#: apps/farms/models.py:118 apps/field/static/field/app.js:513
 #. Farmed by someone who gives part of the crop to the landowner.
 msgid "Sharecropped"
 msgstr "ਬਟਾਈ ਉੱਤੇ"
 
-#: apps/farms/models.py:121 apps/field/static/field/app.js:474
+#: apps/farms/models.py:121 apps/field/static/field/app.js:514
 msgid "Canal"
 msgstr "ਨਹਿਰ"
 
-#: apps/farms/models.py:122 apps/field/static/field/app.js:474
+#: apps/farms/models.py:122 apps/field/static/field/app.js:514
 #. Irrigation from a borewell.
 msgid "Tubewell"
 msgstr "ਟਿਊਬਵੈੱਲ"
 
-#: apps/farms/models.py:123 apps/field/static/field/app.js:474
+#: apps/farms/models.py:123 apps/field/static/field/app.js:514
 #. No irrigation; depends on rain.
 msgid "Rain-fed"
 msgstr "ਮੀਂਹ ਉੱਤੇ ਨਿਰਭਰ"
 
-#: apps/field/templates/field/collection_form.html:3 apps/field/templates/field/farmer_detail.html:7 apps/field/static/field/app.js:441
+#: apps/field/templates/field/collection_form.html:3 apps/field/templates/field/farmer_detail.html:7 apps/field/static/field/app.js:481
 #. Record that residue was collected from a farmer.
 msgid "Log a pickup"
 msgstr "ਚੁਕਾਈ ਦਰਜ ਕਰੋ"
 
-#: apps/field/templates/field/collection_form.html:9 apps/field/static/field/app.js:514
+#: apps/field/templates/field/collection_form.html:9 apps/field/static/field/app.js:554
 msgid "Save pickup"
 msgstr "ਚੁਕਾਈ ਸੰਭਾਲੋ"
 
@@ -1018,7 +1018,7 @@ msgstr "ਚੁਕਾਈ ਸੰਭਾਲੋ"
 msgid "Cancel"
 msgstr "ਰੱਦ ਕਰੋ"
 
-#: apps/field/templates/field/collection_form.html:6 apps/field/static/field/app.js:507
+#: apps/field/templates/field/collection_form.html:6 apps/field/static/field/app.js:547
 #, python-format
 msgid "Log a pickup from %(name)s"
 msgstr "%(name)s ਤੋਂ ਚੁਕਾਈ ਦਰਜ ਕਰੋ"
@@ -1027,7 +1027,7 @@ msgstr "%(name)s ਤੋਂ ਚੁਕਾਈ ਦਰਜ ਕਰੋ"
 msgid "No Grid assigned yet"
 msgstr "No Grid assigned yet"
 
-#: apps/field/templates/field/dashboard.html:7 apps/field/static/field/app.js:364
+#: apps/field/templates/field/dashboard.html:7 apps/field/static/field/app.js:402
 msgid "Plots"
 msgstr "ਖੇਤ"
 
@@ -1056,12 +1056,12 @@ msgstr "ਹਾਲ ਵਿੱਚ ਜੋੜੇ ਗਏ"
 msgid "No farmers yet."
 msgstr "ਹਾਲੇ ਕੋਈ ਕਿਸਾਨ ਨਹੀਂ।"
 
-#: apps/field/templates/field/dashboard.html:3 apps/field/static/field/app.js:360 apps/yardops/static/yardops/app.js:436
+#: apps/field/templates/field/dashboard.html:3 apps/field/static/field/app.js:398 apps/yardops/static/yardops/app.js:469
 #, python-format
 msgid "Hello, %(name)s"
 msgstr "ਸਤ ਸ੍ਰੀ ਅਕਾਲ, %(name)s"
 
-#: apps/field/templates/field/dashboard.html:3 apps/field/templates/field/stock.html:9 apps/field/static/field/app.js:361
+#: apps/field/templates/field/dashboard.html:3 apps/field/templates/field/stock.html:9 apps/field/static/field/app.js:399
 #, python-format
 msgid "Grid %(code)s"
 msgstr "Grid %(code)s"
@@ -1081,7 +1081,7 @@ msgstr "<strong>%(t)s tonnes</strong> from %(n)s plot(s) in your Grid, after exp
 msgid "%(label)s: %(t)s tonnes"
 msgstr "%(label)s: %(t)s ਟਨ"
 
-#: apps/field/templates/field/dashboard.html:13 apps/field/templates/field/farmer_detail.html:11 apps/field/static/field/app.js:445
+#: apps/field/templates/field/dashboard.html:13 apps/field/templates/field/farmer_detail.html:11 apps/field/static/field/app.js:485
 #, python-format
 msgid "%(a)s acres"
 msgstr "%(a)s ਏਕੜ"
@@ -1132,32 +1132,32 @@ msgstr "ਆਖ਼ਰੀ ਤੋਲ %(w)s (ਨੁਕਸਾਨ %(l)s)"
 msgid "ledger #%(n)s"
 msgstr "ਵਹੀ #%(n)s"
 
-#: apps/field/templates/field/farmer_detail.html:8 apps/field/static/field/app.js:442
+#: apps/field/templates/field/farmer_detail.html:8 apps/field/static/field/app.js:482
 #. Heading for the farmer's plots.
 msgid "Land"
 msgstr "ਜ਼ਮੀਨ"
 
-#: apps/field/templates/field/farmer_detail.html:13 apps/field/static/field/app.js:446
+#: apps/field/templates/field/farmer_detail.html:13 apps/field/static/field/app.js:486
 msgid "Outside every GeoCell"
 msgstr "Outside every GeoCell"
 
-#: apps/field/templates/field/farmer_detail.html:19 apps/field/static/field/app.js:449
+#: apps/field/templates/field/farmer_detail.html:19 apps/field/static/field/app.js:489
 msgid "No crops recorded."
 msgstr "ਕੋਈ ਫ਼ਸਲ ਦਰਜ ਨਹੀਂ।"
 
-#: apps/field/templates/field/farmer_detail.html:21 apps/field/static/field/app.js:450
+#: apps/field/templates/field/farmer_detail.html:21 apps/field/static/field/app.js:490
 msgid "Add crop"
 msgstr "ਫ਼ਸਲ ਜੋੜੋ"
 
-#: apps/field/templates/field/farmer_detail.html:23 apps/field/static/field/app.js:451
+#: apps/field/templates/field/farmer_detail.html:23 apps/field/static/field/app.js:491
 msgid "No land added yet."
 msgstr "ਹਾਲੇ ਕੋਈ ਜ਼ਮੀਨ ਨਹੀਂ ਜੋੜੀ ਗਈ।"
 
-#: apps/field/templates/field/farmer_detail.html:24 apps/field/templates/field/plot_form.html:3 apps/field/static/field/app.js:441
+#: apps/field/templates/field/farmer_detail.html:24 apps/field/templates/field/plot_form.html:3 apps/field/static/field/app.js:481
 msgid "Add a plot"
 msgstr "ਖੇਤ ਜੋੜੋ"
 
-#: apps/field/templates/field/farmer_detail.html:13 apps/field/static/field/app.js:446
+#: apps/field/templates/field/farmer_detail.html:13 apps/field/static/field/app.js:486
 #, python-format
 msgid "GeoCell %(code)s"
 msgstr "GeoCell %(code)s"
@@ -1174,7 +1174,7 @@ msgstr "ਫਿਰ ਵੀ ਦਰਜ ਕਰੋ"
 msgid "Register"
 msgstr "ਦਰਜ ਕਰੋ"
 
-#: apps/field/templates/field/farmer_list.html:7 apps/field/static/field/app.js:381
+#: apps/field/templates/field/farmer_list.html:7 apps/field/static/field/app.js:421
 msgid "Name, mobile or code"
 msgstr "ਨਾਮ, ਮੋਬਾਈਲ ਜਾਂ ਕੋਡ"
 
@@ -1182,11 +1182,11 @@ msgstr "ਨਾਮ, ਮੋਬਾਈਲ ਜਾਂ ਕੋਡ"
 msgid "Search"
 msgstr "ਲੱਭੋ"
 
-#: apps/field/templates/field/farmer_list.html:15 apps/field/static/field/app.js:402
+#: apps/field/templates/field/farmer_list.html:15 apps/field/static/field/app.js:442
 msgid "No farmers found."
 msgstr "ਕੋਈ ਕਿਸਾਨ ਨਹੀਂ ਮਿਲਿਆ।"
 
-#: apps/field/templates/field/farmer_list.html:14 apps/field/static/field/app.js:400
+#: apps/field/templates/field/farmer_list.html:14 apps/field/static/field/app.js:440
 #, python-format
 msgid "%(n)s plot(s)"
 msgstr "%(n)s ਖੇਤ"
@@ -1212,48 +1212,48 @@ msgstr "Biomass Mitra portal"
 msgid "Report output"
 msgstr "ਉਤਪਾਦਨ ਦੱਸੋ"
 
-#: apps/field/templates/field/output_form.html:6 apps/field/static/field/app.js:527
+#: apps/field/templates/field/output_form.html:6 apps/field/static/field/app.js:567
 msgid "Report what you made"
 msgstr "ਜੋ ਬਣਾਇਆ ਉਹ ਦੱਸੋ"
 
-#: apps/field/templates/field/output_form.html:7 apps/field/static/field/app.js:527
+#: apps/field/templates/field/output_form.html:7 apps/field/static/field/app.js:567
 msgid "Pellets, briquettes and other products. This goes up to your Grid and its Hub."
 msgstr "Pellets, briquettes and other products. This goes up to your Grid and its Hub."
 
-#: apps/field/templates/field/plot_form.html:8 apps/field/static/field/app.js:460
+#: apps/field/templates/field/plot_form.html:8 apps/field/static/field/app.js:500
 msgid "Use my location"
 msgstr "ਮੇਰੀ ਲੋਕੇਸ਼ਨ ਵਰਤੋ"
 
-#: apps/field/templates/field/plot_form.html:10 apps/field/static/field/app.js:475
+#: apps/field/templates/field/plot_form.html:10 apps/field/static/field/app.js:515
 msgid "Save plot"
 msgstr "ਖੇਤ ਸੰਭਾਲੋ"
 
-#: apps/field/templates/field/plot_form.html:15 apps/field/static/field/app.js:462
+#: apps/field/templates/field/plot_form.html:15 apps/field/static/field/app.js:502
 msgid "Location is not available on this device."
 msgstr "ਇਸ ਫ਼ੋਨ ਉੱਤੇ ਲੋਕੇਸ਼ਨ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।"
 
-#: apps/field/templates/field/plot_form.html:16 apps/field/static/field/app.js:463
+#: apps/field/templates/field/plot_form.html:16 apps/field/static/field/app.js:503
 msgid "Finding location…"
 msgstr "ਲੋਕੇਸ਼ਨ ਲੱਭ ਰਹੇ ਹਾਂ…"
 
-#: apps/field/templates/field/plot_form.html:17 apps/field/static/field/app.js:467
+#: apps/field/templates/field/plot_form.html:17 apps/field/static/field/app.js:507
 msgid "Done. Stand at the plot for the best accuracy."
 msgstr "ਹੋ ਗਿਆ। ਸਹੀ ਥਾਂ ਲਈ ਖੇਤ ਵਿੱਚ ਖੜ੍ਹੇ ਹੋ ਕੇ ਲਵੋ।"
 
-#: apps/field/templates/field/plot_form.html:18 apps/field/static/field/app.js:468
+#: apps/field/templates/field/plot_form.html:18 apps/field/static/field/app.js:508
 msgid "Could not get location. Type it in instead."
 msgstr "ਲੋਕੇਸ਼ਨ ਨਹੀਂ ਮਿਲੀ। ਇਸ ਦੀ ਥਾਂ ਆਪ ਲਿਖੋ।"
 
-#: apps/field/templates/field/plot_form.html:6 apps/field/static/field/app.js:470
+#: apps/field/templates/field/plot_form.html:6 apps/field/static/field/app.js:510
 #, python-format
 msgid "Add a plot for %(name)s"
 msgstr "%(name)s ਲਈ ਖੇਤ ਜੋੜੋ"
 
-#: apps/field/templates/field/season_form.html:3 apps/field/templates/field/season_form.html:5 apps/field/static/field/app.js:488
+#: apps/field/templates/field/season_form.html:3 apps/field/templates/field/season_form.html:5 apps/field/static/field/app.js:528
 msgid "Add a crop"
 msgstr "ਫ਼ਸਲ ਜੋੜੋ"
 
-#: apps/field/templates/field/season_form.html:9 apps/field/static/field/app.js:495
+#: apps/field/templates/field/season_form.html:9 apps/field/static/field/app.js:535
 msgid "Save crop"
 msgstr "ਫ਼ਸਲ ਸੰਭਾਲੋ"
 
@@ -1334,11 +1334,11 @@ msgstr "%(s)s%% ਇਕੱਠਾ"
 msgid "%(q)s of %(b)s · ₹%(p)s (₹%(r)s/t)"
 msgstr "%(b)s ਦਾ %(q)s · ₹%(p)s (₹%(r)s/ਟਨ)"
 
-#: apps/field/forms.py:21 apps/field/static/field/app.js:410
+#: apps/field/forms.py:21 apps/field/static/field/app.js:450
 msgid "Name"
 msgstr "ਨਾਮ"
 
-#: apps/field/forms.py:22 apps/field/static/field/app.js:411
+#: apps/field/forms.py:22 apps/field/static/field/app.js:451
 msgid "Mobile number"
 msgstr "ਮੋਬਾਈਲ ਨੰਬਰ"
 
@@ -1346,56 +1346,56 @@ msgstr "ਮੋਬਾਈਲ ਨੰਬਰ"
 msgid "Not stated"
 msgstr "ਨਹੀਂ ਦੱਸਿਆ"
 
-#: apps/field/forms.py:25 apps/field/static/field/app.js:413
+#: apps/field/forms.py:25 apps/field/static/field/app.js:453
 msgid "Preferred language"
 msgstr "ਪਸੰਦੀਦਾ ਭਾਸ਼ਾ"
 
-#: apps/field/forms.py:29 apps/field/static/field/app.js:414
+#: apps/field/forms.py:29 apps/field/static/field/app.js:454
 #. Consent statement the Mitra confirms before registering; wording needs legal review.
 msgid "The farmer has been told how their information will be used and agrees."
 msgstr "ਕਿਸਾਨ ਨੂੰ ਦੱਸ ਦਿੱਤਾ ਗਿਆ ਹੈ ਕਿ ਉਨ੍ਹਾਂ ਦੀ ਜਾਣਕਾਰੀ ਕਿਵੇਂ ਵਰਤੀ ਜਾਵੇਗੀ ਅਤੇ ਉਹ ਸਹਿਮਤ ਹਨ।"
 
-#: apps/field/forms.py:30 apps/field/static/field/app.js:419
+#: apps/field/forms.py:30 apps/field/static/field/app.js:459
 msgid "Consent is needed before a farmer can be registered."
 msgstr "ਕਿਸਾਨ ਨੂੰ ਦਰਜ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਸਹਿਮਤੀ ਜ਼ਰੂਰੀ ਹੈ।"
 
-#: apps/field/forms.py:46 apps/field/static/field/app.js:471
+#: apps/field/forms.py:46 apps/field/static/field/app.js:511
 msgid "Latitude"
 msgstr "ਅਕਸ਼ਾਂਸ਼"
 
-#: apps/field/forms.py:47 apps/field/static/field/app.js:471
+#: apps/field/forms.py:47 apps/field/static/field/app.js:511
 msgid "Longitude"
 msgstr "ਦੇਸ਼ਾਂਤਰ"
 
-#: apps/field/forms.py:49 apps/field/static/field/app.js:472
+#: apps/field/forms.py:49 apps/field/static/field/app.js:512
 msgid "Area (acres)"
 msgstr "ਰਕਬਾ (ਏਕੜ)"
 
-#: apps/field/forms.py:51 apps/field/static/field/app.js:473
+#: apps/field/forms.py:51 apps/field/static/field/app.js:513
 msgid "Ownership"
 msgstr "ਮਾਲਕੀ"
 
-#: apps/field/forms.py:52 apps/field/static/field/app.js:474
+#: apps/field/forms.py:52 apps/field/static/field/app.js:514
 msgid "Irrigation"
 msgstr "ਸਿੰਚਾਈ"
 
-#: apps/field/forms.py:57 apps/field/static/field/app.js:477
+#: apps/field/forms.py:57 apps/field/static/field/app.js:517
 msgid "Latitude should be between 6 and 38 for India."
 msgstr "ਭਾਰਤ ਲਈ ਅਕਸ਼ਾਂਸ਼ 6 ਤੋਂ 38 ਦੇ ਵਿਚਕਾਰ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।"
 
-#: apps/field/forms.py:63 apps/field/static/field/app.js:478
+#: apps/field/forms.py:63 apps/field/static/field/app.js:518
 msgid "Longitude should be between 68 and 98 for India."
 msgstr "ਭਾਰਤ ਲਈ ਦੇਸ਼ਾਂਤਰ 68 ਤੋਂ 98 ਦੇ ਵਿਚਕਾਰ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।"
 
-#: apps/field/forms.py:68 apps/field/static/field/app.js:489
+#: apps/field/forms.py:68 apps/field/static/field/app.js:529
 msgid "Season"
 msgstr "ਮੌਸਮ"
 
-#: apps/field/forms.py:69 apps/field/static/field/app.js:490
+#: apps/field/forms.py:69 apps/field/static/field/app.js:530
 msgid "Year"
 msgstr "ਸਾਲ"
 
-#: apps/field/forms.py:70 apps/field/static/field/app.js:491
+#: apps/field/forms.py:70 apps/field/static/field/app.js:531
 msgid "Crop"
 msgstr "ਫ਼ਸਲ"
 
@@ -1412,7 +1412,7 @@ msgstr "ਬਿਜਾਈ ਦੀ ਤਾਰੀਖ਼"
 msgid "Expected harvest date"
 msgstr "ਵਾਢੀ ਦੀ ਅਨੁਮਾਨਿਤ ਤਾਰੀਖ਼"
 
-#: apps/field/forms.py:86 apps/field/static/field/app.js:498
+#: apps/field/forms.py:86 apps/field/static/field/app.js:538
 msgid "The harvest date cannot be before the sowing date."
 msgstr "ਵਾਢੀ ਦੀ ਤਾਰੀਖ਼ ਬਿਜਾਈ ਦੀ ਤਾਰੀਖ਼ ਤੋਂ ਪਹਿਲਾਂ ਨਹੀਂ ਹੋ ਸਕਦੀ।"
 
@@ -1421,20 +1421,20 @@ msgstr "ਵਾਢੀ ਦੀ ਤਾਰੀਖ਼ ਬਿਜਾਈ ਦੀ ਤਾਰ�
 msgid "Plot"
 msgstr "ਖੇਤ"
 
-#: apps/field/forms.py:92 apps/field/static/field/app.js:509
+#: apps/field/forms.py:92 apps/field/static/field/app.js:549
 #. Crop residue: straw and stalks left after harvest (paddy straw, etc.).
 msgid "Residue"
 msgstr "ਰਹਿੰਦ-ਖੂੰਹਦ"
 
-#: apps/field/forms.py:94 apps/field/static/field/app.js:510
+#: apps/field/forms.py:94 apps/field/static/field/app.js:550
 msgid "Quantity picked up (tonnes)"
 msgstr "ਚੁੱਕੀ ਗਈ ਮਾਤਰਾ (ਟਨ)"
 
-#: apps/field/forms.py:97 apps/field/static/field/app.js:511
+#: apps/field/forms.py:97 apps/field/static/field/app.js:551
 msgid "Price paid to the farmer (₹, total)"
 msgstr "ਕਿਸਾਨ ਨੂੰ ਦਿੱਤਾ ਗਿਆ ਮੁੱਲ (₹, ਕੁੱਲ)"
 
-#: apps/field/forms.py:99 apps/field/forms.py:122 apps/field/static/field/app.js:512
+#: apps/field/forms.py:99 apps/field/forms.py:122 apps/field/static/field/app.js:552
 msgid "Date"
 msgstr "ਤਾਰੀਖ਼"
 
@@ -1442,23 +1442,23 @@ msgstr "ਤਾਰੀਖ਼"
 msgid "Notes"
 msgstr "ਟਿੱਪਣੀਆਂ"
 
-#: apps/field/forms.py:110 apps/field/static/field/app.js:518
+#: apps/field/forms.py:110 apps/field/static/field/app.js:558
 msgid "The pickup date cannot be in the future."
 msgstr "ਚੁਕਾਈ ਦੀ ਤਾਰੀਖ਼ ਆਉਣ ਵਾਲੇ ਸਮੇਂ ਦੀ ਨਹੀਂ ਹੋ ਸਕਦੀ।"
 
-#: apps/field/forms.py:115 apps/field/static/field/app.js:528
+#: apps/field/forms.py:115 apps/field/static/field/app.js:568
 msgid "What was made"
 msgstr "ਕੀ ਬਣਿਆ"
 
-#: apps/field/forms.py:117 apps/field/static/field/app.js:529
+#: apps/field/forms.py:117 apps/field/static/field/app.js:569
 msgid "Quantity made (tonnes, rough is fine)"
 msgstr "ਬਣੀ ਮਾਤਰਾ (ਟਨ, ਮੋਟਾ ਅੰਦਾਜ਼ਾ ਚੱਲੇਗਾ)"
 
-#: apps/field/forms.py:120 apps/field/static/field/app.js:530
+#: apps/field/forms.py:120 apps/field/static/field/app.js:570
 msgid "Residue used up (tonnes, if known)"
 msgstr "ਵਰਤੀ ਗਈ ਰਹਿੰਦ-ਖੂੰਹਦ (ਟਨ, ਜੇ ਪਤਾ ਹੋਵੇ)"
 
-#: apps/field/forms.py:132 apps/field/static/field/app.js:537 apps/yardops/api.py:206
+#: apps/field/forms.py:132 apps/field/static/field/app.js:577 apps/yardops/api.py:210
 msgid "The date cannot be in the future."
 msgstr "ਤਾਰੀਖ਼ ਆਉਣ ਵਾਲੇ ਸਮੇਂ ਦੀ ਨਹੀਂ ਹੋ ਸਕਦੀ।"
 
@@ -1512,7 +1512,7 @@ msgstr "ਖੇਤ ਸੰਭਾਲ ਲਿਆ ਗਿਆ। ਇਹ ਕਿਸਾਨ 
 msgid "Plot saved."
 msgstr "ਖੇਤ ਸੰਭਾਲ ਲਿਆ ਗਿਆ।"
 
-#: apps/field/views.py:145 apps/field/api.py:182
+#: apps/field/views.py:145 apps/field/api.py:187
 msgid "This crop is already recorded for that season and year."
 msgstr "ਇਹ ਫ਼ਸਲ ਉਸ ਮੌਸਮ ਅਤੇ ਸਾਲ ਲਈ ਪਹਿਲਾਂ ਹੀ ਦਰਜ ਹੈ।"
 
@@ -1520,7 +1520,7 @@ msgstr "ਇਹ ਫ਼ਸਲ ਉਸ ਮੌਸਮ ਅਤੇ ਸਾਲ ਲਈ ਪ�
 msgid "Crop saved."
 msgstr "ਫ਼ਸਲ ਸੰਭਾਲ ਲਈ ਗਈ।"
 
-#: apps/field/views.py:160 apps/field/api.py:197
+#: apps/field/views.py:160 apps/field/api.py:202
 msgid "You have no Grid assigned yet, so a pickup cannot be recorded."
 msgstr "You have no Grid assigned yet, so a pickup cannot be recorded."
 
@@ -1529,7 +1529,7 @@ msgstr "You have no Grid assigned yet, so a pickup cannot be recorded."
 msgid "Saved %(tonnes)s tonnes (%(code)s)."
 msgstr "%(tonnes)s ਟਨ ਸੰਭਾਲੇ ਗਏ (%(code)s)।"
 
-#: apps/field/views.py:176 apps/field/api.py:210
+#: apps/field/views.py:176 apps/field/api.py:215
 msgid "You have no Grid assigned yet, so output cannot be reported."
 msgstr "You have no Grid assigned yet, so output cannot be reported."
 
@@ -1543,53 +1543,53 @@ msgstr "%(tonnes)s ਟਨ ਦੱਸੇ ਗਏ (%(code)s)।"
 msgid "Dispatch %(code)s created. The Hub will confirm each step."
 msgstr "Dispatch %(code)s created. The Hub will confirm each step."
 
-#: apps/field/api.py:52 apps/yardops/api.py:49
+#: apps/field/api.py:56 apps/yardops/api.py:52
 #, python-format
 msgid "%(what)s is not a valid id."
 msgstr "%(what)s ਸਹੀ ਆਈਡੀ ਨਹੀਂ ਹੈ।"
 
-#: apps/field/api.py:141
+#: apps/field/api.py:146
 #, python-format
 msgid "Saved. Another farmer has this mobile number (%(codes)s); an Admin will review."
 msgstr "ਸੰਭਾਲ ਲਿਆ ਗਿਆ। ਇੱਕ ਹੋਰ ਕਿਸਾਨ ਦਾ ਇਹੀ ਮੋਬਾਈਲ ਨੰਬਰ ਹੈ (%(codes)s); ਐਡਮਿਨ ਜਾਂਚ ਕਰੇਗਾ।"
 
-#: apps/field/api.py:147
+#: apps/field/api.py:152
 msgid "The farmer"
 msgstr "ਕਿਸਾਨ"
 
-#: apps/field/api.py:149
+#: apps/field/api.py:154
 msgid "The farmer was not found. Their registration may have failed."
 msgstr "ਕਿਸਾਨ ਨਹੀਂ ਮਿਲਿਆ। ਹੋ ਸਕਦਾ ਹੈ ਉਨ੍ਹਾਂ ਦੀ ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਨਾ ਹੋ ਸਕੀ ਹੋਵੇ।"
 
-#: apps/field/api.py:173
+#: apps/field/api.py:178
 msgid "The plot"
 msgstr "ਖੇਤ"
 
-#: apps/field/api.py:175
+#: apps/field/api.py:180
 msgid "The plot was not found. Its creation may have failed."
 msgstr "ਖੇਤ ਨਹੀਂ ਮਿਲਿਆ। ਹੋ ਸਕਦਾ ਹੈ ਇਸ ਨੂੰ ਜੋੜਨਾ ਅਸਫਲ ਰਿਹਾ ਹੋਵੇ।"
 
-#: apps/field/api.py:234 apps/field/api.py:236 apps/field/api.py:238
+#: apps/field/api.py:249 apps/field/api.py:251 apps/field/api.py:253
 msgid "This id is already used by someone else's record."
 msgstr "This id is already used by someone else's record."
 
-#: apps/field/api.py:246 apps/yardops/api.py:297
+#: apps/field/api.py:261 apps/yardops/api.py:314
 msgid "The change id"
 msgstr "The change id"
 
-#: apps/field/api.py:249 apps/yardops/api.py:300
+#: apps/field/api.py:264 apps/yardops/api.py:317
 msgid "Unknown kind of change."
 msgstr "Unknown kind of change."
 
-#: apps/field/api.py:253 apps/yardops/api.py:304
+#: apps/field/api.py:268 apps/yardops/api.py:321
 msgid "The change has no data."
 msgstr "The change has no data."
 
-#: apps/field/api.py:265 apps/yardops/api.py:320
+#: apps/field/api.py:280 apps/yardops/api.py:337
 msgid "The record could not be saved because some details are not allowed."
 msgstr "ਕੁਝ ਜਾਣਕਾਰੀ ਮਨਜ਼ੂਰ ਨਾ ਹੋਣ ਕਰਕੇ ਰਿਕਾਰਡ ਸੰਭਾਲਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ।"
 
-#: apps/field/api.py:278 apps/yardops/api.py:333
+#: apps/field/api.py:293 apps/yardops/api.py:350
 #, python-format
 msgid "Send up to %(max)s changes as a list."
 msgstr "Send up to %(max)s changes as a list."
@@ -1627,214 +1627,235 @@ msgstr "%(farmer)s ਤੋਂ %(tonnes)s ਟਨ ਦੀ ਚੁਕਾਈ"
 msgid "Output of %(tonnes)s t"
 msgstr "%(tonnes)s ਟਨ ਦਾ ਉਤਪਾਦਨ"
 
-#: apps/field/static/field/app.js:280 apps/yardops/static/yardops/app.js:339
+#: apps/field/static/field/app.js:88 apps/yardops/static/yardops/app.js:158
+#, python-format
+msgid "Weighbridge weight %(tonnes)s t for a photo"
+msgstr "ਫ਼ੋਟੋ ਲਈ ਵੇਬ੍ਰਿਜ ਵਜ਼ਨ %(tonnes)s ਟਨ"
+
+#: apps/field/static/field/app.js:285 apps/yardops/static/yardops/app.js:344
 #. Phone has a signal.
 msgid "Online"
 msgstr "ਆਨਲਾਈਨ"
 
-#: apps/field/static/field/app.js:280 apps/yardops/static/yardops/app.js:339
+#: apps/field/static/field/app.js:285 apps/yardops/static/yardops/app.js:344
 #. Phone has no signal; everything is saved on the phone.
 msgid "Offline"
 msgstr "ਆਫ਼ਲਾਈਨ"
 
-#: apps/field/static/field/app.js:281 apps/yardops/static/yardops/app.js:340
+#: apps/field/static/field/app.js:286 apps/yardops/static/yardops/app.js:345
 #, python-format
 msgid "%(n)s waiting"
 msgstr "%(n)s ਉਡੀਕ ਵਿੱਚ"
 
-#: apps/field/static/field/app.js:282 apps/yardops/static/yardops/app.js:341
+#: apps/field/static/field/app.js:287 apps/yardops/static/yardops/app.js:346
 #, python-format
 msgid "%(n)s need attention"
 msgstr "%(n)s ਵੱਲ ਧਿਆਨ ਚਾਹੀਦਾ ਹੈ"
 
-#: apps/field/static/field/app.js:365 apps/field/static/field/app.js:547 apps/field/static/field/app.js:589
+#: apps/field/static/field/app.js:361 apps/yardops/static/yardops/app.js:422
+msgid "Photo saved on this phone."
+msgstr "ਫ਼ੋਟੋ ਇਸ ਫ਼ੋਨ ਵਿੱਚ ਸੰਭਾਲੀ ਗਈ।"
+
+#: apps/field/static/field/app.js:403 apps/field/static/field/app.js:587 apps/field/static/field/app.js:629
 #. Changes saved on the phone that have not reached the server yet (shown as a count).
 msgid "To send"
 msgstr "ਭੇਜਣਾ ਬਾਕੀ"
 
-#: apps/field/static/field/app.js:367
+#: apps/field/static/field/app.js:405
 #, python-format
 msgid "Saved on this phone, not sent yet: %(pickups)s pickup(s), %(pt)s t; %(outputs)s output report(s), %(ot)s t."
 msgstr "ਇਸ ਫ਼ੋਨ ਵਿੱਚ ਸੰਭਾਲਿਆ ਗਿਆ, ਹਾਲੇ ਭੇਜਿਆ ਨਹੀਂ ਗਿਆ: %(pickups)s ਚੁਕਾਈਆਂ, %(pt)s ਟਨ; %(outputs)s ਉਤਪਾਦਨ ਰਿਪੋਰਟਾਂ, %(ot)s ਟਨ।"
 
-#: apps/field/static/field/app.js:370
+#: apps/field/static/field/app.js:409 apps/yardops/static/yardops/app.js:485
+msgid "Photograph a loaded vehicle"
+msgstr "ਲੱਦੇ ਵਾਹਨ ਦੀ ਫ਼ੋਟੋ ਖਿੱਚੋ"
+
+#: apps/field/static/field/app.js:409
+msgid "Photograph a stack"
+msgstr "ਢੇਰ ਦੀ ਫ਼ੋਟੋ ਖਿੱਚੋ"
+
+#: apps/field/static/field/app.js:410
 msgid "Connect to the internet once so your farmers and lists can be downloaded."
 msgstr "ਇੱਕ ਵਾਰ ਇੰਟਰਨੈੱਟ ਨਾਲ ਜੁੜੋ ਤਾਂ ਜੋ ਤੁਹਾਡੇ ਕਿਸਾਨ ਅਤੇ ਸੂਚੀਆਂ ਡਾਊਨਲੋਡ ਹੋ ਸਕਣ।"
 
-#: apps/field/static/field/app.js:371 apps/field/static/field/app.js:548 apps/yardops/static/yardops/app.js:438
+#: apps/field/static/field/app.js:411 apps/field/static/field/app.js:588 apps/yardops/static/yardops/app.js:471
 msgid "Please log in again to send your changes."
 msgstr "ਬਦਲਾਅ ਭੇਜਣ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਲਾਗ ਇਨ ਕਰੋ।"
 
-#: apps/field/static/field/app.js:372 apps/yardops/static/yardops/app.js:459
+#: apps/field/static/field/app.js:412 apps/yardops/static/yardops/app.js:493
 msgid "Everything you enter is saved on this phone first. It is sent when there is a signal."
 msgstr "ਤੁਸੀਂ ਜੋ ਵੀ ਦਰਜ ਕਰਦੇ ਹੋ ਉਹ ਪਹਿਲਾਂ ਇਸ ਫ਼ੋਨ ਵਿੱਚ ਸੰਭਾਲਿਆ ਜਾਂਦਾ ਹੈ। ਸਿਗਨਲ ਮਿਲਣ ਉੱਤੇ ਉਹ ਭੇਜ ਦਿੱਤਾ ਜਾਂਦਾ ਹੈ।"
 
-#: apps/field/static/field/app.js:400 apps/field/static/field/app.js:440 apps/field/static/field/app.js:448
+#: apps/field/static/field/app.js:440 apps/field/static/field/app.js:480 apps/field/static/field/app.js:488
 #. Saved on this phone, will be sent when there is a signal.
 msgid "waiting to send"
 msgstr "ਭੇਜਣ ਦੀ ਉਡੀਕ ਵਿੱਚ"
 
-#: apps/field/static/field/app.js:407
+#: apps/field/static/field/app.js:447
 msgid "Connect to the internet once to download the village list."
 msgstr "ਪਿੰਡਾਂ ਦੀ ਸੂਚੀ ਡਾਊਨਲੋਡ ਕਰਨ ਲਈ ਇੱਕ ਵਾਰ ਇੰਟਰਨੈੱਟ ਨਾਲ ਜੁੜੋ।"
 
-#: apps/field/static/field/app.js:412
+#: apps/field/static/field/app.js:452
 msgid "Choose a village"
 msgstr "ਪਿੰਡ ਚੁਣੋ"
 
-#: apps/field/static/field/app.js:415
+#: apps/field/static/field/app.js:455
 msgid "Save farmer"
 msgstr "ਕਿਸਾਨ ਸੰਭਾਲੋ"
 
-#: apps/field/static/field/app.js:416
+#: apps/field/static/field/app.js:456
 msgid "Enter the farmer's name."
 msgstr "ਕਿਸਾਨ ਦਾ ਨਾਮ ਲਿਖੋ।"
 
-#: apps/field/static/field/app.js:417
+#: apps/field/static/field/app.js:457
 msgid "Enter a mobile number with 10 to 15 digits."
 msgstr "10 ਤੋਂ 15 ਅੰਕਾਂ ਦਾ ਮੋਬਾਈਲ ਨੰਬਰ ਲਿਖੋ।"
 
-#: apps/field/static/field/app.js:418
+#: apps/field/static/field/app.js:458
 msgid "Choose the farmer's village."
 msgstr "ਕਿਸਾਨ ਦਾ ਪਿੰਡ ਚੁਣੋ।"
 
-#: apps/field/static/field/app.js:423
+#: apps/field/static/field/app.js:463
 #, python-format
 msgid "%(name)s already has this mobile number. Families often share a phone. Press Save farmer again to register anyway."
 msgstr "%(name)s ਕੋਲ ਪਹਿਲਾਂ ਹੀ ਇਹੀ ਮੋਬਾਈਲ ਨੰਬਰ ਹੈ। ਪਰਿਵਾਰ ਅਕਸਰ ਇੱਕ ਫ਼ੋਨ ਸਾਂਝਾ ਕਰਦੇ ਹਨ। ਫਿਰ ਵੀ ਦਰਜ ਕਰਨ ਲਈ \"ਕਿਸਾਨ ਸੰਭਾਲੋ\" ਦੁਬਾਰਾ ਦਬਾਓ।"
 
-#: apps/field/static/field/app.js:437 apps/field/static/field/app.js:457
+#: apps/field/static/field/app.js:477 apps/field/static/field/app.js:497
 msgid "Farmer not found."
 msgstr "ਕਿਸਾਨ ਨਹੀਂ ਮਿਲਿਆ।"
 
-#: apps/field/static/field/app.js:437 apps/yardops/static/yardops/app.js:467
+#: apps/field/static/field/app.js:477 apps/yardops/static/yardops/app.js:501
 msgid "Back"
 msgstr "ਵਾਪਸ"
 
-#: apps/field/static/field/app.js:446 apps/field/static/field/app.js:558 apps/yardops/static/yardops/app.js:621
+#: apps/field/static/field/app.js:486 apps/field/static/field/app.js:598 apps/yardops/static/yardops/app.js:656
 #. Saved on this phone, will be sent when there is a signal.
 msgid "Waiting to send"
 msgstr "ਭੇਜਣ ਦੀ ਉਡੀਕ ਵਿੱਚ"
 
-#: apps/field/static/field/app.js:479
+#: apps/field/static/field/app.js:519
 msgid "Enter the area in acres."
 msgstr "ਰਕਬਾ ਏਕੜ ਵਿੱਚ ਲਿਖੋ।"
 
-#: apps/field/static/field/app.js:487 apps/field/static/field/app.js:506
+#: apps/field/static/field/app.js:527 apps/field/static/field/app.js:546
 msgid "Not found."
 msgstr "ਨਹੀਂ ਮਿਲਿਆ।"
 
-#: apps/field/static/field/app.js:489 apps/field/static/field/app.js:491 apps/field/static/field/app.js:509
+#: apps/field/static/field/app.js:529 apps/field/static/field/app.js:531 apps/field/static/field/app.js:549
 msgid "Choose"
 msgstr "ਚੁਣੋ"
 
-#: apps/field/static/field/app.js:492
+#: apps/field/static/field/app.js:532
 msgid "Variety (optional)"
 msgstr "ਕਿਸਮ (ਵਿਕਲਪਿਕ)"
 
-#: apps/field/static/field/app.js:493
+#: apps/field/static/field/app.js:533
 msgid "Sowing date (optional)"
 msgstr "ਬਿਜਾਈ ਦੀ ਤਾਰੀਖ਼ (ਵਿਕਲਪਿਕ)"
 
-#: apps/field/static/field/app.js:494
+#: apps/field/static/field/app.js:534
 msgid "Expected harvest date (optional)"
 msgstr "ਵਾਢੀ ਦੀ ਅਨੁਮਾਨਿਤ ਤਾਰੀਖ਼ (ਵਿਕਲਪਿਕ)"
 
-#: apps/field/static/field/app.js:496
+#: apps/field/static/field/app.js:536
 msgid "Choose the season and the crop."
 msgstr "ਮੌਸਮ ਅਤੇ ਫ਼ਸਲ ਚੁਣੋ।"
 
-#: apps/field/static/field/app.js:497
+#: apps/field/static/field/app.js:537
 msgid "Enter a year between 2000 and 2100."
 msgstr "2000 ਤੋਂ 2100 ਦੇ ਵਿਚਕਾਰ ਦਾ ਸਾਲ ਲਿਖੋ।"
 
-#: apps/field/static/field/app.js:508
+#: apps/field/static/field/app.js:548
 msgid "Plot (optional)"
 msgstr "ਖੇਤ (ਵਿਕਲਪਿਕ)"
 
-#: apps/field/static/field/app.js:513 apps/field/static/field/app.js:532
+#: apps/field/static/field/app.js:553 apps/field/static/field/app.js:572 apps/weightphotos/static/weightphotos/photos.js:153
 msgid "Notes (optional)"
 msgstr "ਟਿੱਪਣੀਆਂ (ਵਿਕਲਪਿਕ)"
 
-#: apps/field/static/field/app.js:515
+#: apps/field/static/field/app.js:555
 msgid "Choose the residue type."
 msgstr "ਰਹਿੰਦ-ਖੂੰਹਦ ਦੀ ਕਿਸਮ ਚੁਣੋ।"
 
-#: apps/field/static/field/app.js:516 apps/field/static/field/app.js:535 apps/yardops/static/yardops/app.js:568
+#: apps/field/static/field/app.js:556 apps/field/static/field/app.js:575 apps/yardops/static/yardops/app.js:603
 msgid "Enter the quantity in tonnes."
 msgstr "ਮਾਤਰਾ ਟਨ ਵਿੱਚ ਲਿਖੋ।"
 
-#: apps/field/static/field/app.js:517
+#: apps/field/static/field/app.js:557
 msgid "Enter the price paid (0 if nothing was paid)."
 msgstr "ਦਿੱਤਾ ਗਿਆ ਮੁੱਲ ਲਿਖੋ (ਕੁਝ ਨਹੀਂ ਦਿੱਤਾ ਤਾਂ 0)।"
 
-#: apps/field/static/field/app.js:526
+#: apps/field/static/field/app.js:566
 msgid "Connect to the internet once to download the product list."
 msgstr "ਉਤਪਾਦਾਂ ਦੀ ਸੂਚੀ ਡਾਊਨਲੋਡ ਕਰਨ ਲਈ ਇੱਕ ਵਾਰ ਇੰਟਰਨੈੱਟ ਨਾਲ ਜੁੜੋ।"
 
-#: apps/field/static/field/app.js:534
+#: apps/field/static/field/app.js:574
 msgid "Choose what was made."
 msgstr "ਚੁਣੋ ਕਿ ਕੀ ਬਣਿਆ।"
 
-#: apps/field/static/field/app.js:536
+#: apps/field/static/field/app.js:576
 msgid "Residue used must be a number."
 msgstr "ਵਰਤੀ ਗਈ ਰਹਿੰਦ-ਖੂੰਹਦ ਇੱਕ ਗਿਣਤੀ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ।"
 
-#: apps/field/static/field/app.js:544 apps/yardops/static/yardops/app.js:607
+#: apps/field/static/field/app.js:584 apps/yardops/static/yardops/app.js:642
 msgid "Sending…"
 msgstr "ਭੇਜ ਰਹੇ ਹਾਂ…"
 
-#: apps/field/static/field/app.js:544 apps/yardops/static/yardops/app.js:607
+#: apps/field/static/field/app.js:584 apps/yardops/static/yardops/app.js:642
 msgid "Send now"
 msgstr "ਹੁਣੇ ਭੇਜੋ"
 
-#: apps/field/static/field/app.js:549 apps/yardops/static/yardops/app.js:612
+#: apps/field/static/field/app.js:589 apps/yardops/static/yardops/app.js:647
 msgid "You are online."
 msgstr "ਤੁਸੀਂ ਆਨਲਾਈਨ ਹੋ।"
 
-#: apps/field/static/field/app.js:549 apps/yardops/static/yardops/app.js:612
+#: apps/field/static/field/app.js:589 apps/yardops/static/yardops/app.js:647
 msgid "No signal. Changes stay on this phone."
 msgstr "ਸਿਗਨਲ ਨਹੀਂ ਹੈ। ਬਦਲਾਅ ਇਸੇ ਫ਼ੋਨ ਵਿੱਚ ਰਹਿਣਗੇ।"
 
-#: apps/field/static/field/app.js:552 apps/yardops/static/yardops/app.js:615
+#: apps/field/static/field/app.js:592 apps/yardops/static/yardops/app.js:650 apps/weightphotos/static/weightphotos/photos.js:197
 msgid "Discard"
 msgstr "ਹਟਾਓ"
 
-#: apps/field/static/field/app.js:554 apps/yardops/static/yardops/app.js:617
+#: apps/field/static/field/app.js:594 apps/yardops/static/yardops/app.js:652
 msgid "Discard this change? It will not be saved on the server."
 msgstr "ਇਹ ਬਦਲਾਅ ਹਟਾਓ? ਇਹ ਸਰਵਰ ਉੱਤੇ ਸੰਭਾਲਿਆ ਨਹੀਂ ਜਾਵੇਗਾ।"
 
-#: apps/field/static/field/app.js:556 apps/yardops/static/yardops/app.js:619
+#: apps/field/static/field/app.js:596 apps/yardops/static/yardops/app.js:654 apps/weightphotos/static/weightphotos/photos.js:201
 msgid "Try again"
 msgstr "ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ"
 
-#: apps/field/static/field/app.js:561 apps/yardops/static/yardops/app.js:624
+#: apps/field/static/field/app.js:601 apps/yardops/static/yardops/app.js:659
 msgid "Nothing waiting. All changes are sent."
 msgstr "ਕੁਝ ਉਡੀਕ ਵਿੱਚ ਨਹੀਂ। ਸਾਰੇ ਬਦਲਾਅ ਭੇਜੇ ਜਾ ਚੁੱਕੇ ਹਨ।"
 
-#: apps/field/static/field/app.js:562 apps/yardops/static/yardops/app.js:625
+#: apps/field/static/field/app.js:602 apps/yardops/static/yardops/app.js:660
 msgid "Sent recently"
 msgstr "ਹਾਲ ਵਿੱਚ ਭੇਜੇ ਗਏ"
 
-#: apps/field/static/field/app.js:564 apps/yardops/static/yardops/app.js:627
+#: apps/field/static/field/app.js:604 apps/yardops/static/yardops/app.js:662
 msgid "Sent."
 msgstr "ਭੇਜਿਆ ਗਿਆ।"
 
-#: apps/field/static/field/app.js:564 apps/yardops/static/yardops/app.js:627
+#: apps/field/static/field/app.js:604 apps/yardops/static/yardops/app.js:662
 msgid "Sent"
 msgstr "ਭੇਜਿਆ ਗਿਆ"
 
-#: apps/field/static/field/app.js:565 apps/yardops/static/yardops/app.js:628
+#: apps/field/static/field/app.js:605 apps/yardops/static/yardops/app.js:663
 msgid "Nothing yet."
 msgstr "ਹਾਲੇ ਕੁਝ ਨਹੀਂ।"
 
-#: apps/field/static/field/app.js:589 apps/yardops/static/yardops/app.js:652
+#: apps/field/static/field/app.js:629 apps/yardops/static/yardops/app.js:687
 msgid "Home"
 msgstr "ਹੋਮ"
 
-#: apps/field/static/field/app.js:589
+#: apps/field/static/field/app.js:629
 msgid "Output"
 msgstr "ਉਤਪਾਦਨ"
+
+#: apps/field/static/field/app.js:629 apps/yardops/static/yardops/app.js:485 apps/yardops/static/yardops/app.js:687
+msgid "Photos"
+msgstr "ਫ਼ੋਟੋਆਂ"
 
 #: apps/yardops/templates/yardops/forbidden.html:6
 msgid "This login is not set up for a yard"
@@ -1844,7 +1865,7 @@ msgstr "ਇਹ ਲੌਗਇਨ ਕਿਸੇ ਯਾਰਡ ਲਈ ਨਹੀਂ ਬ
 msgid "Ask Regenerix to link your login to your yard."
 msgstr "ਆਪਣੇ ਲੌਗਇਨ ਨੂੰ ਆਪਣੇ ਯਾਰਡ ਨਾਲ ਜੋੜਨ ਲਈ Regenerix ਨੂੰ ਕਹੋ।"
 
-#: apps/yardops/templates/yardops/home.html:3 apps/yardops/templates/yardops/home.html:5 apps/yardops/static/yardops/app.js:429
+#: apps/yardops/templates/yardops/home.html:3 apps/yardops/templates/yardops/home.html:5 apps/yardops/static/yardops/app.js:462
 msgid "Yard check"
 msgstr "ਯਾਰਡ ਜਾਂਚ"
 
@@ -1852,7 +1873,7 @@ msgstr "ਯਾਰਡ ਜਾਂਚ"
 msgid "Open the phone app that works without a signal"
 msgstr "ਬਿਨਾਂ ਸਿਗਨਲ ਦੇ ਚੱਲਣ ਵਾਲੀ ਫ਼ੋਨ ਐਪ ਖੋਲ੍ਹੋ"
 
-#: apps/yardops/templates/yardops/home.html:10 apps/yardops/static/yardops/app.js:433 apps/yardops/static/yardops/app.js:440
+#: apps/yardops/templates/yardops/home.html:10 apps/yardops/static/yardops/app.js:466 apps/yardops/static/yardops/app.js:473
 msgid "Alerts"
 msgstr "ਚੇਤਾਵਨੀਆਂ"
 
@@ -1860,7 +1881,7 @@ msgstr "ਚੇਤਾਵਨੀਆਂ"
 msgid "Not acknowledged yet"
 msgstr "ਹਾਲੇ ਮੰਨਿਆ ਨਹੀਂ ਗਿਆ"
 
-#: apps/yardops/templates/yardops/home.html:19 apps/yardops/static/yardops/app.js:442
+#: apps/yardops/templates/yardops/home.html:19 apps/yardops/static/yardops/app.js:475
 msgid "I have seen this"
 msgstr "ਮੈਂ ਇਹ ਵੇਖ ਲਿਆ"
 
@@ -1868,7 +1889,7 @@ msgstr "ਮੈਂ ਇਹ ਵੇਖ ਲਿਆ"
 msgid "Log"
 msgstr "ਦਰਜ ਕਰੋ"
 
-#: apps/yardops/templates/yardops/home.html:43 apps/yardops/static/yardops/app.js:458
+#: apps/yardops/templates/yardops/home.html:43 apps/yardops/static/yardops/app.js:492
 msgid "No piles with stock in this yard."
 msgstr "ਇਸ ਯਾਰਡ ਵਿੱਚ ਸਟਾਕ ਵਾਲਾ ਕੋਈ ਢੇਰ ਨਹੀਂ।"
 
@@ -1890,11 +1911,11 @@ msgstr "%(m)s ਮਿੰਟ ਬਾਅਦ ਮੰਨਿਆ"
 msgid "Yard log in"
 msgstr "ਯਾਰਡ ਲੌਗ ਇਨ"
 
-#: apps/yardops/templates/yardops/pile.html:5 apps/yardops/static/yardops/app.js:452
+#: apps/yardops/templates/yardops/pile.html:5 apps/yardops/static/yardops/app.js:486
 msgid "All piles"
 msgstr "ਸਾਰੇ ਢੇਰ"
 
-#: apps/yardops/templates/yardops/pile.html:12 apps/yardops/static/yardops/app.js:476
+#: apps/yardops/templates/yardops/pile.html:12 apps/yardops/static/yardops/app.js:510
 msgid "Why this is flagged"
 msgstr "ਇਸ ਨੂੰ ਕਿਉਂ ਚਿੰਨ੍ਹਿਤ ਕੀਤਾ ਗਿਆ"
 
@@ -1902,92 +1923,92 @@ msgstr "ਇਸ ਨੂੰ ਕਿਉਂ ਚਿੰਨ੍ਹਿਤ ਕੀਤਾ ਗ�
 msgid "There is no stock in this pile."
 msgstr "ਇਸ ਢੇਰ ਵਿੱਚ ਕੋਈ ਸਟਾਕ ਨਹੀਂ ਹੈ।"
 
-#: apps/yardops/templates/yardops/pile.html:20 apps/yardops/static/yardops/app.js:477
+#: apps/yardops/templates/yardops/pile.html:20 apps/yardops/static/yardops/app.js:511
 msgid "Nothing is flagged on this pile."
 msgstr "ਇਸ ਢੇਰ ਉੱਤੇ ਕੁਝ ਚਿੰਨ੍ਹਿਤ ਨਹੀਂ ਹੈ।"
 
-#: apps/yardops/templates/yardops/pile.html:24 apps/yardops/static/yardops/app.js:480 apps/yardops/static/yardops/app.js:517
+#: apps/yardops/templates/yardops/pile.html:24 apps/yardops/static/yardops/app.js:514 apps/yardops/static/yardops/app.js:552
 msgid "Log a temperature"
 msgstr "ਤਾਪਮਾਨ ਦਰਜ ਕਰੋ"
 
-#: apps/yardops/templates/yardops/pile.html:27 apps/yardops/static/yardops/app.js:521
+#: apps/yardops/templates/yardops/pile.html:27 apps/yardops/static/yardops/app.js:556
 msgid "Save temperature"
 msgstr "ਤਾਪਮਾਨ ਸੰਭਾਲੋ"
 
-#: apps/yardops/templates/yardops/pile.html:28 apps/yardops/static/yardops/app.js:481 apps/yardops/static/yardops/app.js:537
+#: apps/yardops/templates/yardops/pile.html:28 apps/yardops/static/yardops/app.js:515 apps/yardops/static/yardops/app.js:572
 msgid "Log an inspection"
 msgstr "ਨਿਰੀਖਣ ਦਰਜ ਕਰੋ"
 
-#: apps/yardops/templates/yardops/pile.html:31 apps/yardops/static/yardops/app.js:543
+#: apps/yardops/templates/yardops/pile.html:31 apps/yardops/static/yardops/app.js:578
 msgid "Save inspection"
 msgstr "ਨਿਰੀਖਣ ਸੰਭਾਲੋ"
 
-#: apps/yardops/templates/yardops/pile.html:36 apps/yardops/static/yardops/app.js:482 apps/yardops/static/yardops/app.js:561
+#: apps/yardops/templates/yardops/pile.html:36 apps/yardops/static/yardops/app.js:516 apps/yardops/static/yardops/app.js:596
 msgid "Count the stock"
 msgstr "ਸਟਾਕ ਗਿਣੋ"
 
-#: apps/yardops/templates/yardops/pile.html:39 apps/yardops/static/yardops/app.js:566
+#: apps/yardops/templates/yardops/pile.html:39 apps/yardops/static/yardops/app.js:601
 msgid "Save count"
 msgstr "ਗਿਣਤੀ ਸੰਭਾਲੋ"
 
-#: apps/yardops/templates/yardops/pile.html:40 apps/yardops/static/yardops/app.js:483 apps/yardops/static/yardops/app.js:578
+#: apps/yardops/templates/yardops/pile.html:40 apps/yardops/static/yardops/app.js:517 apps/yardops/static/yardops/app.js:613
 msgid "Log a moisture reading"
 msgstr "ਨਮੀ ਦੀ ਰੀਡਿੰਗ ਦਰਜ ਕਰੋ"
 
-#: apps/yardops/templates/yardops/pile.html:43 apps/yardops/static/yardops/app.js:582
+#: apps/yardops/templates/yardops/pile.html:43 apps/yardops/static/yardops/app.js:617
 msgid "Save moisture"
 msgstr "ਨਮੀ ਸੰਭਾਲੋ"
 
-#: apps/yardops/templates/yardops/pile.html:45 apps/yardops/static/yardops/app.js:491
+#: apps/yardops/templates/yardops/pile.html:45 apps/yardops/static/yardops/app.js:526
 msgid "Batches in this pile"
 msgstr "ਇਸ ਢੇਰ ਦੇ ਬੈਚ"
 
-#: apps/yardops/templates/yardops/pile.html:50 apps/yardops/static/yardops/app.js:485
+#: apps/yardops/templates/yardops/pile.html:50 apps/yardops/static/yardops/app.js:520
 msgid "Recent temperatures"
 msgstr "ਹਾਲ ਦੇ ਤਾਪਮਾਨ"
 
-#: apps/yardops/templates/yardops/pile.html:54 apps/yardops/static/yardops/app.js:489
+#: apps/yardops/templates/yardops/pile.html:54 apps/yardops/static/yardops/app.js:524
 msgid "Recent inspections"
 msgstr "ਹਾਲ ਦੇ ਨਿਰੀਖਣ"
 
-#: apps/yardops/templates/yardops/pile.html:56 apps/yardops/static/yardops/app.js:502
+#: apps/yardops/templates/yardops/pile.html:56 apps/yardops/static/yardops/app.js:537
 msgid "wet"
 msgstr "ਗਿੱਲਾ"
 
-#: apps/yardops/templates/yardops/pile.html:56 apps/yardops/static/yardops/app.js:503
+#: apps/yardops/templates/yardops/pile.html:56 apps/yardops/static/yardops/app.js:538
 msgid "mould"
 msgstr "ਫ਼ਫ਼ੂੰਦੀ"
 
-#: apps/yardops/templates/yardops/pile.html:56 apps/yardops/static/yardops/app.js:504
+#: apps/yardops/templates/yardops/pile.html:56 apps/yardops/static/yardops/app.js:539
 msgid "steam or smell"
 msgstr "ਭਾਫ਼ ਜਾਂ ਬਦਬੂ"
 
-#: apps/yardops/templates/yardops/pile.html:56 apps/yardops/static/yardops/app.js:505
+#: apps/yardops/templates/yardops/pile.html:56 apps/yardops/static/yardops/app.js:540
 msgid "cover missing"
 msgstr "ਢੱਕਣ/ਤਿਰਪਾਲ ਨਹੀਂ"
 
-#: apps/yardops/templates/yardops/pile.html:57 apps/yardops/static/yardops/app.js:506
+#: apps/yardops/templates/yardops/pile.html:57 apps/yardops/static/yardops/app.js:541
 msgid "all clear"
 msgstr "ਸਭ ਠੀਕ"
 
-#: apps/yardops/templates/yardops/pile.html:58 apps/yardops/static/yardops/app.js:490
+#: apps/yardops/templates/yardops/pile.html:58 apps/yardops/static/yardops/app.js:525
 msgid "No inspections yet."
 msgstr "ਹਾਲੇ ਤੱਕ ਕੋਈ ਨਿਰੀਖਣ ਨਹੀਂ।"
 
-#: apps/yardops/templates/yardops/pile.html:61 apps/yardops/static/yardops/app.js:484 apps/yardops/static/yardops/app.js:593
+#: apps/yardops/templates/yardops/pile.html:61 apps/yardops/static/yardops/app.js:518 apps/yardops/static/yardops/app.js:628
 msgid "Pile size and cover"
 msgstr "ਢੇਰ ਦਾ ਆਕਾਰ ਅਤੇ ਢੱਕਣ"
 
-#: apps/yardops/templates/yardops/pile.html:64 apps/yardops/static/yardops/app.js:598
+#: apps/yardops/templates/yardops/pile.html:64 apps/yardops/static/yardops/app.js:633
 msgid "Save pile details"
 msgstr "ਢੇਰ ਦਾ ਵੇਰਵਾ ਸੰਭਾਲੋ"
 
-#: apps/yardops/templates/yardops/pile.html:8 apps/yardops/static/yardops/app.js:496
+#: apps/yardops/templates/yardops/pile.html:8 apps/yardops/static/yardops/app.js:531
 #, python-format
 msgid "%(h)s m high"
 msgstr "%(h)s ਮੀ. ਉੱਚਾ"
 
-#: apps/yardops/templates/yardops/pile.html:46 apps/yardops/static/yardops/app.js:493
+#: apps/yardops/templates/yardops/pile.html:46 apps/yardops/static/yardops/app.js:528
 #, python-format
 msgid "%(t)s on the books, received %(d)s"
 msgstr "ਬਹੀ ਵਿੱਚ %(t)s, %(d)s ਨੂੰ ਮਿਲਿਆ"
@@ -1997,71 +2018,71 @@ msgstr "ਬਹੀ ਵਿੱਚ %(t)s, %(d)s ਨੂੰ ਮਿਲਿਆ"
 msgid "%(d)s cm deep"
 msgstr "%(d)s ਸੈਮੀ ਡੂੰਘਾ"
 
-#: apps/yardops/forms.py:9 apps/yardops/static/yardops/app.js:518
+#: apps/yardops/forms.py:9 apps/yardops/static/yardops/app.js:553
 msgid "Temperature (°C)"
 msgstr "ਤਾਪਮਾਨ (°C)"
 
-#: apps/yardops/forms.py:12 apps/yardops/static/yardops/app.js:519
+#: apps/yardops/forms.py:12 apps/yardops/static/yardops/app.js:554
 msgid "Where in the stack"
 msgstr "ਢੇਰ ਵਿੱਚ ਕਿੱਥੇ"
 
-#: apps/yardops/forms.py:12 apps/yardops/static/yardops/app.js:519
+#: apps/yardops/forms.py:12 apps/yardops/static/yardops/app.js:554
 msgid "For example north face, 1 m deep"
 msgstr "ਉਦਾਹਰਣ: ਉੱਤਰ ਵੱਲ, 1 ਮੀ. ਡੂੰਘਾ"
 
-#: apps/yardops/forms.py:13 apps/yardops/static/yardops/app.js:520
+#: apps/yardops/forms.py:13 apps/yardops/static/yardops/app.js:555
 msgid "Probe depth (cm)"
 msgstr "ਪ੍ਰੋਬ ਦੀ ਡੂੰਘਾਈ (ਸੈਮੀ)"
 
-#: apps/yardops/forms.py:17 apps/yardops/static/yardops/app.js:538
+#: apps/yardops/forms.py:17 apps/yardops/static/yardops/app.js:573
 msgid "The stack looks wet"
 msgstr "ਢੇਰ ਗਿੱਲਾ ਦਿਸਦਾ ਹੈ"
 
-#: apps/yardops/forms.py:18 apps/yardops/static/yardops/app.js:539
+#: apps/yardops/forms.py:18 apps/yardops/static/yardops/app.js:574
 msgid "Mould is visible"
 msgstr "ਫ਼ਫ਼ੂੰਦੀ ਦਿਸ ਰਹੀ ਹੈ"
 
-#: apps/yardops/forms.py:19 apps/yardops/static/yardops/app.js:540
+#: apps/yardops/forms.py:19 apps/yardops/static/yardops/app.js:575
 msgid "Steam, or a burnt or musty smell"
 msgstr "ਭਾਫ਼, ਜਾਂ ਸੜਨ ਜਾਂ ਸਿੱਲ੍ਹ ਦੀ ਬਦਬੂ"
 
-#: apps/yardops/forms.py:20 apps/yardops/static/yardops/app.js:541
+#: apps/yardops/forms.py:20 apps/yardops/static/yardops/app.js:576
 msgid "Cover is in place and secure"
 msgstr "ਢੱਕਣ ਆਪਣੀ ਥਾਂ ਉੱਤੇ ਅਤੇ ਕੱਸਿਆ ਹੋਇਆ ਹੈ"
 
-#: apps/yardops/forms.py:33 apps/yardops/static/yardops/app.js:563
+#: apps/yardops/forms.py:33 apps/yardops/static/yardops/app.js:598
 msgid "Counted (tonnes)"
 msgstr "ਗਿਣਤੀ (ਟਨ)"
 
-#: apps/yardops/forms.py:36 apps/yardops/static/yardops/app.js:564
+#: apps/yardops/forms.py:36 apps/yardops/static/yardops/app.js:599
 msgid "How it was counted"
 msgstr "ਕਿਵੇਂ ਗਿਣਿਆ ਗਿਆ"
 
-#: apps/yardops/forms.py:41 apps/yardops/static/yardops/app.js:580
+#: apps/yardops/forms.py:41 apps/yardops/static/yardops/app.js:615
 msgid "Moisture (%)"
 msgstr "ਨਮੀ (%)"
 
-#: apps/yardops/forms.py:44 apps/yardops/static/yardops/app.js:581
+#: apps/yardops/forms.py:44 apps/yardops/static/yardops/app.js:616
 msgid "Method"
 msgstr "ਤਰੀਕਾ"
 
-#: apps/yardops/forms.py:48 apps/yardops/static/yardops/app.js:594
+#: apps/yardops/forms.py:48 apps/yardops/static/yardops/app.js:629
 msgid "Length (m)"
 msgstr "ਲੰਬਾਈ (ਮੀ.)"
 
-#: apps/yardops/forms.py:49 apps/yardops/static/yardops/app.js:595
+#: apps/yardops/forms.py:49 apps/yardops/static/yardops/app.js:630
 msgid "Width (m)"
 msgstr "ਚੌੜਾਈ (ਮੀ.)"
 
-#: apps/yardops/forms.py:50 apps/yardops/static/yardops/app.js:596
+#: apps/yardops/forms.py:50 apps/yardops/static/yardops/app.js:631
 msgid "Height (m)"
 msgstr "ਉਚਾਈ (ਮੀ.)"
 
-#: apps/yardops/forms.py:51 apps/yardops/static/yardops/app.js:597
+#: apps/yardops/forms.py:51 apps/yardops/static/yardops/app.js:632
 msgid "Cover"
 msgstr "ਢੱਕਣ"
 
-#: apps/yardops/forms.py:51 apps/yardops/static/yardops/app.js:597
+#: apps/yardops/forms.py:51 apps/yardops/static/yardops/app.js:632
 msgid "For example tarp, shed, none"
 msgstr "ਉਦਾਹਰਣ: ਤਿਰਪਾਲ, ਸ਼ੈੱਡ, ਕੁਝ ਨਹੀਂ"
 
@@ -2194,7 +2215,7 @@ msgstr "ਢੇਰ %(h)s ਮੀ. ਉੱਚਾ ਹੈ, ਜੋ %(limit)s ਮੀ. �
 msgid "This pile is no longer in use."
 msgstr "ਇਹ ਢੇਰ ਹੁਣ ਵਰਤੋਂ ਵਿੱਚ ਨਹੀਂ ਹੈ।"
 
-#: apps/yardops/services.py:38 apps/yardops/api.py:188
+#: apps/yardops/services.py:38 apps/yardops/api.py:192
 msgid "The reading time cannot be in the future."
 msgstr "ਰੀਡਿੰਗ ਦਾ ਸਮਾਂ ਭਵਿੱਖ ਵਿੱਚ ਨਹੀਂ ਹੋ ਸਕਦਾ।"
 
@@ -2218,57 +2239,57 @@ msgstr "ਹੱਥ ਨਾਲ ਪ੍ਰੋਬ"
 msgid "Fixed sensor"
 msgstr "ਲੱਗਿਆ ਹੋਇਆ ਸੈਂਸਰ"
 
-#: apps/yardops/api.py:58
+#: apps/yardops/api.py:61
 #, python-format
 msgid "%(what)s is not a valid date and time."
 msgstr "%(what)s ਜਾਇਜ਼ ਤਾਰੀਖ਼ ਅਤੇ ਸਮਾਂ ਨਹੀਂ ਹੈ।"
 
-#: apps/yardops/api.py:64
+#: apps/yardops/api.py:67
 msgid "The pile"
 msgstr "ਢੇਰ"
 
-#: apps/yardops/api.py:66
+#: apps/yardops/api.py:69 apps/weightphotos/api.py:61
 msgid "The pile was not found in your yards."
 msgstr "ਇਹ ਢੇਰ ਤੁਹਾਡੇ ਯਾਰਡ ਵਿੱਚ ਨਹੀਂ ਮਿਲਿਆ।"
 
-#: apps/yardops/api.py:71
+#: apps/yardops/api.py:74
 msgid "The batch"
 msgstr "ਬੈਚ"
 
-#: apps/yardops/api.py:73
+#: apps/yardops/api.py:76
 msgid "The batch was not found in your yards."
 msgstr "ਇਹ ਬੈਚ ਤੁਹਾਡੇ ਯਾਰਡ ਵਿੱਚ ਨਹੀਂ ਮਿਲਿਆ।"
 
-#: apps/yardops/api.py:171 apps/yardops/api.py:235
+#: apps/yardops/api.py:175 apps/yardops/api.py:239
 msgid "The reading time"
 msgstr "ਰੀਡਿੰਗ ਦਾ ਸਮਾਂ"
 
-#: apps/yardops/api.py:186
+#: apps/yardops/api.py:190
 msgid "The inspection time"
 msgstr "ਨਿਰੀਖਣ ਦਾ ਸਮਾਂ"
 
-#: apps/yardops/api.py:204
+#: apps/yardops/api.py:208
 #, python-format
 msgid "%(what)s is not a valid date."
 msgstr "%(what)s ਜਾਇਜ਼ ਤਾਰੀਖ਼ ਨਹੀਂ ਹੈ।"
 
-#: apps/yardops/api.py:217
+#: apps/yardops/api.py:221
 msgid "The count date"
 msgstr "ਗਿਣਤੀ ਦੀ ਤਾਰੀਖ਼"
 
-#: apps/yardops/api.py:262
+#: apps/yardops/api.py:266
 msgid "The alert"
 msgstr "ਚੇਤਾਵਨੀ"
 
-#: apps/yardops/api.py:265
+#: apps/yardops/api.py:269
 msgid "The alert was not found in your yards."
 msgstr "ਇਹ ਚੇਤਾਵਨੀ ਤੁਹਾਡੇ ਯਾਰਡ ਵਿੱਚ ਨਹੀਂ ਮਿਲੀ।"
 
-#: apps/yardops/api.py:269
+#: apps/yardops/api.py:273
 msgid "This alert had already closed before your acknowledgement arrived."
 msgstr "ਤੁਹਾਡੇ ਮੰਨਣ ਤੋਂ ਪਹਿਲਾਂ ਹੀ ਇਹ ਚੇਤਾਵਨੀ ਬੰਦ ਹੋ ਚੁੱਕੀ ਸੀ।"
 
-#: apps/yardops/api.py:270
+#: apps/yardops/api.py:274
 msgid "The time"
 msgstr "ਸਮਾਂ"
 
@@ -2305,47 +2326,277 @@ msgstr "ਢੇਰ %(pile)s ਦਾ ਆਕਾਰ"
 msgid "Alert seen"
 msgstr "ਚੇਤਾਵਨੀ ਵੇਖ ਲਈ"
 
-#: apps/yardops/static/yardops/app.js:429
+#: apps/yardops/static/yardops/app.js:440 apps/yardops/static/yardops/app.js:501 apps/yardops/static/yardops/app.js:551
+msgid "Pile not found."
+msgstr "ਢੇਰ ਨਹੀਂ ਮਿਲਿਆ।"
+
+#: apps/yardops/static/yardops/app.js:462
 msgid "Connect to the internet once so your piles can be downloaded."
 msgstr "ਆਪਣੇ ਢੇਰ ਡਾਊਨਲੋਡ ਕਰਨ ਲਈ ਇੱਕ ਵਾਰ ਇੰਟਰਨੈੱਟ ਨਾਲ ਜੁੜੋ।"
 
-#: apps/yardops/static/yardops/app.js:432
+#: apps/yardops/static/yardops/app.js:465
 msgid "Piles"
 msgstr "ਢੇਰ"
 
-#: apps/yardops/static/yardops/app.js:447 apps/yardops/static/yardops/app.js:456 apps/yardops/static/yardops/app.js:471
+#: apps/yardops/static/yardops/app.js:480 apps/yardops/static/yardops/app.js:490 apps/yardops/static/yardops/app.js:505
 #, python-format
 msgid "Pile %(pile)s"
 msgstr "ਢੇਰ %(pile)s"
 
-#: apps/yardops/static/yardops/app.js:467 apps/yardops/static/yardops/app.js:516 apps/yardops/static/yardops/app.js:536
-msgid "Pile not found."
-msgstr "ਢੇਰ ਨਹੀਂ ਮਿਲਿਆ।"
-
-#: apps/yardops/static/yardops/app.js:474
+#: apps/yardops/static/yardops/app.js:508
 msgid "Raised on this phone from what you just entered. The server will confirm it when it is sent."
 msgstr "Raised on this phone from what you just entered. The server will confirm it when it is sent."
 
-#: apps/yardops/static/yardops/app.js:522
+#: apps/yardops/static/yardops/app.js:519
+msgid "Photograph this stack"
+msgstr "ਇਸ ਢੇਰ ਦੀ ਫ਼ੋਟੋ ਖਿੱਚੋ"
+
+#: apps/yardops/static/yardops/app.js:557
 msgid "Enter a temperature between -20 and 200 °C."
 msgstr "-20 ਤੋਂ 200 °C ਦੇ ਵਿਚਕਾਰ ਤਾਪਮਾਨ ਲਿਖੋ।"
 
-#: apps/yardops/static/yardops/app.js:523
+#: apps/yardops/static/yardops/app.js:558
 msgid "Probe depth must be a whole number of centimetres, up to 500."
 msgstr "ਪ੍ਰੋਬ ਦੀ ਡੂੰਘਾਈ ਸੈਂਟੀਮੀਟਰ ਵਿੱਚ ਪੂਰੀ ਸੰਖਿਆ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ, 500 ਤੱਕ।"
 
-#: apps/yardops/static/yardops/app.js:527 apps/yardops/static/yardops/app.js:547 apps/yardops/static/yardops/app.js:571
+#: apps/yardops/static/yardops/app.js:562 apps/yardops/static/yardops/app.js:582 apps/yardops/static/yardops/app.js:606
 msgid "Saved on this phone."
 msgstr "ਇਸ ਫ਼ੋਨ ਵਿੱਚ ਸੰਭਾਲਿਆ ਗਿਆ।"
 
-#: apps/yardops/static/yardops/app.js:567 apps/yardops/static/yardops/app.js:583
+#: apps/yardops/static/yardops/app.js:602 apps/yardops/static/yardops/app.js:618
 msgid "Choose the batch."
 msgstr "ਬੈਚ ਚੁਣੋ।"
 
-#: apps/yardops/static/yardops/app.js:584
+#: apps/yardops/static/yardops/app.js:619
 msgid "Enter a moisture between 0 and 100."
 msgstr "0 ਤੋਂ 100 ਦੇ ਵਿਚਕਾਰ ਨਮੀ ਲਿਖੋ।"
 
-#: apps/yardops/static/yardops/app.js:600
+#: apps/yardops/static/yardops/app.js:635
 msgid "Sizes must be numbers above zero."
 msgstr "ਆਕਾਰ ਸਿਫ਼ਰ ਤੋਂ ਵੱਡੀ ਸੰਖਿਆ ਹੋਣੇ ਚਾਹੀਦੇ ਹਨ।"
+
+#: apps/weightphotos/static/weightphotos/photos.js:133
+msgid "Stand to the side so the whole vehicle and its load are in the photo. Keep people's faces out of it."
+msgstr "Stand to the side so the whole vehicle and its load are in the photo. Keep people's faces out of it."
+
+#: apps/weightphotos/static/weightphotos/photos.js:134
+msgid "Stand back so the whole stack is in the photo, with its top and one end. Keep people's faces out of it."
+msgstr "Stand back so the whole stack is in the photo, with its top and one end. Keep people's faces out of it."
+
+#: apps/weightphotos/static/weightphotos/photos.js:135
+msgid "Photo"
+msgstr "ਫ਼ੋਟੋ"
+
+#: apps/weightphotos/static/weightphotos/photos.js:139 apps/weightphotos/models.py:40
+msgid "Tractor trolley"
+msgstr "ਟਰੈਕਟਰ ਟਰਾਲੀ"
+
+#: apps/weightphotos/static/weightphotos/photos.js:139 apps/weightphotos/models.py:41
+msgid "Truck"
+msgstr "ਟਰੱਕ"
+
+#: apps/weightphotos/static/weightphotos/photos.js:140 apps/weightphotos/models.py:42
+msgid "Mini truck or pickup"
+msgstr "ਮਿੰਨੀ ਟਰੱਕ ਜਾਂ ਪਿਕਅੱਪ"
+
+#: apps/weightphotos/static/weightphotos/photos.js:142
+msgid "Vehicle number or driver (optional)"
+msgstr "ਵਾਹਨ ਨੰਬਰ ਜਾਂ ਡਰਾਈਵਰ (ਵਿਕਲਪਿਕ)"
+
+#: apps/weightphotos/static/weightphotos/photos.js:144
+msgid "Where is it?"
+msgstr "ਇਹ ਕਿੱਥੇ ਹੈ?"
+
+#: apps/weightphotos/static/weightphotos/photos.js:147
+msgid "Number of bales, if you counted (optional)"
+msgstr "ਗੰਢਾਂ ਦੀ ਗਿਣਤੀ, ਜੇ ਗਿਣੀ ਹੋਵੇ (ਵਿਕਲਪਿਕ)"
+
+#: apps/weightphotos/static/weightphotos/photos.js:148
+msgid "Something in the photo that shows size, such as a 2 m pole (optional)"
+msgstr "Something in the photo that shows size, such as a 2 m pole (optional)"
+
+#: apps/weightphotos/static/weightphotos/photos.js:149
+msgid "Weighbridge weight"
+msgstr "ਵੇਬ੍ਰਿਜ ਵਜ਼ਨ"
+
+#: apps/weightphotos/static/weightphotos/photos.js:150
+msgid "If it has been weighed, enter the weight from the slip. You can also add it later."
+msgstr "ਜੇ ਤੋਲ ਹੋ ਚੁੱਕਾ ਹੈ ਤਾਂ ਪਰਚੀ ਦਾ ਵਜ਼ਨ ਲਿਖੋ। ਇਸ ਨੂੰ ਬਾਅਦ ਵਿੱਚ ਵੀ ਜੋੜ ਸਕਦੇ ਹੋ।"
+
+#: apps/weightphotos/static/weightphotos/photos.js:151
+msgid "Weight on the slip (tonnes)"
+msgstr "ਪਰਚੀ ਉੱਤੇ ਵਜ਼ਨ (ਟਨ)"
+
+#: apps/weightphotos/static/weightphotos/photos.js:152
+msgid "Slip number (optional)"
+msgstr "ਪਰਚੀ ਨੰਬਰ (ਵਿਕਲਪਿਕ)"
+
+#: apps/weightphotos/static/weightphotos/photos.js:156
+msgid "Photo of a loaded vehicle"
+msgstr "ਲੱਦੇ ਵਾਹਨ ਦੀ ਫ਼ੋਟੋ"
+
+#: apps/weightphotos/static/weightphotos/photos.js:156
+msgid "Photo of a stack"
+msgstr "ਢੇਰ ਦੀ ਫ਼ੋਟੋ"
+
+#: apps/weightphotos/static/weightphotos/photos.js:157
+msgid "Save photo"
+msgstr "ਫ਼ੋਟੋ ਸੰਭਾਲੋ"
+
+#: apps/weightphotos/static/weightphotos/photos.js:159
+msgid "Take or choose a photo first."
+msgstr "ਪਹਿਲਾਂ ਫ਼ੋਟੋ ਖਿੱਚੋ ਜਾਂ ਚੁਣੋ।"
+
+#: apps/weightphotos/static/weightphotos/photos.js:160
+msgid "Choose the vehicle."
+msgstr "ਵਾਹਨ ਚੁਣੋ।"
+
+#: apps/weightphotos/static/weightphotos/photos.js:161
+msgid "The number of bales must be a whole number."
+msgstr "ਗੰਢਾਂ ਦੀ ਗਿਣਤੀ ਪੂਰੀ ਸੰਖਿਆ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ।"
+
+#: apps/weightphotos/static/weightphotos/photos.js:162 apps/weightphotos/static/weightphotos/photos.js:184
+msgid "Enter the weight on the slip in tonnes."
+msgstr "ਪਰਚੀ ਦਾ ਵਜ਼ਨ ਟਨ ਵਿੱਚ ਲਿਖੋ।"
+
+#: apps/weightphotos/static/weightphotos/photos.js:172
+msgid "That file could not be read as a photo."
+msgstr "ਇਹ ਫ਼ਾਈਲ ਫ਼ੋਟੋ ਵਜੋਂ ਨਹੀਂ ਪੜ੍ਹੀ ਜਾ ਸਕੀ।"
+
+#: apps/weightphotos/static/weightphotos/photos.js:182
+msgid "Save weight"
+msgstr "ਵਜ਼ਨ ਸੰਭਾਲੋ"
+
+#: apps/weightphotos/static/weightphotos/photos.js:196 apps/weightphotos/static/weightphotos/photos.js:217
+msgid "Loaded vehicle"
+msgstr "ਲੱਦਿਆ ਵਾਹਨ"
+
+#: apps/weightphotos/static/weightphotos/photos.js:196 apps/weightphotos/static/weightphotos/photos.js:217
+msgid "Stack"
+msgstr "ਢੇਰ"
+
+#: apps/weightphotos/static/weightphotos/photos.js:199
+msgid "Discard this photo? It will not be saved on the server."
+msgstr "ਇਹ ਫ਼ੋਟੋ ਹਟਾਓ? ਇਹ ਸਰਵਰ ਉੱਤੇ ਸੰਭਾਲੀ ਨਹੀਂ ਜਾਵੇਗੀ।"
+
+#: apps/weightphotos/static/weightphotos/photos.js:213
+msgid "No photos waiting."
+msgstr "ਕੋਈ ਫ਼ੋਟੋ ਉਡੀਕ ਵਿੱਚ ਨਹੀਂ।"
+
+#: apps/weightphotos/static/weightphotos/photos.js:214
+msgid "Sent, waiting for a weighbridge weight"
+msgstr "ਭੇਜੀਆਂ ਗਈਆਂ, ਵੇਬ੍ਰਿਜ ਵਜ਼ਨ ਦੀ ਉਡੀਕ"
+
+#: apps/weightphotos/static/weightphotos/photos.js:218
+msgid "Weight waiting to send"
+msgstr "ਵਜ਼ਨ ਭੇਜਣ ਦੀ ਉਡੀਕ ਵਿੱਚ"
+
+#: apps/weightphotos/static/weightphotos/photos.js:220
+msgid "None. Every sent photo has a weight."
+msgstr "ਕੋਈ ਨਹੀਂ। ਭੇਜੀ ਗਈ ਹਰ ਫ਼ੋਟੋ ਦਾ ਵਜ਼ਨ ਦਰਜ ਹੈ।"
+
+#: apps/weightphotos/api.py:32
+#, python-format
+msgid "%(what)s must be a number."
+msgstr "%(what)s ਇੱਕ ਸੰਖਿਆ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ।"
+
+#: apps/weightphotos/api.py:41
+msgid "The photo id is not valid."
+msgstr "The photo id is not valid."
+
+#: apps/weightphotos/api.py:49 apps/weightphotos/services.py:32
+msgid "No photo was sent."
+msgstr "ਕੋਈ ਫ਼ੋਟੋ ਨਹੀਂ ਭੇਜੀ ਗਈ।"
+
+#: apps/weightphotos/api.py:52
+msgid "Choose whether the photo shows a stack or a loaded vehicle."
+msgstr "ਚੁਣੋ ਕਿ ਫ਼ੋਟੋ ਢੇਰ ਦੀ ਹੈ ਜਾਂ ਲੱਦੇ ਵਾਹਨ ਦੀ।"
+
+#: apps/weightphotos/api.py:55
+msgid "Choose a vehicle type from the list."
+msgstr "ਸੂਚੀ ਵਿੱਚੋਂ ਵਾਹਨ ਦੀ ਕਿਸਮ ਚੁਣੋ।"
+
+#: apps/weightphotos/api.py:66
+msgid "The photo time is not a valid date and time."
+msgstr "The photo time is not a valid date and time."
+
+#: apps/weightphotos/api.py:71 apps/weightphotos/api.py:103
+msgid "The weighing date is not a valid date."
+msgstr "ਤੋਲ ਦੀ ਤਾਰੀਖ਼ ਜਾਇਜ਼ ਤਾਰੀਖ਼ ਨਹੀਂ ਹੈ।"
+
+#: apps/weightphotos/api.py:76
+msgid "The bale count must be a whole number."
+msgstr "ਗੰਢਾਂ ਦੀ ਗਿਣਤੀ ਪੂਰੀ ਸੰਖਿਆ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ।"
+
+#: apps/weightphotos/api.py:83 apps/weightphotos/api.py:105
+msgid "The weight"
+msgstr "ਵਜ਼ਨ"
+
+#: apps/weightphotos/api.py:98
+msgid "The photo was not found. It may not have reached the server yet."
+msgstr "The photo was not found. It may not have reached the server yet."
+
+#: apps/weightphotos/api.py:100
+msgid "The photo was not found."
+msgstr "ਫ਼ੋਟੋ ਨਹੀਂ ਮਿਲੀ।"
+
+#: apps/weightphotos/services.py:34
+msgid "The photo is too large."
+msgstr "ਫ਼ੋਟੋ ਬਹੁਤ ਵੱਡੀ ਹੈ।"
+
+#: apps/weightphotos/services.py:38
+msgid "Send a JPEG, PNG or WEBP photo."
+msgstr "JPEG, PNG ਜਾਂ WEBP ਫ਼ੋਟੋ ਭੇਜੋ।"
+
+#: apps/weightphotos/services.py:41
+msgid "This file is not a photo."
+msgstr "ਇਹ ਫ਼ਾਈਲ ਫ਼ੋਟੋ ਨਹੀਂ ਹੈ।"
+
+#: apps/weightphotos/services.py:44
+#, python-format
+msgid "The photo should be between %(lo)s and %(hi)s pixels on each side."
+msgstr "The photo should be between %(lo)s and %(hi)s pixels on each side."
+
+#: apps/weightphotos/services.py:62
+msgid "The photo time cannot be in the future."
+msgstr "ਫ਼ੋਟੋ ਦਾ ਸਮਾਂ ਭਵਿੱਖ ਵਿੱਚ ਨਹੀਂ ਹੋ ਸਕਦਾ।"
+
+#: apps/weightphotos/services.py:91
+msgid "The weight must be above zero."
+msgstr "ਵਜ਼ਨ ਸਿਫ਼ਰ ਤੋਂ ਉੱਪਰ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।"
+
+#: apps/weightphotos/services.py:94
+msgid "The weighing date cannot be in the future."
+msgstr "ਤੋਲ ਦੀ ਤਾਰੀਖ਼ ਭਵਿੱਖ ਵਿੱਚ ਨਹੀਂ ਹੋ ਸਕਦੀ।"
+
+#: apps/weightphotos/services.py:101
+msgid "This photo already has a weighed figure. Ask Regenerix staff to correct it."
+msgstr "This photo already has a weighed figure. Ask Regenerix staff to correct it."
+
+#: apps/weightphotos/models.py:30
+msgid "A stack"
+msgstr "ਇੱਕ ਢੇਰ"
+
+#: apps/weightphotos/models.py:31
+msgid "A loaded vehicle"
+msgstr "ਇੱਕ ਲੱਦਿਆ ਵਾਹਨ"
+
+#: apps/weightphotos/models.py:35
+msgid "Yard app"
+msgstr "ਯਾਰਡ ਐਪ"
+
+#: apps/weightphotos/models.py:36
+msgid "Mitra app"
+msgstr "ਮਿੱਤਰ ਐਪ"
+
+#: apps/weightphotos/models.py:97
+msgid "A stack has no vehicle."
+msgstr "ਢੇਰ ਨਾਲ ਕੋਈ ਵਾਹਨ ਨਹੀਂ ਹੁੰਦਾ।"
+
+#: apps/weightphotos/models.py:99
+msgid "A loaded vehicle is not in a pile."
+msgstr "ਲੱਦਾ ਵਾਹਨ ਕਿਸੇ ਢੇਰ ਵਿੱਚ ਨਹੀਂ ਹੁੰਦਾ।"
+
+#: apps/weightphotos/models.py:101
+msgid "Enter the date the load was weighed."
+msgstr "ਲੱਦ ਦੇ ਤੋਲ ਦੀ ਤਾਰੀਖ਼ ਲਿਖੋ।"

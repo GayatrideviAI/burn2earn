@@ -1,9 +1,10 @@
 {% load static %}
 // Keeps the offline app's page and files on the phone so it opens with no signal.
-const VERSION = "mitra-app-v1";
+const VERSION = "mitra-app-v2";
 const SHELL = [
   "{% url 'field:app' %}",
   "{% static 'field/app.js' %}",
+  "{% static 'weightphotos/photos.js' %}",
   "{% static 'field/app.css' %}",
   "{% static 'field/icon.svg' %}",
 ];

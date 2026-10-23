@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "apps.trade",
     "apps.customers",
     "apps.yardops",
+    "apps.weightphotos",
 ]
 
 MIDDLEWARE = [
@@ -137,3 +138,11 @@ YARD_READING_MAX_AGE_DAYS = 3     # a pile with no temperature reading for this 
 YARD_DAMP_INTAKE_PERCENT = 20     # stacked damper than this at intake
 YARD_MAX_STACK_HEIGHT_M = 4       # taller stacks hold heat
 YARD_ALERT_ACK_MINUTES = 30       # an alert not acknowledged by now is shown as overdue
+
+
+# Photos taken in the phone apps (weight-from-photo data collection). Kept outside the code folder's static files.
+MEDIA_ROOT = BASE_DIR / "media"
+WEIGHT_PHOTO_MAX_BYTES = 8 * 1024 * 1024
+# How many photos WITH a weighbridge weight we want per kind before trying a model. This is an
+# assumption, not a measured figure; a data scientist should set it once there is real data.
+WEIGHT_PHOTO_TARGET_PER_SUBJECT = 300

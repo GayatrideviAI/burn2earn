@@ -21,22 +21,28 @@ def phrases_in(path):
 
 
 MITRA_JS = Path(__file__).parent / "static" / "field" / "app.js"
+# The photo screens are shared by the Mitra and Yard apps, so both carry their phrases.
+PHOTOS_JS = Path(__file__).parent.parent / "weightphotos" / "static" / "weightphotos" / "photos.js"
 
 
 @lru_cache(maxsize=None)
-def _phrases(path):
-    return sorted(set(phrases_in(path)))
+def _phrases(paths):
+    return sorted({p for path in paths for p in phrases_in(path)})
 
 
-def js_catalog(path=MITRA_JS):
+def _as_paths(path):
+    return tuple(Path(x) for x in (path if isinstance(path, (list, tuple)) else [path]))
+
+
+def js_catalog(path=(MITRA_JS, PHOTOS_JS)):
     catalog = {}
     for code in ("hi", "pa"):
         with translation.override(code):
-            catalog[code] = {p: gettext(p) for p in _phrases(Path(path)) if gettext(p) != p}
+            catalog[code] = {p: gettext(p) for p in _phrases(_as_paths(path)) if gettext(p) != p}
     return catalog
 
 
-def js_catalog_json(path=MITRA_JS):
+def js_catalog_json(path=(MITRA_JS, PHOTOS_JS)):
     # Safe to place inside a <script> tag.
     text = json.dumps(js_catalog(path), ensure_ascii=False)
     return text.replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")

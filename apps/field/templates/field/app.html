@@ -21,6 +21,7 @@
   window.MITRA = {
     bootstrapUrl: "{% url 'field:api_bootstrap' %}",
     syncUrl: "{% url 'field:api_sync' %}",
+    photosUrl: "{% url 'field:api_photos' %}",
     swUrl: "{% url 'field:service_worker' %}",
     loginUrl: "{% url 'field:login' %}",
     onlineUrl: "{% url 'field:dashboard' %}",
@@ -29,6 +30,7 @@
     catalog: {{ catalog_json|safe }}
   };
 </script>
+<script src="{% static 'weightphotos/photos.js' %}"></script>
 <script src="{% static 'field/app.js' %}"></script>
 </body>
 </html>

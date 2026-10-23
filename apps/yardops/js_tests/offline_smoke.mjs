@@ -12,6 +12,10 @@ const { chromium } = require("playwright");
 const here = path.dirname(fileURLToPath(import.meta.url));
 const yardDir = path.join(here, "..");
 const fieldDir = path.join(yardDir, "..", "field");
+const photoDir = path.join(yardDir, "..", "weightphotos");
+const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "base64");
+const photoUploads = [];
+const order = [];
 
 const received = [];
 const saved = new Map();
@@ -29,6 +33,7 @@ const snapshot = {
     batches: [{ id: BATCH, code: "BAT-0001", book_tonnes: "100.000", received_on: "2026-10-01" }],
     readings: [], last_inspection: null,
   }],
+  photos_to_weigh: [{ id: "44444444-4444-4444-8444-444444444444", code: "WPH-000009", subject: "stack", taken_at: new Date().toISOString(), label: "Yard A / A-01" }],
   alerts: [{ id: ALERT, code: "ALR-0001", pile_id: PILE, pile: "A-01", yard: "Yard A", level: 2, reasons: "Temperature is 66 °C", raised_at: new Date().toISOString(), acknowledged: false }],
 };
 
@@ -41,6 +46,7 @@ function template(file) {
     .replace(/{{ LANGUAGE_CODE }}/g, "en")
     .replace("{{ catalog_json|safe }}", JSON.stringify({ hi: { "Normal": "सामान्य", "Alerts": "चेतावनियाँ", "Hello, %(name)s": "नमस्ते, %(name)s" } }))
     .replace(/{% static '([^']+)' %}/g, "/static/$1")
+    .replace("{% url 'yardops:api_photos' %}", "/yard/api/photos/")
     .replace("{% url 'yardops:app' %}", "/yard/app/")
     .replace("{% url 'yardops:manifest' %}", "/yard/manifest.webmanifest")
     .replace("{% url 'yardops:api_bootstrap' %}", "/yard/api/bootstrap/")
@@ -58,7 +64,8 @@ const server = http.createServer((req, res) => {
   if (url === "/yard/manifest.webmanifest") return send("application/manifest+json", template("manifest.webmanifest"));
   if (url.startsWith("/static/")) {
     const rel = url.replace("/static/", "");
-    const file = rel.startsWith("yardops/") ? path.join(yardDir, "static", rel) : path.join(fieldDir, "static", rel);
+    const root = rel.startsWith("yardops/") ? yardDir : rel.startsWith("weightphotos/") ? photoDir : fieldDir;
+    const file = path.join(root, "static", rel);
     const type = file.endsWith(".js") ? "text/javascript" : file.endsWith(".css") ? "text/css" : "image/svg+xml";
     return send(type, fs.readFileSync(file));
   }
@@ -68,12 +75,26 @@ const server = http.createServer((req, res) => {
     s.alerts[0].acknowledged = acked;
     return send("application/json", JSON.stringify(s));
   }
+  if (url === "/yard/api/photos/" && req.method === "POST") {
+    const chunks = [];
+    req.on("data", (c) => chunks.push(c));
+    req.on("end", () => {
+      const raw = Buffer.concat(chunks).toString("latin1");
+      photoUploads.push(raw);
+      order.push("photo");
+      const id = /name="id"\r\n\r\n([^\r]+)/.exec(raw)[1];
+      if (raw.includes("BADPHOTO")) return send("application/json", JSON.stringify({ status: "error", message: "This file is not a photo." }));
+      send("application/json", JSON.stringify({ status: "ok", message: "", id }));
+    });
+    return;
+  }
   if (url === "/yard/api/sync/" && req.method === "POST") {
     let body = "";
     req.on("data", (c) => (body += c));
     req.on("end", () => {
       const results = JSON.parse(body).operations.map((op) => {
         received.push(op);
+        if (op.type === "photo.weigh") order.push("weigh");
         if (saved.has(op.id)) return { id: op.id, status: "exists", message: "" };
         if (op.type === "heat.create" && op.data.spot === "BAD") return { id: op.id, status: "error", message: "Spot: not allowed" };
         saved.set(op.id, op);
@@ -182,6 +203,48 @@ await page.waitForSelector("text=Spot: not allowed", { timeout: 10000 }).catch((
 check("a rejected change shows its reason", await page.locator("text=Spot: not allowed").count() > 0);
 check("it can be discarded", await page.locator("button:has-text('Discard')").count() > 0);
 check("sent items appear in history", await page.locator("#history li").count() >= 6);
+
+// photos: a loaded vehicle and a stack, taken with no network
+await context.setOffline(true);
+await page.goto(base + "/yard/app/#/");
+await page.click("text=Photograph a loaded vehicle");
+await page.click("button:has-text('Save photo')");
+check("a photo is needed", await page.locator("text=Take or choose a photo first").count() > 0);
+await page.setInputFiles("#f_photo", { name: "truck.png", mimeType: "image/png", buffer: PNG });
+await page.click("button:has-text('Save photo')");
+check("the vehicle must be chosen", await page.locator("text=Choose the vehicle").count() > 0);
+await page.selectOption("#f_vehicle_type", "truck");
+await page.fill("#f_vehicle_ref", "HR 26 AB 1234");
+await page.fill("#f_weighed_tonnes", "11.25");
+await page.fill("#f_slip_number", "S-77");
+await page.click("button:has-text('Save photo')");
+await page.waitForSelector("text=Photo saved on this phone");
+check("load photo saved offline", true);
+await page.goto(base + "/yard/app/#/pile/" + PILE);
+await page.click("text=Photograph this stack");
+await page.setInputFiles("#f_photo", { name: "stack.png", mimeType: "image/png", buffer: PNG });
+await page.fill("#f_bale_count", "120");
+await page.fill("#f_reference_note", "2 m pole on the left");
+await page.click("button:has-text('Save photo')");
+await page.waitForSelector("h1:has-text('Pile A-01')");
+check("two photos waiting", (await page.locator("#net").textContent()).includes("2 waiting"), await page.locator("#net").textContent());
+await page.goto(base + "/yard/app/#/photos");
+await page.waitForSelector("#photo-queue li");
+check("they are listed as waiting to send", await page.locator("#photo-queue li").count() === 2);
+check("the stack photo offers a place to add the weight later", await page.locator("#photo-queue li:has-text('Stack') button:has-text('Save weight')").count() === 1);
+check("a sent photo still needing a weight is listed", await page.locator("#photo-weigh li:has-text('WPH') , #photo-weigh li:has-text('Yard A / A-01')").count() === 1);
+
+// online: photos upload first, then the weight for the already-sent photo
+await page.fill("#photo-weigh input[name=weighed_tonnes]", "8.5");
+await page.click("#photo-weigh button:has-text('Save weight')");
+await context.setOffline(false);
+await page.waitForFunction(() => { const n = document.getElementById("net").textContent; return n.startsWith("Online") && !n.includes("waiting"); }, null, { timeout: 10000 }).catch(() => {});
+check("photos sent when the network returns", photoUploads.length === 2, String(photoUploads.length));
+check("the upload carries the details", photoUploads[0].includes("HR 26 AB 1234") && photoUploads[0].includes('name="weighed_tonnes"') && photoUploads[0].includes("S-77"));
+check("the second carries bale count and reference note", photoUploads[1].includes("120") && photoUploads[1].includes("2 m pole on the left"));
+check("the photo is a JPEG", photoUploads[0].includes("Content-Type: image/jpeg"));
+check("the late weight was sent as a change", received.some((o) => o.type === "photo.weigh" && o.data.weighed_tonnes === "8.5"));
+check("photos are sent before changes", order.indexOf("weigh") > order.lastIndexOf("photo"), order.join());
 
 // language with no network
 await context.setOffline(true);

@@ -14,6 +14,7 @@ urlpatterns = [
     path("manifest.webmanifest", views.manifest, name="manifest"),
     path("api/bootstrap/", api.bootstrap, name="api_bootstrap"),
     path("api/sync/", api.sync, name="api_sync"),
+    path("api/photos/", api.photo_upload, name="api_photos"),
     path("piles/<uuid:pk>/", views.pile_detail, name="pile"),
     path("alerts/<uuid:pk>/acknowledge/", views.acknowledge, name="acknowledge"),
 ]

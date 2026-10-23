@@ -15,5 +15,6 @@ urlpatterns = [
     path("i18n/", include("django.conf.urls.i18n")),
     path("customer/", include("apps.customers.urls")),
     path("yard/", include("apps.yardops.urls")),
+    path("weight-photos/", include("apps.weightphotos.urls")),
     path("", RedirectView.as_view(pattern_name="field:dashboard", permanent=False)),
 ]

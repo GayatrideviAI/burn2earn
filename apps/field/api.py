@@ -19,10 +19,14 @@ from django.views.decorators.http import require_GET, require_POST
 from apps.core.models import Status
 from apps.farms.models import Farmer, FarmPlot, PlotSeason
 from apps.farms.services import possible_duplicates, register_farmer
+from apps.customers.models import Pile
 from apps.geography.models import Village
 from apps.operations.models import CollectionRecord, ProcessedOutput
 from apps.operations.services import NoGridAssigned, log_collection, submit_output
 from apps.reference.models import BiomassType, Crop, Product, Season
+
+from apps.weightphotos import api as photo_api
+from apps.weightphotos.models import Source
 
 from .access import farmers_visible_to
 from .forms import CollectionForm, FarmerForm, OutputForm, PlotForm, SeasonForm
@@ -80,6 +84,7 @@ def bootstrap(request):
             {"id": str(p.pk), "name": str(p)}
             for p in Product.objects.filter(status=Status.ACTIVE, form="processed")
         ],
+        "photos_to_weigh": photo_api.to_weigh(request.user),
         "farmers": [
             {
                 "id": str(f.pk),
@@ -213,12 +218,22 @@ def _output_create(mitra, op_id, data):
     return "ok", ""
 
 
+def _photo_weigh(mitra, op_id, data):
+    try:
+        return photo_api.weigh_operation(mitra.user, op_id, data, may_see=lambda photo: False)
+    except LookupError as error:
+        raise OperationError(str(error))
+    except ValidationError as error:
+        raise OperationError("; ".join(error.messages))
+
+
 HANDLERS = {
     "farmer.create": (Farmer, "registered_by_mitra", _farmer_create),
     "plot.create": (FarmPlot, None, _plot_create),
     "season.create": (PlotSeason, None, _season_create),
     "collection.create": (CollectionRecord, "mitra", _collection_create),
     "output.create": (ProcessedOutput, "mitra", _output_create),
+    "photo.weigh": (None, None, _photo_weigh),
 }
 
 
@@ -251,7 +266,7 @@ def apply_operation(mitra, operation):
         data = operation.get("data")
         if not isinstance(data, dict):
             raise OperationError(_("The change has no data."))
-        if _already_saved(mitra, model, owner_field, op_id):
+        if model is not None and _already_saved(mitra, model, owner_field, op_id):
             return {"id": str(op_id), "status": "exists", "message": ""}
         with transaction.atomic():
             status, message = function(mitra, op_id, data)
@@ -278,3 +293,9 @@ def sync(request):
         return JsonResponse({"error": _("Send up to %(max)s changes as a list.") % {"max": MAX_OPERATIONS}}, status=400)
     results = [apply_operation(request.mitra, op if isinstance(op, dict) else {}) for op in operations]
     return JsonResponse({"results": results, "server_time": timezone.now().isoformat()})
+
+
+@mitra_required
+@require_POST
+def photo_upload(request):
+    return photo_api.handle_upload(request, source=Source.MITRA, taken_by=request.mitra.name, piles=Pile.objects.none())

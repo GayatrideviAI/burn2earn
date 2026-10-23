@@ -245,6 +245,6 @@ class AppShellTests(ApiCase):
 
         from .views import APP_JS
 
-        in_app = set(jscatalog.phrases_in(APP_JS))
+        in_app = set(jscatalog.phrases_in(APP_JS)) | set(jscatalog.phrases_in(jscatalog.PHOTOS_JS))
         self.assertTrue(in_app)
         self.assertLessEqual(in_app, set(tools.collect()))

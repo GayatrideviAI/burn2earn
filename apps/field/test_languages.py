@@ -70,6 +70,7 @@ class OfflineAppLanguageTests(FieldTestCase):
 
     def test_every_phrase_in_the_phone_app_is_in_the_sheet(self):
         in_app = set(jscatalog.phrases_in(jscatalog.Path(jscatalog.__file__).parent / "static/field/app.js"))
+        in_app |= set(jscatalog.phrases_in(jscatalog.PHOTOS_JS))
         self.assertTrue(in_app)
         self.assertLessEqual(in_app, set(tools.collect()))
 

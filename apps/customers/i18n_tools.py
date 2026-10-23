@@ -104,6 +104,10 @@ SOURCES = [
     ROOT / "apps/yardops/models.py",
     ROOT / "apps/yardops/api.py",
     ROOT / "apps/yardops/static/yardops/app.js",
+    ROOT / "apps/weightphotos/static/weightphotos/photos.js",
+    ROOT / "apps/weightphotos/api.py",
+    ROOT / "apps/weightphotos/services.py",
+    ROOT / "apps/weightphotos/models.py",
 ]
 SKIP = {"trace_report.html", "sw.js", "manifest.webmanifest"}  # staff-only page / not shown to people
 
@@ -152,6 +156,8 @@ def section(place):
         return "Mitra app"
     if "apps/yardops/" in place:
         return "Yard app"
+    if "apps/weightphotos/" in place:
+        return "Photos (both apps)"
     if "apps/customers/" in place:
         return "Customer app"
     return "Shared labels"

@@ -13,6 +13,8 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const fieldDir = path.join(here, "..");
 
 const received = [];
+const photoUploads = [];
+const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "base64");
 const saved = new Map();
 const snapshot = {
   server_time: new Date().toISOString(),
@@ -33,7 +35,8 @@ function template(file, extra = {}) {
     .replace("{% get_current_language as LANGUAGE_CODE %}", "")
     .replace(/{{ LANGUAGE_CODE }}/g, "en")
     .replace("{{ catalog_json|safe }}", JSON.stringify({ hi: { "Farmers": "किसान", "Hello, %(name)s": "नमस्ते, %(name)s" } }))
-    .replace(/{% static 'field\/([^']+)' %}/g, "/static/field/$1")
+    .replace(/{% static '([^']+)' %}/g, "/static/$1")
+    .replace("{% url 'field:api_photos' %}", "/mitra/api/photos/")
     .replace("{% url 'field:app' %}", "/mitra/app/")
     .replace("{% url 'field:manifest' %}", "/mitra/manifest.webmanifest")
     .replace("{% url 'field:api_bootstrap' %}", "/mitra/api/bootstrap/")
@@ -50,8 +53,9 @@ const server = http.createServer((req, res) => {
   if (url === "/mitra/app/") return send("text/html", template("app.html"));
   if (url === "/mitra/sw.js") return send("text/javascript", template("sw.js"), { "Service-Worker-Allowed": "/mitra/" });
   if (url === "/mitra/manifest.webmanifest") return send("application/manifest+json", template("manifest.webmanifest"));
-  if (url.startsWith("/static/field/")) {
-    const file = path.join(fieldDir, "static/field", url.replace("/static/field/", ""));
+  if (url.startsWith("/static/")) {
+    const rel = url.replace("/static/", "");
+    const file = rel.startsWith("weightphotos/") ? path.join(fieldDir, "..", "weightphotos/static", rel) : path.join(fieldDir, "static", rel);
     const type = file.endsWith(".js") ? "text/javascript" : file.endsWith(".css") ? "text/css" : "image/svg+xml";
     return send(type, fs.readFileSync(file));
   }
@@ -59,6 +63,12 @@ const server = http.createServer((req, res) => {
     return send("application/json", JSON.stringify({ ...snapshot, farmers: [...saved.values()].filter((o) => o.type === "farmer.create").map((o) => ({
       id: o.id, code: "FRM-" + o.id.slice(0, 4), name: o.data.name, mobile: o.data.mobile, village_id: o.data.village_id, village: "Khera", plots: [],
     })) }));
+  }
+  if (url === "/mitra/api/photos/" && req.method === "POST") {
+    const chunks = [];
+    req.on("data", (c) => chunks.push(c));
+    req.on("end", () => { photoUploads.push(Buffer.concat(chunks).toString("latin1")); send("application/json", JSON.stringify({ status: "ok", message: "" })); });
+    return;
   }
   if (url === "/mitra/api/sync/" && req.method === "POST") {
     let body = "";
@@ -173,6 +183,19 @@ await page.waitForSelector("text=Name: not allowed", { timeout: 10000 }).catch((
 check("a rejected change shows its reason", await page.locator("text=Name: not allowed").count() > 0);
 check("it can be discarded", await page.locator("button:has-text('Discard')").count() > 0);
 check("sent items appear in history", await page.locator("#history li").count() >= 4);
+
+// a photo of a stack at the Grid, taken with no network, sent later
+await context.setOffline(true);
+await page.goto(base + "/mitra/app/#/");
+await page.click("text=Photograph a stack");
+await page.setInputFiles("#f_photo", { name: "shed.png", mimeType: "image/png", buffer: PNG });
+await page.fill("#f_place_note", "Grid shed, north wall");
+await page.click("button:has-text('Save photo')");
+await page.waitForSelector("text=Photo saved on this phone");
+check("a photo is saved offline and counted as waiting", (await page.locator("#net").textContent()).includes("1 waiting"), await page.locator("#net").textContent());
+await context.setOffline(false);
+await page.waitForFunction(() => { const n = document.getElementById("net").textContent; return n.startsWith("Online") && !n.includes("waiting"); }, null, { timeout: 10000 }).catch(() => {});
+check("the photo is sent when the network returns", photoUploads.length === 1 && photoUploads[0].includes("Grid shed, north wall") && photoUploads[0].includes('name="subject"'), String(photoUploads.length));
 
 // language: switch to Hindi with no network; phrases with a translation change, others stay English
 await context.setOffline(true);

@@ -286,6 +286,23 @@ Check it in a real browser with the network switched off (needs Node, Playwright
 
 **Not built yet:** weather and rain risk, WhatsApp/SMS alerts.
 
+## Weight photos (collecting data to predict weight from a photo)
+
+**No weight is predicted yet.** This step collects photos together with the true weight so a model can be trained and checked later, once there is enough real data.
+In the offline **Yard app** and **Mitra app** the person can photograph **a stack** (in the yard app, a pile in their yard) or **a loaded vehicle** (tractor trolley, truck,
+mini truck). They can add the number of bales if counted, something in the photo that shows size (a 2 m pole, say), and the **weighbridge slip weight and slip number**,
+either at once or later from the **Photos** screen, which lists sent photos still missing a weight. Photos are shrunk on the phone, queued on the phone and uploaded one by one
+when there is a signal, before the other changes. Each photo has an id made on the phone, so a retry saves it once.
+
+The server checks that the file is really a photo, saves it as a JPEG with no location or camera details, records a fingerprint (SHA-256) of the original in the tamper-evident ledger, and keeps it
+under `media/weight_photos/`. A photo is never replaced or deleted. A weight can be added once from the phone; **staff correct a wrong one in Admin > Weight photos**, and the correction goes
+to the ledger. Photos are shown only to staff and the person who took them (`/weight-photos/<id>/image/`).
+
+* **Coverage:** `python manage.py weight_photo_report` shows photos and weighed photos per kind against a target of 300 each. The target is a guess (`WEIGHT_PHOTO_TARGET_PER_SUBJECT`); a data scientist should set it.
+* **Training set:** `python manage.py export_weight_dataset <new folder>` writes `labels.csv` and `images/` for photos that have a weight. Admin can also download a CSV of selected photos.
+* **Docker:** Pillow was added to `requirements.txt`, so rebuild the image (`docker compose up -d --build`). Photos live in the `media/` folder (ignored by git); back it up and move it to proper file storage before production.
+* **Privacy:** the apps tell people to keep faces out of photos, but photos may still show people. How long to keep them and how consent works should be reviewed by counsel before this is used with real data.
+
 ## Hindi and Punjabi (customer pages and Mitra app)
 
 The customer pages (`/customer/`), the Mitra pages (`/mitra/`) and the offline Mitra phone app can be shown in English, हिन्दी and ਪੰਜਾਬੀ. A switch in the top bar changes the language and the choice is remembered on the device. This covers every page, form label, confirmation and error message, alert text, stage and type label, and the unit (t for tonnes). The offline phone app carries its own translation table, so switching language works with no signal. The admin is not translated. Farmer-facing data that comes from the database (crop, village, product and biomass names) is shown as entered.
