@@ -333,3 +333,9 @@ Other commands, all `python manage.py translations <action>`:
 No gettext programs are needed: the tooling is plain Python (`apps/customers/i18n_tools.py`). A test fails if a new phrase is marked but not extracted, or if the `.mo` files are out of date.
 
 When adding a customer-facing word: in a template use `{% trans "Text" %}` or `{% blocktrans trimmed with x=value %}... {{ x }} ...{% endblocktrans %}` (no plurals, no filters inside); in Python use `gettext` (`_`) at request time and `gettext_lazy` for model choices and form labels; in the phone app (`apps/field/static/field/app.js`) use `t("Text %(name)s", {name: value})`. Weights go through the `|tn` filter so the unit is translated. Then run `extract`, `export`.
+
+## Biomass predictor (stand-alone)
+
+`tools/biomass_predictor/` is a separate public web tool that estimates tonnes of CBG and pellets from a straw photo. See its README for sources, limits and how to run it.
+
+To show "Estimate earnings" links to the predictor in the Mitra pages (menu, dashboard, farmer page), set `PREDICTOR_URL` to its public address, for example `PREDICTOR_URL=https://estimate.example.org/`. Leave it empty to hide them. Prices and carbon figures live in the predictor's `factors.py`; Regenerix should confirm them.

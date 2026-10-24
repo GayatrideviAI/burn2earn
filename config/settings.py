@@ -70,6 +70,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "apps.core.context.predictor",
             ],
         },
     },
@@ -129,6 +130,9 @@ STOCK_REPLENISH_LEAD_DAYS = 14
 # closely, 70 °C check twice a day and open the stack, 80 °C fire likely). The other numbers are
 # starting assumptions. ALL of them must be validated for baled paddy straw with a qualified
 # fire-safety partner before anyone relies on them.
+# Address of the stand-alone biomass predictor (tools/biomass_predictor). Empty hides the links.
+PREDICTOR_URL = os.environ.get("PREDICTOR_URL", "")
+
 YARD_HEAT_WARM_C = 50
 YARD_HEAT_WATCH_C = 65
 YARD_HEAT_ACT_C = 70

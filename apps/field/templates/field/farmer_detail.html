@@ -4,7 +4,7 @@
 {% block content %}
 <h1>{{ farmer.name }}</h1>
 <p class="muted">{{ farmer.code }} · {{ farmer.mobile }} · {{ farmer.village.name }}</p>
-<p><a class="button primary" href="{% url 'field:collection_new' farmer.pk %}">{% trans "Log a pickup" %}</a></p>
+<p><a class="button primary" href="{% url 'field:collection_new' farmer.pk %}">{% trans "Log a pickup" %}</a>{% if PREDICTOR_URL %} <a class="button" href="{{ PREDICTOR_URL }}" target="_blank" rel="noopener">{% trans "Estimate earnings" %}</a>{% endif %}</p>
 <h2>{% trans "Land" %}</h2>
 {% for plot in plots %}
 <section class="card">
