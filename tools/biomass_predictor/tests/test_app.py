@@ -61,6 +61,12 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(r.headers["cache-control"], "no-store")
         self.assertEqual(self.reader.calls[0][:3], ("bales", "A4 paper", 29.7))
 
+    def test_carbon_goes_to_the_farmer_by_default(self):
+        m = post(self.make()).json()["revenue_rs"]
+        self.assertEqual(m["carbon_share"], 1.0)
+        self.assertGreater(m["carbon"]["likely"], 0)
+        self.assertEqual(m["straw"]["likely"], 0)
+
     def test_acres_can_be_sent_and_must_be_a_number(self):
         client = self.make()
         r = post(client, acres="2")

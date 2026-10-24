@@ -30,6 +30,7 @@ button[disabled]{opacity:.6;cursor:progress}
 .big{border:1px solid var(--line);border-radius:10px;padding:12px}
 .big .n{font-size:2rem;font-weight:800;line-height:1.1}
 .big .r{color:var(--mute);font-size:.9rem}
+.statement{margin-top:14px;padding:12px;border:1px dashed var(--green);border-radius:10px}.statement h3{margin:0 0 6px;font-size:1rem}.statement .row{display:flex;justify-content:space-between;gap:12px;padding:3px 0}.statement .tot{border-top:1px solid var(--line);margin-top:4px;padding-top:6px;font-weight:700}
 .note{padding:10px 12px;border-radius:8px;background:var(--amber-bg);color:var(--amber);margin:8px 0;font-size:.92rem}
 .err{padding:10px 12px;border-radius:8px;background:var(--red-bg);color:var(--red);margin-top:14px}
 table{width:100%;border-collapse:collapse;font-size:.85rem}
@@ -91,6 +92,7 @@ details{margin-top:10px}summary{cursor:pointer;font-weight:600}
   <h2 style="margin-top:18px">What the farmer gains (Rs)</h2>
   <div class="result" id="money"></div>
   <p class="mute" id="share" style="margin-top:8px"></p>
+  <div class="statement" id="statement" hidden></div>
   <div id="warns"></div>
   <p class="mute" style="margin-top:12px">Each range runs from a low case to a high case; the big number is the most likely.</p>
 </section>
@@ -172,6 +174,16 @@ function render(d) {
   $("money").replaceChildren(...cards);
   const from = { photo: "read from the photo", given: "entered by you", "straw weight": "worked out from the straw weight" };
   $("share").textContent = "Land cleared: about " + fmt(m.acres.likely) + " acres (" + from[m.acres_from] + ") at Rs 2,000 an acre. This is money the farmer does not have to pay, not cash received." + (m.carbon_share > 0 ? " Carbon credits are counted at " + Math.round(m.carbon_share * 100) + "% to the farmer, from about " + fmt(d.co2e_tonnes.likely) + " tonnes of CO2 equivalent avoided. Real credits need a registered, verified project." : "");
+  const st = $("statement"); st.replaceChildren(); st.hidden = false;
+  const h = document.createElement("h3"); h.textContent = "Your statement (notional, not cash)"; st.append(h);
+  const row = (label, q, cls) => { const r = document.createElement("div"); r.className = "row " + (cls || ""); const a = document.createElement("span"), b = document.createElement("span"); a.textContent = label; b.textContent = rs(q.likely) + " (" + rs(q.low) + " to " + rs(q.high) + ")"; r.append(a, b); st.append(r); };
+  row("Regenerix pays for your land clearing", m.clearing_saved);
+  if (m.straw_price > 0) row("Straw bought from you", m.straw);
+  if (m.carbon_share > 0) row("Carbon credits, paid to you when issued", m.carbon);
+  row("Total gain to you", m.total, "tot");
+  const note = document.createElement("p"); note.className = "mute"; note.style.margin = "8px 0 0";
+  note.textContent = "You are not charged for the clearing. This statement shows what you gain; no money moves because of it. Carbon credits are expected, not guaranteed.";
+  st.append(note);
   $("warns").replaceChildren(...[...d.warnings, ...d.notes.filter(Boolean)].map((w) => { const p = document.createElement("div"); p.className = "note"; p.textContent = w; return p; }));
   $("out").hidden = false; $("out").scrollIntoView({ behavior: "smooth" });
 }

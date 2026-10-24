@@ -36,9 +36,10 @@ the numbers are used for anything but a rough idea.** The live table is also sho
 | Carbon credit price | Rs 600 / 850 / 1,100 per t CO2e | **assumption** | about US$10 expected by [BEE via S&P Global](https://www.spglobal.com/energy/en/news-research/latest-news/energy-transition/110124-industry-sees-initial-carbon-credits-priced-around-10mtco2e-in-india); exchange rate ours |
 
 What the farmer gains = land clearing paid for by Regenerix (Rs 2,000 x acres) + straw sale + carbon.
-Regenerix pays nothing for straw today and has not set a carbon share, so both are **0 by default**
-and the page only shows them when set: `PREDICTOR_STRAW_PRICE` (Rs per tonne; the CSE report quotes
-Rs 1,000-1,500 for plants) and `PREDICTOR_FARMER_CARBON_SHARE` (0 to 1). Acres come from the photo
+Regenerix pays nothing for straw today, so `PREDICTOR_STRAW_PRICE` is **0** and that line is hidden
+(set Rs per tonne to show it; the CSE report quotes Rs 1,000-1,500 for plants). Carbon credits are
+planned to go to the farmer directly, so `PREDICTOR_FARMER_CARBON_SHARE` defaults to **1** (0 to 1).
+The result ends with a "statement" that tells the farmer what they gain; it is notional, no money moves. Acres come from the photo
 (field mode), from the farmer (optional box), or are worked out from the straw weight at 2.8 t/acre.
 
 Still needed: wheat straw figures, a second CBG yield source (the 10:1 comes from one report), a
@@ -63,7 +64,7 @@ uvicorn --factory predictor.app:create_app --port 8001
 Docker: `docker build -t biomass-predictor . && docker run -p 8001:8001 -e ANTHROPIC_API_KEY biomass-predictor`
 
 Settings (environment): `PREDICTOR_MODEL` (default `claude-sonnet-5-5`), `PREDICTOR_PER_IP_HOURLY`
-(10), `PREDICTOR_DAILY_TOTAL` (500, caps your vision bill), `PREDICTOR_STRAW_PRICE` (0), `PREDICTOR_FARMER_CARBON_SHARE` (0), `PREDICTOR_TRUST_PROXY=1` only behind a
+(10), `PREDICTOR_DAILY_TOTAL` (500, caps your vision bill), `PREDICTOR_STRAW_PRICE` (0), `PREDICTOR_FARMER_CARBON_SHARE` (1), `PREDICTOR_TRUST_PROXY=1` only behind a
 reverse proxy that sets `X-Forwarded-For`.
 
 Limits are kept in memory per process, so run one worker or put a proper limiter in front. Serve it

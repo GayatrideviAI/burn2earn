@@ -13,13 +13,13 @@ STATIC = Path(__file__).parent / "static"
 CAVEATS = [
     "This is a rough estimate from one photo, not a measurement. Weigh before you trade.",
     "The conversion numbers are published figures or placeholders and have not been confirmed by a technical team.",
-    "Money figures are a guide. Clearing the land is free to the farmer, so that is shown as money saved, not cash received. Carbon credits depend on a registered, verified project.",
+    "Money figures are a guide. Clearing the land is free to the farmer, so that is shown as money saved, not cash received. Carbon credits are expected, not guaranteed: they depend on a registered, verified project.",
     "The photo reader has not yet been checked against weighed piles.",
 ]
 
 
-# Regenerix does not pay for straw and has not set a carbon share yet, so both default to 0.
-CARBON_SHARE = min(1.0, max(0.0, float(os.environ.get("PREDICTOR_FARMER_CARBON_SHARE", 0))))
+# Regenerix does not pay for straw (price 0). Carbon credits are planned to go to the farmer directly (share 1).
+CARBON_SHARE = min(1.0, max(0.0, float(os.environ.get("PREDICTOR_FARMER_CARBON_SHARE", 1))))
 STRAW_PRICE = max(0.0, float(os.environ.get("PREDICTOR_STRAW_PRICE", 0)))
 
 
