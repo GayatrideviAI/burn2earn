@@ -31,13 +31,15 @@ the numbers are used for anything but a rough idea.** The live table is also sho
 | Pellet moisture | 8 / 10 / 12% | assumption | context: [Raila et al.](https://www.tf.lbtu.lv/conference/proceedings2012/Papers/050_Raila_A.pdf) |
 | Dry straw ending up in pellets | 85 / 93 / 97% | **assumption** | none yet |
 
-| Price paid for straw | Rs 1,000 / 1,250 / 1,500 per tonne | published | [CSE blueprint](https://cdn.cseindia.org/attachments/0.86053500_1785406558_national-bluepint.pdf) (a plant's price; Regenerix to confirm its own) |
+| Clearing cost to the farmer | Rs 2,000 per acre | provided by Regenerix | project owner; Regenerix will not charge it, so it is shown as money saved |
 | Emissions avoided by not burning | 0.05 / 0.074 / 0.10 t CO2e per dry tonne | derived (range ours) | [IPCC 2006 factors](https://greencalculus.com/data/afolu-biomass-burning-factors/): 0.8 x (2.7 x 27 + 0.07 x 273) g per kg |
 | Carbon credit price | Rs 600 / 850 / 1,100 per t CO2e | **assumption** | about US$10 expected by [BEE via S&P Global](https://www.spglobal.com/energy/en/news-research/latest-news/energy-transition/110124-industry-sees-initial-carbon-credits-priced-around-10mtco2e-in-india); exchange rate ours |
 
-Revenue shown = straw income + carbon value. At these figures carbon adds only about 4% to the
-straw income, so straw price drives the answer. `PREDICTOR_FARMER_CARBON_SHARE` (default 1.0) is
-the share of carbon value assumed to reach the farmer; set it to Regenerix's real share.
+What the farmer gains = land clearing paid for by Regenerix (Rs 2,000 x acres) + straw sale + carbon.
+Regenerix pays nothing for straw today and has not set a carbon share, so both are **0 by default**
+and the page only shows them when set: `PREDICTOR_STRAW_PRICE` (Rs per tonne; the CSE report quotes
+Rs 1,000-1,500 for plants) and `PREDICTOR_FARMER_CARBON_SHARE` (0 to 1). Acres come from the photo
+(field mode), from the farmer (optional box), or are worked out from the straw weight at 2.8 t/acre.
 
 Still needed: wheat straw figures, a second CBG yield source (the 10:1 comes from one report), a
 pellet recovery source, rectangular bale densities.
@@ -61,7 +63,7 @@ uvicorn --factory predictor.app:create_app --port 8001
 Docker: `docker build -t biomass-predictor . && docker run -p 8001:8001 -e ANTHROPIC_API_KEY biomass-predictor`
 
 Settings (environment): `PREDICTOR_MODEL` (default `claude-sonnet-5-5`), `PREDICTOR_PER_IP_HOURLY`
-(10), `PREDICTOR_DAILY_TOTAL` (500, caps your vision bill), `PREDICTOR_FARMER_CARBON_SHARE` (1.0), `PREDICTOR_TRUST_PROXY=1` only behind a
+(10), `PREDICTOR_DAILY_TOTAL` (500, caps your vision bill), `PREDICTOR_STRAW_PRICE` (0), `PREDICTOR_FARMER_CARBON_SHARE` (0), `PREDICTOR_TRUST_PROXY=1` only behind a
 reverse proxy that sets `X-Forwarded-For`.
 
 Limits are kept in memory per process, so run one worker or put a proper limiter in front. Serve it

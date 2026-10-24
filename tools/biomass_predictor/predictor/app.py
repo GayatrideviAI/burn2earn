@@ -13,12 +13,14 @@ STATIC = Path(__file__).parent / "static"
 CAVEATS = [
     "This is a rough estimate from one photo, not a measurement. Weigh before you trade.",
     "The conversion numbers are published figures or placeholders and have not been confirmed by a technical team.",
-    "Money figures are a guide. Real straw prices are set by Regenerix, and carbon credits depend on a registered, verified project.",
+    "Money figures are a guide. Clearing the land is free to the farmer, so that is shown as money saved, not cash received. Carbon credits depend on a registered, verified project.",
     "The photo reader has not yet been checked against weighed piles.",
 ]
 
 
-CARBON_SHARE = min(1.0, max(0.0, float(os.environ.get("PREDICTOR_FARMER_CARBON_SHARE", 1.0))))
+# Regenerix does not pay for straw and has not set a carbon share yet, so both default to 0.
+CARBON_SHARE = min(1.0, max(0.0, float(os.environ.get("PREDICTOR_FARMER_CARBON_SHARE", 0))))
+STRAW_PRICE = max(0.0, float(os.environ.get("PREDICTOR_STRAW_PRICE", 0)))
 
 
 def client_ip(request):
@@ -71,6 +73,13 @@ def create_app(reader=None, limiter=None):
             except ValueError:
                 return fail("Bale weight must be a number.")
 
+        acres = form.get("acres") or None
+        if acres:
+            try:
+                float(acres)
+            except ValueError:
+                return fail("Acres must be a number.")
+
         data = await photo.read(vision.MAX_UPLOAD_BYTES + 1)
         try:
             jpeg = vision.prepare_image(data)
@@ -89,7 +98,8 @@ def create_app(reader=None, limiter=None):
             return fail(f"{reason} Try a clearer photo with the reference object in view.", 422)
         try:
             result = engine.estimate(mode, reading, known_bale_kg=known if mode == "bales" else None,
-                                    carbon_share=CARBON_SHARE)
+                                    carbon_share=CARBON_SHARE, straw_price=STRAW_PRICE,
+                                    acres_given=acres)
         except engine.BadReading as error:
             return fail(f"{error} Try another photo.", 422)
         result["caveats"] = CAVEATS

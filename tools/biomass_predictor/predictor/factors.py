@@ -1,6 +1,7 @@
 """Conversion factors, each with low / likely / high, a source and an honest status.
 
 status:
+  provided    - given to us by Regenerix, not from a published source
   published   - the number comes straight from the cited source
   derived     - calculated by us from published numbers (the working is in `note`)
   assumption  - our placeholder; NO published source yet. The technical team must confirm
@@ -84,10 +85,10 @@ FACTORS = {
             "No source found yet", "", "Allows for dust, screening and process loss.",
         ),
         Factor(
-            "straw_price", "Price paid for straw", "Rs per tonne as found", 1000, 1250, 1500, "published",
-            "CSE national blueprint for CBG: feedstock price Rs 1,000-1,500 per tonne", CSE,
-            "This is the price a plant is assumed to pay. What reaches the farmer may be lower. "
-            "Regenerix must confirm its own price.",
+            "clearing_cost", "Cost to the farmer of clearing one acre", "Rs per acre", 2000, 2000, 2000, "provided",
+            "Regenerix (told to us by the project owner)", "",
+            "Regenerix will not charge this to the farmer, so it is shown as money the farmer saves, not cash received. "
+            "Regenerix does not currently pay for the straw.",
         ),
         Factor(
             "carbon_per_dry_tonne", "Emissions avoided by not burning (CH4 + N2O)", "tonnes CO2e per tonne dry straw", 0.05, 0.074, 0.10, "derived",

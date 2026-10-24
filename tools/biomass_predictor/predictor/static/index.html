@@ -75,6 +75,10 @@ details{margin-top:10px}summary{cursor:pointer;font-weight:600}
     <input id="known" type="number" min="5" max="700" step="any" inputmode="decimal" placeholder="Leave empty if you do not know">
     <p class="mute">If you know it, the result is more reliable.</p>
   </div>
+  <div id="acresbox">
+    <label for="acres">Acres this straw came from (optional)</label>
+    <input id="acres" type="number" min="0.1" max="500" step="any" inputmode="decimal" placeholder="Leave empty to work it out">
+  </div>
 
   <button id="go" type="submit">Estimate</button>
   <div id="error" class="err" role="alert" hidden></div>
@@ -84,7 +88,7 @@ details{margin-top:10px}summary{cursor:pointer;font-weight:600}
   <h2>Estimate</h2>
   <p id="seen" class="mute"></p>
   <div class="result" id="cards"></div>
-  <h2 style="margin-top:18px">What it could earn (Rs)</h2>
+  <h2 style="margin-top:18px">What the farmer gains (Rs)</h2>
   <div class="result" id="money"></div>
   <p class="mute" id="share" style="margin-top:8px"></p>
   <div id="warns"></div>
@@ -111,6 +115,7 @@ const TIPS = {
 function sync() {
   $("tip").textContent = TIPS[mode()];
   $("knownbox").hidden = mode() !== "bales";
+  $("acresbox").hidden = mode() !== "bales";
   $("custom").hidden = $("ref").value.split("|")[0] !== "other";
 }
 form.addEventListener("change", sync); sync();
@@ -140,6 +145,7 @@ form.addEventListener("submit", async (e) => {
   const body = new FormData();
   body.append("mode", mode()); body.append("photo", file);
   body.append("ref_label", label); body.append("ref_cm", cm);
+  if (mode() === "bales" && $("acres").value) body.append("acres", $("acres").value);
   if (mode() === "bales" && $("known").value) body.append("known_bale_kg", $("known").value);
   $("go").disabled = true; $("go").textContent = "Reading your photo...";
   try {
@@ -159,8 +165,13 @@ function render(d) {
   $("seen").textContent = "What was read from your photo: " + bits.join("; ") + ".";
   $("cards").replaceChildren(card("Compressed biogas (CBG)", d.cbg_tonnes), card("Pellets", d.pellet_tonnes), card("Straw as found", d.straw_tonnes));
   const m = d.revenue_rs, money = (t, q) => card(t, q, "", rs);
-  $("money").replaceChildren(money("Selling the straw", m.straw), money("Carbon credits (before costs)", m.carbon), money("Total", m.total));
-  $("share").textContent = "Carbon credits are counted at " + Math.round(m.carbon_share * 100) + "% going to the farmer, and about " + fmt(d.co2e_tonnes.likely) + " tonnes of CO2 equivalent avoided by not burning. Real credits need a registered, verified project.";
+  const cards = [money("Land clearing paid for by Regenerix (saved)", m.clearing_saved)];
+  if (m.straw_price > 0) cards.push(money("Selling the straw", m.straw));
+  if (m.carbon_share > 0) cards.push(money("Carbon credits (before costs)", m.carbon));
+  cards.push(money(cards.length > 1 ? "Total" : "Total gain", m.total));
+  $("money").replaceChildren(...cards);
+  const from = { photo: "read from the photo", given: "entered by you", "straw weight": "worked out from the straw weight" };
+  $("share").textContent = "Land cleared: about " + fmt(m.acres.likely) + " acres (" + from[m.acres_from] + ") at Rs 2,000 an acre. This is money the farmer does not have to pay, not cash received." + (m.carbon_share > 0 ? " Carbon credits are counted at " + Math.round(m.carbon_share * 100) + "% to the farmer, from about " + fmt(d.co2e_tonnes.likely) + " tonnes of CO2 equivalent avoided. Real credits need a registered, verified project." : "");
   $("warns").replaceChildren(...[...d.warnings, ...d.notes.filter(Boolean)].map((w) => { const p = document.createElement("div"); p.className = "note"; p.textContent = w; return p; }));
   $("out").hidden = false; $("out").scrollIntoView({ behavior: "smooth" });
 }

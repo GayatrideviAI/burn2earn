@@ -67,27 +67,55 @@ class BaleTests(unittest.TestCase):
 
 
 class RevenueTests(unittest.TestCase):
-    def test_straw_income_is_tonnes_times_price(self):
+    def test_straw_is_unpaid_and_carbon_hidden_by_default(self):
+        m = engine.estimate("bales", bales())["revenue_rs"]
+        self.assertEqual(m["straw"]["likely"], 0)
+        self.assertEqual(m["carbon"]["likely"], 0)
+        self.assertEqual(m["total"], m["clearing_saved"])
+
+    def test_clearing_saving_uses_acres_worked_out_from_straw(self):
         r = engine.estimate("bales", bales())
-        self.assertAlmostEqual(r["revenue_rs"]["straw"]["likely"], r["straw_tonnes"]["likely"] * 1250, delta=20)
+        m = r["revenue_rs"]
+        self.assertEqual(m["acres_from"], "straw weight")
+        self.assertAlmostEqual(m["acres"]["likely"], r["straw_tonnes"]["likely"] / 2.8, delta=0.01)
+        self.assertAlmostEqual(m["clearing_saved"]["likely"], m["acres"]["likely"] * 2000, delta=30)
+
+    def test_given_acres_are_used(self):
+        m = engine.estimate("bales", bales(), acres_given="3")["revenue_rs"]
+        self.assertEqual(m["acres_from"], "given")
+        self.assertAlmostEqual(m["clearing_saved"]["likely"], 6000, delta=10)
+        self.assertLess(m["clearing_saved"]["low"], 6000)
+
+    def test_field_mode_uses_photo_area(self):
+        reading = {"residue_type": "paddy", "moisture_look": "dry",
+                   "field": {"area_acres": 2, "area_low": 1.5, "area_high": 2.5, "coverage_fraction": 0.8}}
+        m = engine.estimate("field", reading)["revenue_rs"]
+        self.assertEqual(m["acres_from"], "photo")
+        self.assertAlmostEqual(m["clearing_saved"]["likely"], 4000, delta=10)
+
+    def test_bad_acres(self):
+        with self.assertRaises(engine.BadReading):
+            engine.estimate("bales", bales(), acres_given="9999")
+
+    def test_a_straw_price_and_carbon_share_add_to_the_total(self):
+        base = engine.estimate("bales", bales())
+        full = engine.estimate("bales", bales(), straw_price=1000, carbon_share=0.5)
+        m = full["revenue_rs"]
+        self.assertAlmostEqual(m["straw"]["likely"], full["straw_tonnes"]["likely"] * 1000, delta=20)
+        self.assertGreater(m["carbon"]["likely"], 0)
+        self.assertAlmostEqual(m["total"]["likely"], m["clearing_saved"]["likely"] + m["straw"]["likely"] + m["carbon"]["likely"], delta=30)
+        self.assertGreater(m["total"]["likely"], base["revenue_rs"]["total"]["likely"])
 
     def test_carbon_matches_hand_calculation(self):
-        r = engine.estimate("bales", bales())
+        r = engine.estimate("bales", bales(), carbon_share=1.0)
         dry = r["straw_tonnes"]["likely"] * 0.8
         self.assertAlmostEqual(r["co2e_tonnes"]["likely"], dry * 0.074, delta=0.002)
         self.assertAlmostEqual(r["revenue_rs"]["carbon"]["likely"], r["co2e_tonnes"]["likely"] * 850, delta=15)
 
-    def test_total_is_straw_plus_carbon_and_ordered(self):
-        t = engine.estimate("bales", bales())["revenue_rs"]
-        self.assertAlmostEqual(t["total"]["likely"], t["straw"]["likely"] + t["carbon"]["likely"], delta=20)
-        self.assertLess(t["total"]["low"], t["total"]["likely"])
-        self.assertLess(t["total"]["likely"], t["total"]["high"])
-
-    def test_farmer_share_scales_carbon_only(self):
-        full = engine.estimate("bales", bales())["revenue_rs"]
-        half = engine.estimate("bales", bales(), carbon_share=0.5)["revenue_rs"]
-        self.assertEqual(half["straw"], full["straw"])
-        self.assertAlmostEqual(half["carbon"]["likely"], full["carbon"]["likely"] / 2, delta=10)
+    def test_ranges_are_ordered(self):
+        t = engine.estimate("bales", bales())["revenue_rs"]["total"]
+        self.assertLess(t["low"], t["likely"])
+        self.assertLess(t["likely"], t["high"])
 
 
 class FieldTests(unittest.TestCase):

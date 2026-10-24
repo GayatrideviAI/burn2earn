@@ -103,7 +103,17 @@ def _times(a, b):
     return Q(likely * math.exp(-down), likely, likely * math.exp(up))
 
 
-def estimate(mode, reading, known_bale_kg=None, carbon_share=1.0):
+def _safe_times(a, b):
+    if a.likely == 0 or b.likely == 0:
+        return Q(0.0, 0.0, 0.0)
+    return _times(a, b)
+
+
+def _add(*qs):
+    return Q(sum(q.low for q in qs), sum(q.likely for q in qs), sum(q.high for q in qs))
+
+
+def estimate(mode, reading, known_bale_kg=None, carbon_share=0.0, straw_price=0.0, acres_given=None):
     """mode is "bales" or "field"; reading is the (already parsed) vision JSON."""
     warnings = []
     notes = []
@@ -170,11 +180,22 @@ def estimate(mode, reading, known_bale_kg=None, carbon_share=1.0):
             downs[i].append(math.log(base[i] / min(lo, base[i])))
     straw_q, cbg_q, pellet_q, co2_q = (_combine(base[i], ups[i], downs[i]) for i in range(4))
 
-    # Money. Straw income and carbon value both rise and fall with the straw weight, so the totals add low to low and high to high.
-    straw_rs = _times(straw_q, _factor("straw_price"))
+    # Money. Every part rises and falls with the straw weight, so totals add low to low and high to high.
+    if acres_given:
+        acres = Q.spread(_num(acres_given, "acres", 0.01, MAX_AREA_ACRES), 0.05)
+        acres_from = "given"
+    elif mode == "field":
+        acres = inputs["area"]
+        acres_from = "photo"
+    else:
+        per_acre = _factor("field_t_per_acre")
+        acres = Q(straw_q.low / per_acre.high, straw_q.likely / per_acre.likely, straw_q.high / per_acre.low)
+        acres_from = "straw weight"
+    saved_rs = _safe_times(acres, _factor("clearing_cost"))
+    straw_rs = _safe_times(straw_q, Q(straw_price, straw_price, straw_price))
     carbon_rs = _times(co2_q, _factor("carbon_price"))
     carbon_rs = Q(carbon_rs.low * carbon_share, carbon_rs.likely * carbon_share, carbon_rs.high * carbon_share)
-    total_rs = Q(straw_rs.low + carbon_rs.low, straw_rs.likely + carbon_rs.likely, straw_rs.high + carbon_rs.high)
+    total_rs = _add(saved_rs, straw_rs, carbon_rs)
 
     if reading.get("moisture_look") in (None, "unknown"):
         warnings.append("The straw's dryness could not be judged, so damp was assumed.")
@@ -200,8 +221,9 @@ def estimate(mode, reading, known_bale_kg=None, carbon_share=1.0):
         "cbg_tonnes": r(cbg_q),
         "pellet_tonnes": r(pellet_q),
         "co2e_tonnes": r(co2_q),
-        "revenue_rs": {"straw": money(straw_rs), "carbon": money(carbon_rs), "total": money(total_rs),
-                       "carbon_share": carbon_share},
+        "revenue_rs": {"clearing_saved": money(saved_rs), "straw": money(straw_rs), "carbon": money(carbon_rs),
+                       "total": money(total_rs), "carbon_share": carbon_share, "straw_price": straw_price,
+                       "acres": r(acres), "acres_from": acres_from},
         "warnings": warnings,
         "notes": notes + [reading.get("notes", "")[:300]] if reading.get("notes") else notes,
     }
